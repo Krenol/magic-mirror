@@ -3,7 +3,7 @@ import { FORECAST_FIELDS, MAX_FORECAST_DAYS, STD_API_QUERY, WEATHER_API_URL } fr
 import { createApiError } from "../error_message";
 import { TResponse } from "../../models/fetch";
 import { forecast_day, weather_forecast } from "../../models/weather";
-import { getWeatherDescription, getWeatherIconFromWeathercode, sunIsCurrentlyUp } from "./common";
+import { getWeatherDescription, getWeatherIconFromWeathercode } from "./common";
 
 export const buildWeatheForecastrUrl = async (req: Request): Promise<string> => {
     const start_date = (await getDateInDays(1)).toISOString().slice(0, 10);

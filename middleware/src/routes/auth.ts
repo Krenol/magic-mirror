@@ -7,7 +7,7 @@ import { checkAuthenticated } from "../middleware/authenticated";
 
 const router = Router();
 
-router.get('/auth/google', passport.authenticate('google', <any>{
+router.get('/auth/google', passport.authenticate('google', <object>{
     scope: SCOPES,
     accessType: 'offline',
     prompt: 'consent',

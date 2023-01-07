@@ -13,6 +13,8 @@ import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { cardStyle, minMaxBoxStyle, parentBoxStyle } from './style';
 import { REFRESH_MILLIS } from '../../constants/app';
+import { smallFontSize } from '../../assets/styles/theme';
+import { current_weather } from '../../models/current_weather';
 
 const CurrentWeather = () => {
     const [weather, setWeather] = useState<Weather>();
@@ -25,7 +27,7 @@ const CurrentWeather = () => {
 
     const getCurrentWeather = useCallback(async () => {
         fetchJson(`${WEATHER_API}/current?latitude=${LATITUDE}&longitude=${LONGITUDE}`)
-            .then(data => setWeatherData(data))
+            .then(data => setWeatherData(data as current_weather))
             .catch(err => console.log(err));
     }, [setWeatherData]);
 
@@ -47,23 +49,23 @@ const CurrentWeather = () => {
     return (
         <Card sx={cardStyle}>
             <Box sx={parentBoxStyle}>
-                <Typography variant="h3" component="div">
+                <Typography variant="h3">
                     {weather?.currentTemp || "-"}{TEMP_UNIT}
                 </Typography>
                 <Box sx={minMaxBoxStyle}>
                     <ArrowDropUpIcon />
-                    <Typography variant="subtitle2" color="text.secondary" component="div">
+                    <Typography variant="subtitle2" color="text.primary">
                         {weather?.todayMaxTemp || "-"}{TEMP_UNIT}
                     </Typography>
                     <ArrowDropDownIcon />
-                    <Typography variant="subtitle2" color="text.secondary" component="div">
+                    <Typography variant="subtitle2" color="text.primary">
                         {weather?.todayMinTemp || "-"}{TEMP_UNIT}
                     </Typography>
                 </Box>
-                <Typography variant="subtitle2" color="text.secondary" component="div">
+                <Typography variant="subtitle2" color="text.secondary" sx={smallFontSize}>
                     Feels like {weather?.feelsLike || "-"}{TEMP_UNIT}
                 </Typography>
-                <Typography variant="subtitle2" color="text.secondary" component="div">
+                <Typography variant="subtitle2" color="text.secondary" sx={smallFontSize}>
                     Precipitaiton: {weather?.precipitation || weather?.precipitation === 0 ? weather?.precipitation : "-"} {PRECIPITATION_UNIT}
                 </Typography>
             </Box>

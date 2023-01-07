@@ -1,31 +1,31 @@
 import Card from '@mui/material/Card';
 import { Box } from '@mui/material';
 import { cardStyle, parentBoxStyle } from './style';
-import { weather_hourly } from '../../models/hourly_forecast';
 import { useCallback, useEffect, useState } from 'react';
 import { WEATHER_API } from '../../constants/api';
 import { fetchJson } from '../../app/fetch';
-import { HOURLY_FORECAST_HOURS, LATITUDE, LONGITUDE } from '../../constants/weather';
+import { DAILY_FORECAST_DAYS, LATITUDE, LONGITUDE } from '../../constants/weather';
 import ForecastItem from './forecast_item/ForecastItem';
 import { REFRESH_MILLIS } from '../../constants/app';
+import { weather_daily } from '../../models/daily_forecast';
 
 
-const HourlyForecast = () => {
-    const [weather, setWeather] = useState<weather_hourly>();
+const DailyForecast = () => {
+    const [weather, setWeather] = useState<weather_daily>();
 
-    const getHourlyWeather = useCallback(async () => {
-        fetchJson(`${WEATHER_API}/hourly?latitude=${LATITUDE}&longitude=${LONGITUDE}&hours=${HOURLY_FORECAST_HOURS}`)
+    const getDailyWeather = useCallback(async () => {
+        fetchJson(`${WEATHER_API}/forecast?latitude=${LATITUDE}&longitude=${LONGITUDE}&days=${DAILY_FORECAST_DAYS}`)
             .then(data => setWeather(data))
             .catch(err => console.log(err));
     }, []);
 
     useEffect(() => {
-        getHourlyWeather();
+        getDailyWeather();
         const timer = setInterval(() => {
-            getHourlyWeather();
+            getDailyWeather();
         }, REFRESH_MILLIS);
         return () => clearInterval(timer);
-    }, [getHourlyWeather]);
+    }, [getDailyWeather]);
 
     return (
         <Card sx={cardStyle}>
@@ -34,7 +34,7 @@ const HourlyForecast = () => {
                     <ForecastItem
                         item={data}
                         timezone={weather?.timezone}
-                        key={data.time}
+                        key={data.date}
                     />
                 ))}
             </Box>
@@ -42,4 +42,4 @@ const HourlyForecast = () => {
     );
 }
 
-export default HourlyForecast;
+export default DailyForecast;

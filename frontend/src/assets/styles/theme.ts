@@ -1,6 +1,8 @@
 import { createTheme } from "@mui/material/styles";
 export const MARGIN = 15;
 
+export const smallFontSize = { fontSize: 12.5 }
+
 export const theme = createTheme({
     palette: {
         mode: 'dark',
@@ -18,6 +20,5 @@ export const theme = createTheme({
                 }
             }
         },
-
     },
 });

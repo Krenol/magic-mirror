@@ -5,8 +5,8 @@ import { TResponse } from "../../models/fetch";
 import { forecast_day, weather_forecast } from "../../models/weather";
 import { getWeatherDescription, getWeatherIconFromWeathercode, sunIsCurrentlyUp } from "./common";
 
-export const buildtWeatheForecastrUrl = async (req: Request): Promise<string> => {
-    const start_date = new Date().toISOString().slice(0, 10);
+export const buildWeatheForecastrUrl = async (req: Request): Promise<string> => {
+    const start_date = (await getDateInDays(1)).toISOString().slice(0, 10);
     const end_date = (await getForecastEnddate(req)).toISOString().slice(0, 10);
     const api_qry = `start_date=${start_date}&end_date=${end_date}&daily=${FORECAST_FIELDS}`;
     return `${WEATHER_API_URL}/forecast/?latitude=${req.query.latitude}&longitude=${req.query.longitude}&${STD_API_QUERY}&${api_qry}`;
@@ -14,8 +14,12 @@ export const buildtWeatheForecastrUrl = async (req: Request): Promise<string> =>
 
 const getForecastEnddate = async (req: Request): Promise<Date> => {
     const forecast_days = await getForecastDays(req);
+    return getDateInDays(forecast_days);
+}
+
+const getDateInDays = async (days: number): Promise<Date> => {
     const date = new Date();
-    date.setDate(date.getDate() + forecast_days - 1);
+    date.setDate(date.getDate() + days);
     return date;
 }
 
@@ -59,7 +63,6 @@ const createForecastArray = async (response: any): Promise<Array<forecast_day>> 
 
 const createForecastDay = async (response: any, index: number): Promise<forecast_day> => {
     const weathercode = response.daily.weathercode[index];
-    const isDay = await sunIsCurrentlyUp(response.daily.sunrise[index], response.daily.sunset[index]);
     return {
         date: response.daily.time[index],
         temperature: {
@@ -72,7 +75,7 @@ const createForecastDay = async (response: any, index: number): Promise<forecast
             hours: response.daily.precipitation_hours[index],
             amount_unit: response.daily_units.precipitation_sum
         },
-        weather_icon: await getWeatherIconFromWeathercode(isDay, weathercode),
+        weather_icon: await getWeatherIconFromWeathercode(true, weathercode),
         sunrise: response.daily.sunrise[index],
         sunset: response.daily.sunset[index],
         weathercode: weathercode,

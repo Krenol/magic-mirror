@@ -1,16 +1,16 @@
 import { CALENDAR_CONFIG } from "../../config/google";
+import { User } from "../../models/user";
 import { fetchJson } from "../fetch";
 import { getAccessToken, getEmail } from "../user";
 
-export const getCalendarEvents = async (user?: Express.User, maxResults: number = CALENDAR_CONFIG.DEFAULT_EVENT_COUNT, orderBy = 'startTime'): Promise<any> => {
+export const getCalendarEvents = async (user: User, maxResults: number = CALENDAR_CONFIG.DEFAULT_EVENT_COUNT, orderBy = 'startTime'): Promise<any> => {
     const email = await getEmail(user);
     const access_token = await getAccessToken(user);
     const events = await getEvents(email, access_token, maxResults, orderBy);
-    console.log(events)
     return events;
 }
 
-export const getBirthdayEvents = async (user?: Express.User, maxResults: number = CALENDAR_CONFIG.DEFAULT_EVENT_COUNT, orderBy = 'startTime'): Promise<any> => {
+export const getBirthdayEvents = async (user: User, maxResults: number = CALENDAR_CONFIG.DEFAULT_EVENT_COUNT, orderBy = 'startTime'): Promise<any> => {
     const access_token = await getAccessToken(user);
     const calendarID = encodeURIComponent(CALENDAR_CONFIG.BIRTHDAY_ID);
     return getEvents(calendarID, access_token, maxResults, orderBy);

@@ -1,6 +1,6 @@
-import { } from "../config/express"
+import { User } from "../models/user";
 
-export const getEmail = async (user?: Express.User): Promise<string> => {
+export const getEmail = async (user?: User): Promise<string> => {
     if (user?.email) {
         return user.email;
     }
@@ -9,7 +9,7 @@ export const getEmail = async (user?: Express.User): Promise<string> => {
     );
 }
 
-export const getAccessToken = async (user?: Express.User): Promise<string> => {
+export const getAccessToken = async (user?: User): Promise<string> => {
     if (user?.access_token) {
         return user.access_token;
     }
@@ -18,7 +18,7 @@ export const getAccessToken = async (user?: Express.User): Promise<string> => {
     );
 }
 
-export const getRefreshToken = async (user?: Express.User): Promise<string> => {
+export const getRefreshToken = async (user?: User): Promise<string> => {
     if (user?.refresh_token) {
         return user.refresh_token;
     }

@@ -7,7 +7,6 @@ export const OAUTH2_CLIENT = {
 }
 
 export const CALENDAR_CONFIG = {
-    SCOPES: 'https://www.googleapis.com/auth/calendar.readonly',
     BIRTHDAY_ID: 'addressbook#contacts@group.v.calendar.google.com',
     DEFAULT_EVENT_COUNT: 100
 }

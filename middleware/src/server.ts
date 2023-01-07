@@ -6,7 +6,7 @@ import { createApiError } from "./services/error_message";
 import { SESSION_SECRET } from "./config/server";
 import { setupPassport } from "./services/auth/setup";
 import { default as cors } from "cors";
-import { FRONTEND_URL } from "./config/misc";
+import { FRONTEND_URL } from "./config/auth";
 
 export class Server {
     private readonly _app: Express;

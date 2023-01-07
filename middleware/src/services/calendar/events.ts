@@ -1,5 +1,5 @@
 import { CALENDAR_CONFIG } from "../../config/google";
-import { calendar_api_response, gcal_api_event_list, gcal_api_event_resource } from "../../models/calendar";
+import { events_list, gcal_api_event_list, gcal_api_event_resource } from "../../models/calendar";
 import { User } from "../../models/user";
 import { fetchJson } from "../fetch";
 import { getAccessToken, getEmail } from "../user";
@@ -29,7 +29,7 @@ const buildApiUrl = async (calendarId: string, maxResults: number = CALENDAR_CON
     return `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?${query}`
 }
 
-export const parseRetrievedEvents = async (events: gcal_api_event_list): Promise<calendar_api_response> => {
+export const parseRetrievedEvents = async (events: gcal_api_event_list): Promise<events_list> => {
     return {
         count: events.items.length,
         list: events.items

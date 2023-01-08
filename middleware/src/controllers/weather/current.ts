@@ -3,7 +3,7 @@ import { buildCurrentWeatherUrl, handleCurrentWeatherResponse } from "../../serv
 import { fetchJson } from "../../services/fetch";
 import { ApiError } from "../../models/api_error";
 
-export const getCurrentWeather = async (req: Request, res: Response, next: NextFunction): Promise<Response> => {
+export const getCurrentWeather = async (req: Request, res: Response, next: NextFunction) => {
     return buildCurrentWeatherUrl(req)
         .then(url => fetchJson(url))
         .then(response => handleCurrentWeatherResponse(res, response))

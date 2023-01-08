@@ -2,7 +2,7 @@ import { Router } from "express";
 import passport from "passport";
 import { FAILURE_REDIRECT_URI, REDIRECT_URI } from "../config/auth";
 import { SCOPES } from "../config/google";
-import { logout } from "../controllers/auth";
+import { authCheck, logout } from "../controllers/auth";
 import { checkAuthenticated } from "../middleware/authenticated";
 
 const router = Router();
@@ -19,8 +19,6 @@ router.get('/auth/callback', passport.authenticate('google',
 
 router.post('/logout', checkAuthenticated, logout);
 
-router.get("/auth/check", checkAuthenticated, (req, res) => {
-    res.status(200).json({ authenticated: true })
-})
+router.get("/auth/check", checkAuthenticated, authCheck)
 
 export default router;

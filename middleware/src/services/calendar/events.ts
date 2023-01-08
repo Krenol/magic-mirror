@@ -1,7 +1,8 @@
-import { CALENDAR_CONFIG } from "../../config/google";
+import { CALENDAR_CONFIG, GOOGLE_CALENDAR_ENDPOINT } from "../../config/google";
 import { events_list, GcalApiEventList, GcalApiEventResource } from "../../models/calendar";
 import { User } from "../../models/user";
 import { fetchJson } from "../fetch";
+import { LOGGER } from "../loggers";
 import { getAccessToken, getEmail } from "../user";
 
 export const getCalendarEvents = async (user: User, maxResults: number = CALENDAR_CONFIG.DEFAULT_EVENT_COUNT, orderBy = 'startTime'): Promise<GcalApiEventList> => {
@@ -19,6 +20,7 @@ export const getBirthdayEvents = async (user: User, maxResults: number = CALENDA
 
 export const getEvents = async (calendarId: string, access_token: string, maxResults: number = CALENDAR_CONFIG.DEFAULT_EVENT_COUNT, orderBy = 'startTime'): Promise<GcalApiEventList> => {
     const url = await buildApiUrl(calendarId, maxResults, orderBy)
+    LOGGER.info(`Retrieving events via call to ${url}`)
     return fetchJson(url, { headers: { Authorization: `Bearer ${access_token}` } })
         .then(data => data.body as GcalApiEventList)
         .catch(err => { throw err })
@@ -27,7 +29,8 @@ export const getEvents = async (calendarId: string, access_token: string, maxRes
 const buildApiUrl = async (calendarId: string, maxResults: number = CALENDAR_CONFIG.DEFAULT_EVENT_COUNT, orderBy = 'startTime'): Promise<string> => {
     const now = (new Date()).toISOString();
     const query = `timeMin=${now}&maxResults=${maxResults}&singleEvents=true&orderBy=${orderBy}`;
-    return `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?${query}`
+    const url = `${GOOGLE_CALENDAR_ENDPOINT}/${calendarId}/events?${query}`
+    return url;
 }
 
 export const parseRetrievedEvents = async (events: GcalApiEventList): Promise<events_list> => {

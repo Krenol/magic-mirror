@@ -1,1 +1,1 @@
-export const BIRTHDAY_COUNT = 5;
+export const BIRTHDAY_COUNT = 4;

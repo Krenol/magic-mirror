@@ -1,9 +1,11 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import authReducer from '../features/auth/authSlice';
+import timeReducer from '../features/time/timeSlice';
 
 export const store = configureStore({
   reducer: {
     auth_status: authReducer,
+    time_status: timeReducer
   },
 });
 

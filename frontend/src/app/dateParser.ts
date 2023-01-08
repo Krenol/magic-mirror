@@ -18,3 +18,8 @@ export const getMonth = (date: Date): string => {
 export const getYear = (date: Date): string => {
     return date.getFullYear().toString();
 }
+
+export const getDifferenceInDays = async (startDate: Date, endDate: Date): Promise<number> => {
+    const diffTime = endDate.getTime() - startDate.getTime();
+    return Math.round(diffTime / (1000 * 60 * 60 * 24));
+}

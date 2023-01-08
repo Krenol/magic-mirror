@@ -8,6 +8,7 @@ import SessionCheck from '../features/auth/AuthHelper';
 import { dashboardStyle } from '../assets/styles/dashboard';
 import HourlyForecast from '../features/hourly_forecast/HourlyForecast';
 import DailyForecast from '../features/daily_forecast/DailyForecast';
+import Birthdays from '../features/birthdays/Birthdays';
 
 export const Dashboard = () => {
   const authStatus = useAppSelector(getAuthStatus);
@@ -18,6 +19,7 @@ export const Dashboard = () => {
       <h2>Auth Status: {String(authStatus)}</h2>
       <Box sx={dashboardStyle}>
         <Time />
+        <Birthdays />
         <CurrentWeather />
         <HourlyForecast />
         <DailyForecast />

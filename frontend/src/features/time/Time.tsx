@@ -5,8 +5,12 @@ import { parseTime } from '../../app/timeParser';
 import { getDay, getDayName, getMonth, getTimezoneOffset, getYear } from '../../app/dateParser';
 import { card_small } from '../../assets/styles/cards';
 import { smallFontSize } from '../../assets/styles/theme';
+import { useAppDispatch } from '../../app/hooks';
+import { setNewDay } from './timeSlice';
 
 export const Time = () => {
+    const dispatch = useAppDispatch();
+
     const parseDate = useCallback((date: Date, delim: string = "."): string => {
         return `${getDayName(date, 'en-us')} ${[getDay(date), getMonth(date), getYear(date)].join(delim)}`
     }, []);
@@ -15,6 +19,11 @@ export const Time = () => {
     const [minutes, setMinutes] = useState(parseTime(new Date().getMinutes()));
     const [currentDate, setCurrentDate] = useState(parseDate(new Date()));
     const [timezoneOffset, setTimezoneOffset] = useState(getTimezoneOffset());
+
+    useEffect(() => {
+        const isNewDay = hours === '00' && minutes === '00';
+        dispatch(setNewDay(isNewDay));
+    }, [hours, minutes, dispatch])
 
     useEffect(() => {
         const timer = setInterval(() => {

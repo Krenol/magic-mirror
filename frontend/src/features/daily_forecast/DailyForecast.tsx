@@ -33,7 +33,6 @@ const DailyForecast = () => {
                 {weather?.forecast.map((data) => (
                     <ForecastItem
                         item={data}
-                        timezone={weather?.timezone}
                         key={data.date}
                     />
                 ))}

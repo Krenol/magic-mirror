@@ -1,6 +1,6 @@
 import { gcal_api_event_resource } from "./calendar";
 
-export type birthdays_list = {
+export type birthday_list = {
     count: number,
     iconLink: string,
     list: Array<birthday>

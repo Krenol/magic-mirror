@@ -1,7 +1,7 @@
 import { gcal_api_event_list } from "../../models/calendar";
-import { birthday, birthdays_list, gcal_api_birthday_event_resource } from "../../models/birthdays";
+import { birthday, birthday_list, gcal_api_birthday_event_resource } from "../../models/birthdays";
 
-export const parseRetrievedBirthdays = async (events: gcal_api_event_list): Promise<birthdays_list> => {
+export const parseRetrievedBirthdays = async (events: gcal_api_event_list): Promise<birthday_list> => {
     return {
         count: events.items.length,
         iconLink: events.items.length ? events.items[0].gadget.iconLink : "",

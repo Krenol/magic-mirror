@@ -7,14 +7,13 @@ import unknownWeatherIcon from '../../../assets/unknown-weather.svg'
 import { forecast_day } from '../../../models/daily_forecast';
 import { forecastImg, minMaxBoxStyle, dailyStyle } from '../style';
 import { getDayName } from '../../../app/dateParser';
-import { smallFontSize } from '../../../assets/styles/theme';
+import { boldText, smallFontSize } from '../../../assets/styles/theme';
 
 interface IForecastItem {
     item: forecast_day,
-    timezone: string
 }
 
-const ForecastItem = ({ item, timezone }: IForecastItem) => {
+const ForecastItem = ({ item }: IForecastItem) => {
     const [icon, setIcon] = useState<string>(unknownWeatherIcon);
     const [dayName, setDayName] = useState<string>("")
 
@@ -43,7 +42,7 @@ const ForecastItem = ({ item, timezone }: IForecastItem) => {
                 alt="Weather Icon"
             />
             <Box sx={minMaxBoxStyle}>
-                <Typography variant="subtitle2" color="text.primary" sx={{ ...smallFontSize, ...{ fontWeight: 600 } }}>
+                <Typography variant="subtitle2" color="text.primary" sx={{ ...smallFontSize, ...boldText }}>
                     {Math.round(item.temperature.max) || "-"}{TEMP_UNIT}
                 </Typography>
                 &nbsp;

@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { FORECAST_FIELDS, MAX_FORECAST_DAYS, STD_API_QUERY, WEATHER_API_URL } from "../../config/openmeteo_api";
 import { ApiError } from "../../models/api_error";
 import { TResponse } from "../../models/fetch";
-import { forecast_day, weather_forecast } from "../../models/weather";
+import { WeatherForecastResource, WeatherForecast } from "../../models/weather";
 import { getWeatherDescription, getWeatherIconFromWeathercode } from "./common";
 
 export const buildWeatheForecastrUrl = async (req: Request): Promise<string> => {
@@ -42,7 +42,7 @@ const createResponse = async (res: Response, response: any): Promise<Response> =
     return res.json(await createResponseJson(response)).status(200);
 }
 
-const createResponseJson = async (response: any): Promise<weather_forecast> => {
+const createResponseJson = async (response: any): Promise<WeatherForecast> => {
     return {
         latitude: response.latitude,
         longitude: response.longitude,
@@ -52,8 +52,8 @@ const createResponseJson = async (response: any): Promise<weather_forecast> => {
     }
 }
 
-const createForecastArray = async (response: any): Promise<Array<forecast_day>> => {
-    const forecast: Array<Promise<forecast_day>> = [];
+const createForecastArray = async (response: any): Promise<Array<WeatherForecastResource>> => {
+    const forecast: Array<Promise<WeatherForecastResource>> = [];
     const count = response.daily.time.length;
     for (let i = 0; i < count; i++) {
         forecast.push(createForecastDay(response, i));
@@ -61,7 +61,7 @@ const createForecastArray = async (response: any): Promise<Array<forecast_day>> 
     return Promise.all(forecast);
 }
 
-const createForecastDay = async (response: any, index: number): Promise<forecast_day> => {
+const createForecastDay = async (response: any, index: number): Promise<WeatherForecastResource> => {
     const weathercode = response.daily.weathercode[index];
     return {
         date: response.daily.time[index],

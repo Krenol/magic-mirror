@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { MAX_HOURLY_FORECAST_HOURS, STD_API_QUERY, WEATHER_API_URL } from "../../config/openmeteo_api";
 import { ApiError } from "../../models/api_error";
 import { TResponse } from "../../models/fetch";
-import { forecast_hourly, weather_hourly } from "../../models/weather";
+import { HourlyWeatherResource, HourlyWeather } from "../../models/weather";
 import { exceedsMaxForecastTime, getWeatherDescription, getWeatherIconFromWeathercode, timeHasPassed, timeIsDuringDay } from "./common";
 
 export const buildHourlyWeatherUrl = async (req: Request): Promise<string> => {
@@ -12,7 +12,7 @@ export const buildHourlyWeatherUrl = async (req: Request): Promise<string> => {
     const today_date_str = date.toISOString().slice(0, 10);
     const tmrw_date_str = tmrw_date.toISOString().slice(0, 10);
     const sunstate_qry = `start_date=${today_date_str}&end_date=${tmrw_date_str}&daily=sunrise,sunset&hourly=temperature_2m,windspeed_10m,precipitation,weathercode`
-    return `${WEATHER_API_URL}/forecast/?latitude=${req.query.latitude}&longitude=${req.query.longitude}&current_weather=true&${STD_API_QUERY}&${sunstate_qry}`;
+    return `${WEATHER_API_URL}/forecast/?latitude=${req.query.latitude}&longitude=${req.query.longitude}&CurrentWeather=true&${STD_API_QUERY}&${sunstate_qry}`;
 }
 
 export const handleHourlyWeatherResponse = async (res: Response, response: TResponse, forecast_hours: number = MAX_HOURLY_FORECAST_HOURS): Promise<any> => {
@@ -34,7 +34,7 @@ const createResponse = async (res: Response, response: any, forecast_hours: numb
     return res.json(await createResponseJson(response, forecast_hours)).status(200)
 }
 
-const createResponseJson = async (response: any, forecast_hours: number): Promise<weather_hourly> => {
+const createResponseJson = async (response: any, forecast_hours: number): Promise<HourlyWeather> => {
     return {
         latitude: response.latitude,
         longitude: response.longitude,
@@ -43,8 +43,8 @@ const createResponseJson = async (response: any, forecast_hours: number): Promis
     }
 }
 
-const createForecastArray = async (response: any, forecast_hours: number): Promise<Array<forecast_hourly>> => {
-    const forecast: Array<Promise<forecast_hourly>> = [];
+const createForecastArray = async (response: any, forecast_hours: number): Promise<Array<HourlyWeatherResource>> => {
+    const forecast: Array<Promise<HourlyWeatherResource>> = [];
     const count = response.hourly.time.length;
     for (let i = 0; i < count; i++) {
         if (await isValidHourlyForecastTime(response.hourly.time[i], forecast_hours)) {
@@ -58,7 +58,7 @@ const isValidHourlyForecastTime = async (time: string, forecast_hours: number): 
     return await timeHasPassed(time) === false && await exceedsMaxForecastTime(time, forecast_hours) === false;
 }
 
-const createForecastHour = async (response: any, index: number): Promise<forecast_hourly> => {
+const createForecastHour = async (response: any, index: number): Promise<HourlyWeatherResource> => {
     const weathercode = response.hourly.weathercode[index];
     const time = response.hourly.time[index];
     const sunIsUp = await timeIsDuringDay(time, response.daily.sunrise[0], response.daily.sunset[0]);

@@ -1,11 +1,11 @@
-export type weather_hourly = {
+export type HourlyWeather = {
     latitude: number,
     longitude: number,
     timezone: string,
-    forecast: Array<forecast_hourly>
+    forecast: Array<HourlyWeatherResource>
 }
 
-export type forecast_hourly = {
+export type HourlyWeatherResource = {
     time: string,
     temperature: number,
     precipitation: number,

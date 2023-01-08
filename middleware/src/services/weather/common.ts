@@ -1,24 +1,24 @@
 import { unknown_weathercode_entry } from "../../services/weather/defaults";
-import { weather_code_list, weather_code_entry } from "../../models/weather";
+import { weather_code_list, WeatherCodeEntry } from "../../models/weather";
 import { MAX_HOURLY_FORECAST_HOURS } from "../../config/openmeteo_api";
 
 export const getWeatherIconFromWeathercode = async (useDayIcons: boolean, weathercode: number): Promise<string> => {
-    const weather_code_entry = await getWeatherCodeEntry(weathercode)
+    const WeatherCodeEntry = await getWeatherCodeEntry(weathercode)
     if (useDayIcons) {
-        return weather_code_entry.weather_icon_day;
+        return WeatherCodeEntry.weather_icon_day;
     } else {
-        return weather_code_entry.weather_icon_night;
+        return WeatherCodeEntry.weather_icon_night;
     }
 }
 
 export const getWeatherDescription = async (weathercode: number): Promise<string> => {
-    const weather_code_entry = await getWeatherCodeEntry(weathercode);
-    return weather_code_entry.description;
+    const WeatherCodeEntry = await getWeatherCodeEntry(weathercode);
+    return WeatherCodeEntry.description;
 }
 
-const getWeatherCodeEntry = async (weathercode: number): Promise<weather_code_entry> => {
-    const weather_code_entry = weather_code_list.find(item => item.weathercode == weathercode);
-    return weather_code_entry || unknown_weathercode_entry;
+const getWeatherCodeEntry = async (weathercode: number): Promise<WeatherCodeEntry> => {
+    const WeatherCodeEntry = weather_code_list.find(item => item.weathercode == weathercode);
+    return WeatherCodeEntry || unknown_weathercode_entry;
 }
 
 export const sunIsCurrentlyUp = async (sunrise: string, sunset: string): Promise<boolean> => {

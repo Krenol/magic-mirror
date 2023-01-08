@@ -1,11 +1,11 @@
 import { Typography } from "@mui/material";
-import { birthday } from "../../../models/birthdays";
+import { Birthday } from "../../../models/birthdays";
 import { boldText } from '../../../assets/styles/theme';
 import { useEffect, useState } from "react";
 import { getDifferenceInDays } from "../../../app/dateParser";
 
 interface IBirthdayItem {
-    item: birthday,
+    item: Birthday,
 }
 
 const BirthdayItem = ({ item }: IBirthdayItem) => {

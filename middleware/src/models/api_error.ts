@@ -1,5 +1,3 @@
-import { Request } from "express";
-
 export class ApiError extends Error {
     private readonly _thrownError: Error;
     private readonly _status: number;

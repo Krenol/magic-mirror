@@ -3,10 +3,10 @@ export type weather_daily = {
     longitude: number,
     timezone: string,
     days: number,
-    forecast: Array<forecast_day>
+    forecast: Array<WeatherForecastResource>
 }
 
-export type forecast_day = {
+export type WeatherForecastResource = {
     date: string,
     temperature: temperature,
     precipitation: precipitation,

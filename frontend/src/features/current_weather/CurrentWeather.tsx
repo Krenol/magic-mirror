@@ -14,7 +14,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { cardStyle, minMaxBoxStyle, parentBoxStyle } from './style';
 import { REFRESH_MILLIS } from '../../constants/app';
 import { smallFontSize } from '../../assets/styles/theme';
-import { current_weather } from '../../models/current_weather';
+import { CurrentWeatherResource } from '../../models/current_weather';
 
 const CurrentWeather = () => {
     const [weather, setWeather] = useState<Weather>();
@@ -27,7 +27,7 @@ const CurrentWeather = () => {
 
     const getCurrentWeather = useCallback(async () => {
         fetchJson(`${WEATHER_API}/current?latitude=${LATITUDE}&longitude=${LONGITUDE}`)
-            .then(data => setWeatherData(data as current_weather))
+            .then(data => setWeatherData(data as CurrentWeatherResource))
             .catch(err => console.log(err));
     }, [setWeatherData]);
 

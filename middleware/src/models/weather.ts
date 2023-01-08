@@ -1,7 +1,7 @@
-export type current_weather = {
+export type CurrentWeather = {
     latitude: number,
     longitude: number,
-    temperature: current_weather_temperature,
+    temperature: CurrentWeatherTemperature,
     windspeed: number,
     weathercode: number,
     update_time: string,
@@ -10,21 +10,21 @@ export type current_weather = {
     precipitation_sum: number
 }
 
-export type current_weather_temperature = {
+export type CurrentWeatherTemperature = {
     current: number,
     min: number,
     max: number,
     feels_like: number
 }
 
-export type weather_hourly = {
+export type HourlyWeather = {
     latitude: number,
     longitude: number,
     timezone: string,
-    forecast: Array<forecast_hourly>
+    forecast: Array<HourlyWeatherResource>
 }
 
-export type forecast_hourly = {
+export type HourlyWeatherResource = {
     time: string,
     temperature: number,
     precipitation: number,
@@ -34,18 +34,18 @@ export type forecast_hourly = {
     windspeed: number,
 }
 
-export type weather_forecast = {
+export type WeatherForecast = {
     latitude: number,
     longitude: number,
     timezone: string,
     days: number,
-    forecast: Array<forecast_day>
+    forecast: Array<WeatherForecastResource>
 }
 
-export type forecast_day = {
+export type WeatherForecastResource = {
     date: string,
-    temperature: temperature,
-    precipitation: precipitation,
+    temperature: Temperature,
+    precipitation: Precipitation,
     weather_icon: string,
     sunrise: string,
     sunset: string,
@@ -53,26 +53,26 @@ export type forecast_day = {
     description: string
 }
 
-export type precipitation = {
+export type Precipitation = {
     amount: number
     hours: number
     amount_unit: string
 }
 
-export type temperature = {
+export type Temperature = {
     min: number,
     max: number,
     unit: string
 }
 
-export type weather_code_entry = {
+export type WeatherCodeEntry = {
     weathercode: number,
     description: string,
     weather_icon_day: string,
     weather_icon_night: string
 }
 
-export const weather_code_list: Array<weather_code_entry> = [
+export const weather_code_list: Array<WeatherCodeEntry> = [
     { weathercode: 0, description: "Cloud development not observed or not observable", weather_icon_day: "01d", weather_icon_night: "01n" },
     { weathercode: 1, description: "Clouds generally dissolving or becoming less developed", weather_icon_day: "02d", weather_icon_night: "02n" },
     { weathercode: 2, description: "State of sky on the whole unchanged", weather_icon_day: "02d", weather_icon_night: "02n" },

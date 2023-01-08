@@ -1,5 +1,5 @@
 import * as http from "http";
-import express, { Express, Request, Response } from "express";
+import express, { Express } from "express";
 import { default as session } from "express-session";
 import bodyParser from "body-parser";
 import { SESSION_SECRET } from "./config/server";
@@ -49,8 +49,7 @@ export class Server {
             meta: true,
             msg: "HTTP {{req.method}} {{req.url}}",
             expressFormat: true,
-            colorize: true,
-            ignoreRoute: (req: Request, res: Response) => { return false; }
+            colorize: true
         }));
     }
 

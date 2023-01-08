@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response, Router } from "express";
+import { Router } from "express";
 import { getCurrentWeather } from "../controllers/weather/current";
 import { getWeatherForecast } from "../controllers/weather/forecasts";
 import { getHourlyWeather } from "../controllers/weather/hourly";

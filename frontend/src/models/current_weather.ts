@@ -1,7 +1,7 @@
-export type current_weather = {
+export type CurrentWeatherResource = {
     latitude: number,
     longitude: number,
-    temperature: current_weather_temperature,
+    temperature: CurrentWeatherTemperature,
     windspeed: number,
     weathercode: number,
     update_time: string,
@@ -10,7 +10,7 @@ export type current_weather = {
     precipitation_sum: number
 }
 
-export type current_weather_temperature = {
+export type CurrentWeatherTemperature = {
     current: number,
     min: number,
     max: number,

@@ -8,6 +8,6 @@ import { getBirthdayEvents } from "../../services/calendar/events";
 export const allBirthdays = async (req: Request, res: Response, next: NextFunction) => {
     getBirthdayEvents(req.user as User, parseInt((req.query.count || CALENDAR_CONFIG.DEFAULT_EVENT_COUNT).toString()))
         .then(response => parseRetrievedBirthdays(response))
-        .then(birthdays => res.json(birthdays).status(200))
+        .then(Birthdays => res.json(Birthdays).status(200))
         .catch((err) => next(new ApiError("Error while retrieving calendar events", err, 500)))
 }

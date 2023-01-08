@@ -1,10 +1,10 @@
-export type birthday_list = {
+export type BirthdayList = {
     count: number,
     iconLink: string,
-    list: Array<birthday>
+    list: Array<Birthday>
 }
 
-export type birthday = {
+export type Birthday = {
     name: string,
     date: string,
 }

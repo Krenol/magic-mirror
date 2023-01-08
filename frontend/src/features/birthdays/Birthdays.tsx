@@ -1,7 +1,7 @@
 import Card from '@mui/material/Card';
 import Typography from '@mui/material/Typography';
 import { useCallback, useEffect, useState } from 'react';
-import { birthday_list } from '../../models/birthdays';
+import { BirthdayList } from '../../models/birthdays';
 import { fetchJson } from '../../app/fetch';
 import { BIRHTDAY_API } from '../../constants/api';
 import { BIRTHDAY_COUNT } from '../../constants/events';
@@ -13,12 +13,12 @@ import { useAppSelector } from '../../app/hooks';
 import { isNewDay } from '../time/timeSlice';
 
 export const Birthdays = () => {
-    const [birthdays, setBirthdays] = useState<birthday_list>();
+    const [birthdays, setBirthdays] = useState<BirthdayList>();
     const newDayBegun = useAppSelector(isNewDay);
 
     const getBirthdays = useCallback(async () => {
         fetchJson(`${BIRHTDAY_API}?count=${BIRTHDAY_COUNT}`)
-            .then(data => setBirthdays(data as birthday_list))
+            .then(data => setBirthdays(data as BirthdayList))
             .catch(err => console.log(err));
     }, []);
 

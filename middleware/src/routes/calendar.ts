@@ -5,7 +5,7 @@ import { eventCountMiddleware } from "../middleware/event_count_middleware"
 
 const router = Router();
 
-//router.use(checkAuthenticated)
+router.use(checkAuthenticated)
 
 router.get('/', [eventCountMiddleware], allEvents);
 

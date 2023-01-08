@@ -1,9 +1,9 @@
 export type events_list = {
     count: number,
-    list: Array<gcal_api_event_resource>
+    list: Array<GcalApiEventResource>
 }
 
-export type gcal_api_event_list = {
+export type GcalApiEventList = {
     kind: string,
     etag: string,
     summary: string,
@@ -19,10 +19,10 @@ export type gcal_api_event_list = {
     ],
     nextPageToken: string,
     nextSyncToken: string,
-    items: Array<gcal_api_event_resource>
+    items: Array<GcalApiEventResource>
 }
 
-export type gcal_api_event_resource = {
+export type GcalApiEventResource = {
     kind: string,
     etag: string,
     id: string,

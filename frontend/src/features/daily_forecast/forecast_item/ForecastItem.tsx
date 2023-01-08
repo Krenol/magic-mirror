@@ -4,13 +4,13 @@ import { fetchBlob } from '../../../app/fetch';
 import { WEATHER_API } from '../../../constants/api';
 import { TEMP_UNIT, WEATHER_ICON_ZOOM } from '../../../constants/weather';
 import unknownWeatherIcon from '../../../assets/unknown-weather.svg'
-import { forecast_day } from '../../../models/daily_forecast';
+import { WeatherForecastResource } from '../../../models/daily_forecast';
 import { forecastImg, minMaxBoxStyle, dailyStyle } from '../style';
 import { getDayName } from '../../../app/dateParser';
 import { boldText, smallFontSize } from '../../../assets/styles/theme';
 
 interface IForecastItem {
-    item: forecast_day,
+    item: WeatherForecastResource,
 }
 
 const ForecastItem = ({ item }: IForecastItem) => {

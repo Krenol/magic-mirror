@@ -1,6 +1,6 @@
-import { weather_code_entry } from "../../models/weather";
+import { WeatherCodeEntry } from "../../models/weather";
 
-export const unknown_weathercode_entry: weather_code_entry = {
+export const unknown_weathercode_entry: WeatherCodeEntry = {
     weathercode: -1,
     description: "Unknown weather",
     weather_icon_day: "00d",

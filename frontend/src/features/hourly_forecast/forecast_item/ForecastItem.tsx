@@ -4,13 +4,13 @@ import { fetchBlob } from '../../../app/fetch';
 import { WEATHER_API } from '../../../constants/api';
 import { PRECIPITATION_UNIT, TEMP_UNIT, WEATHER_ICON_ZOOM } from '../../../constants/weather';
 import unknownWeatherIcon from '../../../assets/unknown-weather.svg'
-import { forecast_hourly } from '../../../models/hourly_forecast';
+import { HourlyWeatherResource } from '../../../models/hourly_forecast';
 import { parseTime } from '../../../app/timeParser';
 import { forecastImg, hourStyle } from '../style';
 import { smallFontSize } from '../../../assets/styles/theme';
 
 interface IForecastItem {
-    item: forecast_hourly,
+    item: HourlyWeatherResource,
     timezone: string
 }
 

@@ -1,7 +1,7 @@
-import { current_weather } from "../../models/current_weather";
+import { CurrentWeatherResource } from "../../models/current_weather";
 import { Weather } from "../../models/weather";
 
-export const parseWeatherJson = async (data: current_weather): Promise<Weather> => {
+export const parseWeatherJson = async (data: CurrentWeatherResource): Promise<Weather> => {
     let weather: Weather = {};
     weather.currentTemp = Math.round(data.temperature.current);
     weather.iconCode = data.weather_icon;

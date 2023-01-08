@@ -1,23 +1,23 @@
-import { gcal_api_event_list } from "../../models/calendar";
-import { birthday, birthday_list, gcal_api_birthday_event_resource } from "../../models/birthdays";
+import { GcalApiEventList } from "../../models/calendar";
+import { Birthday, BirthdayList, GcalApiBirthdayEventResource } from "../../models/birthdays";
 
-export const parseRetrievedBirthdays = async (events: gcal_api_event_list): Promise<birthday_list> => {
+export const parseRetrievedBirthdays = async (events: GcalApiEventList): Promise<BirthdayList> => {
     return {
         count: events.items.length,
         iconLink: events.items.length ? events.items[0].gadget.iconLink : "",
-        list: await parseBirthdays(events.items as Array<gcal_api_birthday_event_resource>)
+        list: await parseBirthdays(events.items as Array<GcalApiBirthdayEventResource>)
     };
 }
 
-const parseBirthdays = async (birthdaysList: Array<gcal_api_birthday_event_resource>): Promise<Array<birthday>> => {
-    const birthdays: Array<Promise<birthday>> = [];
-    birthdaysList.forEach(b => birthdays.push(parseBirthday(b)));
-    return Promise.all(birthdays);
+const parseBirthdays = async (BirthdaysList: Array<GcalApiBirthdayEventResource>): Promise<Array<Birthday>> => {
+    const Birthdays: Array<Promise<Birthday>> = [];
+    BirthdaysList.forEach(b => Birthdays.push(parseBirthday(b)));
+    return Promise.all(Birthdays);
 }
 
-const parseBirthday = async (birthday: gcal_api_birthday_event_resource): Promise<birthday> => {
+const parseBirthday = async (Birthday: GcalApiBirthdayEventResource): Promise<Birthday> => {
     return {
-        name: birthday.gadget.preferences['goo.contactsFullName'],
-        date: birthday.start.date
+        name: Birthday.gadget.preferences['goo.contactsFullName'],
+        date: Birthday.start.date
     }
 }

@@ -1,7 +1,7 @@
 import Card from '@mui/material/Card';
 import { Box } from '@mui/material';
 import { cardStyle, parentBoxStyle } from './style';
-import { weather_hourly } from '../../models/hourly_forecast';
+import { HourlyWeather } from '../../models/hourly_forecast';
 import { useCallback, useEffect, useState } from 'react';
 import { WEATHER_API } from '../../constants/api';
 import { fetchJson } from '../../app/fetch';
@@ -10,8 +10,8 @@ import ForecastItem from './forecast_item/ForecastItem';
 import { REFRESH_MILLIS } from '../../constants/app';
 
 
-const HourlyForecast = () => {
-    const [weather, setWeather] = useState<weather_hourly>();
+const HourlyWeatherResource = () => {
+    const [weather, setWeather] = useState<HourlyWeather>();
 
     const getHourlyWeather = useCallback(async () => {
         fetchJson(`${WEATHER_API}/hourly?latitude=${LATITUDE}&longitude=${LONGITUDE}&hours=${HOURLY_FORECAST_HOURS}`)
@@ -42,4 +42,4 @@ const HourlyForecast = () => {
     );
 }
 
-export default HourlyForecast;
+export default HourlyWeatherResource;

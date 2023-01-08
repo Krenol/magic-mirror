@@ -1,12 +1,13 @@
 import * as http from "http";
-import express, { NextFunction, Express } from "express";
+import express, { Express, Request, Response } from "express";
 import { default as session } from "express-session";
 import bodyParser from "body-parser";
-import { createApiError } from "./services/error_message";
 import { SESSION_SECRET } from "./config/server";
 import { setupPassport } from "./services/auth/setup";
 import { default as cors } from "cors";
 import { FRONTEND_URL } from "./config/auth";
+import winston from "winston"
+import expressWinston from "express-winston"
 
 export class Server {
     private readonly _app: Express;
@@ -28,26 +29,29 @@ export class Server {
     }
 
     public configureMiddleware() {
+        this.setupLogging();
         this.setupSession();
         this.setupBodyParsers();
         this.setupCors();
-        this.setupGeneralErrorResponse();
         this.setupOIDC();
     }
 
-    private setupBodyParsers() {
-        this._app.use(bodyParser.json());
-        this._app.use(bodyParser.urlencoded({ extended: true }));
-    }
-
-    private setupCors() {
-        this._app.use(cors({ origin: FRONTEND_URL, credentials: true }));
-    }
-
-    private setupGeneralErrorResponse() {
-        this._app.use(async (err: Error, req: express.Request, res: express.Response, next: NextFunction) => {
-            createApiError(res, "Something very wrong happened!", 500);
-        });
+    private setupLogging() {
+        this._app.use(expressWinston.logger({
+            transports: [
+                new winston.transports.Console()
+            ],
+            format: winston.format.combine(
+                winston.format.colorize(),
+                winston.format.json()
+            ),
+            headerBlacklist: ['Cookie'],
+            meta: true,
+            msg: "HTTP {{req.method}} {{req.url}}",
+            expressFormat: true,
+            colorize: true,
+            ignoreRoute: (req: Request, res: Response) => { return false; }
+        }));
     }
 
     private setupSession() {
@@ -57,6 +61,15 @@ export class Server {
             saveUninitialized: false,
             cookie: { secure: false }
         }))
+    }
+
+    private setupBodyParsers() {
+        this._app.use(bodyParser.json());
+        this._app.use(bodyParser.urlencoded({ extended: true }));
+    }
+
+    private setupCors() {
+        this._app.use(cors({ origin: FRONTEND_URL, credentials: true }));
     }
 
     private async setupOIDC() {

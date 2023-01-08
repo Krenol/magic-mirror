@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { FORECAST_FIELDS, MAX_FORECAST_DAYS, STD_API_QUERY, WEATHER_API_URL } from "../../config/openmeteo_api";
-import { createApiError } from "../error_message";
+import { ApiError } from "../../models/api_error";
 import { TResponse } from "../../models/fetch";
 import { forecast_day, weather_forecast } from "../../models/weather";
 import { getWeatherDescription, getWeatherIconFromWeathercode } from "./common";
@@ -32,9 +32,9 @@ export const handleWeatherForecastResponse = async (res: Response, response: TRe
     if (response.status === 200) {
         return createResponse(res, response.body);
     } else if (response.status === 400) {
-        return createApiError(res, response.body.reason || 'Error while calling weather forecast API', 400);
+        throw new ApiError(response.body.reason || 'Error while calling weather forecast API', new Error(), 400);
     } else {
-        return createApiError(res, "Error while retrieving the weather forecast", 500);
+        throw new ApiError("Error while retrieving the weather forecast", new Error(), 500);
     }
 }
 

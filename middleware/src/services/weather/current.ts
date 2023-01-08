@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { STD_API_QUERY, WEATHER_API_URL } from "../../config/openmeteo_api";
-import { createApiError } from "../error_message";
+import { ApiError } from "../../models/api_error";
 import { TResponse } from "../../models/fetch";
 import { current_weather } from "../../models/weather";
 import { getWeatherDescription, getWeatherIconFromWeathercode, sunIsCurrentlyUp } from "./common";
@@ -15,9 +15,9 @@ export const handleCurrentWeatherResponse = async (res: Response, response: TRes
     if (response.status === 200) {
         return createResponse(res, response.body);
     } else if (response.status === 400) {
-        return createApiError(res, response.body.reason || 'Error while calling weather API', 400);
+        throw new ApiError(response.body.reason || 'Error while calling weather API', new Error(), 400);
     } else {
-        return createApiError(res, "Error while retrieving the current weather", 500);
+        throw new ApiError("Error while retrieving the current weather", new Error(), 500);
     }
 }
 

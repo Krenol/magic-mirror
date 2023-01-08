@@ -1,4 +1,4 @@
-import { Request, Response, Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import { getCurrentWeather } from "../controllers/weather/current";
 import { getWeatherForecast } from "../controllers/weather/forecasts";
 import { getHourlyWeather } from "../controllers/weather/hourly";
@@ -10,16 +10,14 @@ import { validateWeatherForecastDays } from "../middleware/validate_weather_fore
 
 const router = Router();
 
-router.get('/current', [checkAuthenticated, locationMiddleware], getCurrentWeather)
+router.use(checkAuthenticated)
 
-router.get('/hourly', [locationMiddleware, validateHourlyForecastHours], getHourlyWeather)
+router.get('/current', [locationMiddleware], getCurrentWeather)
 
-router.get('/forecast', [checkAuthenticated, locationMiddleware, validateWeatherForecastDays], async (req: Request, res: Response) => {
-    return getWeatherForecast(req, res);
-})
+router.get('/hourly', [validateHourlyForecastHours], getHourlyWeather)
 
-router.get('/icon/:weatherCode', checkAuthenticated, async (req: Request, res: Response) => {
-    return getWeatherIcon(req, res);
-})
+router.get('/forecast', [locationMiddleware, validateWeatherForecastDays], getWeatherForecast)
+
+router.get('/icon/:weatherCode', getWeatherIcon)
 
 export default router;

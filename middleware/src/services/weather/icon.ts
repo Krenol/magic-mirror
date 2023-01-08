@@ -1,7 +1,7 @@
 import { Response, Request } from "express";
 import { OPENWEATHER_URL } from "../../config/icon_api";
-import { createApiError } from "../error_message";
 import { TResponse } from "../../models/fetch";
+import { ApiError } from "../../models/api_error";
 
 export const buildWeatherIconUrl = async (req: Request): Promise<string> => {
     return `${OPENWEATHER_URL}/img/wn/${req.params.weatherCode}.png`
@@ -11,9 +11,9 @@ export const handleWeatherIconResponse = async (res: Response, response: TRespon
     if (response.status === 200) {
         return createIconResponse(res, response.body);
     } else if (response.status === 404) {
-        return createApiError(res, 'Icon not found!', 404);
+        throw new ApiError('Icon not found!', new Error(), 404);
     } else {
-        return createApiError(res, "Error while retrieving the weather icon", 500);
+        throw new ApiError('Error while retrieving the weather icon', new Error(), 500);
     }
 }
 

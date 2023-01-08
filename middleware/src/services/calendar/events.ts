@@ -21,6 +21,7 @@ export const getEvents = async (calendarId: string, access_token: string, maxRes
     const url = await buildApiUrl(calendarId, maxResults, orderBy)
     return fetchJson(url, { headers: { Authorization: `Bearer ${access_token}` } })
         .then(data => data.body as gcal_api_event_list)
+        .catch(err => { throw err })
 }
 
 const buildApiUrl = async (calendarId: string, maxResults: number = CALENDAR_CONFIG.DEFAULT_EVENT_COUNT, orderBy = 'startTime'): Promise<string> => {

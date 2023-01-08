@@ -1,4 +1,4 @@
-export type HourlyWeather = {
+export type HourlyWeatherList = {
     latitude: number,
     longitude: number,
     timezone: string,

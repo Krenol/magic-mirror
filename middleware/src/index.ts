@@ -6,7 +6,7 @@ import { default as BirthdaysRoute } from './routes/birthdays'
 import { default as AuthRoute } from './routes/auth';
 import { NextFunction, Request, Response } from 'express';
 import { ApiError } from './models/api_error';
-import { error_logger } from './services/error_logger';
+import { EXPRESS_ERROR_LOGGER } from './services/loggers';
 
 const server = new Server(SERVER_PORT);
 
@@ -16,7 +16,7 @@ server.app.use('/Birthdays', BirthdaysRoute)
 server.app.use('/', AuthRoute)
 
 // ERROR HANDLING
-server.app.use(error_logger)
+server.app.use(EXPRESS_ERROR_LOGGER)
 
 server.app.use((err: ApiError, req: Request, res: Response, next: NextFunction) => {
     res.status(err.status).json({ error: err.message })

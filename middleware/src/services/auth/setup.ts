@@ -3,6 +3,7 @@ import { Express } from "express";
 import { Strategy, VerifyCallback } from "passport-google-oauth2";
 import { OAUTH2_CLIENT } from "../../config/google";
 import { SERVER_HOSTNAME, SERVER_PORT } from "../../config/server";
+import { LOGGER } from "../loggers";
 
 export const setupPassport = (app: Express) => {
     app.use(passport.initialize());
@@ -26,7 +27,7 @@ const initPassport = () => {
 }
 
 const authenticateUser = (request: any, accessToken: any, refreshToken: any, profile: any, done: VerifyCallback) => {
-    console.log(`User ${profile.displayName} signed in`)
+    LOGGER.info(`User ${profile.displayName} signed in`);
     profile.access_token = accessToken;
     profile.refresh_token = refreshToken;
     return done(null, profile);

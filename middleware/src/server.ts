@@ -8,6 +8,7 @@ import { default as cors } from "cors";
 import { FRONTEND_URL } from "./config/auth";
 import winston from "winston"
 import expressWinston from "express-winston"
+import { LOGGER } from "./services/loggers";
 
 export class Server {
     private readonly _app: Express;
@@ -77,7 +78,7 @@ export class Server {
 
     public start() {
         this._server = this._app.listen(this._app.get("port"), () => {
-            console.log("Server is running on port " + this._app.get("port"));
+            LOGGER.info(`Server is running on port ${this._app.get("port")}`);
         });
     }
 }

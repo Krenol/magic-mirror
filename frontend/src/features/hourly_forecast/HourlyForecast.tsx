@@ -8,33 +8,41 @@ import { fetchJson } from '../../app/fetch';
 import { HOURLY_FORECAST_HOURS, LATITUDE, LONGITUDE } from '../../constants/weather';
 import ForecastItem from './forecast_item/ForecastItem';
 import { REFRESH_MILLIS } from '../../constants/app';
+import { useGetHourlyWeather } from '../../apis/hourly_weather';
 
 
 const HourlyWeather = () => {
-    const [weather, setWeather] = useState<HourlyWeatherList>();
+    const {
+        data: weather,
+        isLoading,
+        error
+    } = useGetHourlyWeather();
+    // const [weather, setWeather] = useState<HourlyWeatherList>();
 
-    const getHourlyWeather = useCallback(async () => {
-        fetchJson(`${WEATHER_API}/hourly?latitude=${LATITUDE}&longitude=${LONGITUDE}&hours=${HOURLY_FORECAST_HOURS}`)
-            .then(data => setWeather(data))
-            .catch(err => console.log(err));
-    }, []);
+    // const getHourlyWeather = useCallback(async () => {
+    //     fetchJson(`${WEATHER_API}/hourly?latitude=${LATITUDE}&longitude=${LONGITUDE}&hours=${HOURLY_FORECAST_HOURS}`)
+    //         .then(data => setWeather(data))
+    //         .catch(err => console.log(err));
+    // }, []);
 
-    useEffect(() => {
-        getHourlyWeather();
-        const timer = setInterval(() => {
-            getHourlyWeather();
-        }, REFRESH_MILLIS);
-        return () => clearInterval(timer);
-    }, [getHourlyWeather]);
+    // useEffect(() => {
+    //     getHourlyWeather();
+    //     const timer = setInterval(() => {
+    //         getHourlyWeather();
+    //     }, REFRESH_MILLIS);
+    //     return () => clearInterval(timer);
+    // }, [getHourlyWeather]);
+
+    if (isLoading) return (<div>Loading...</div>)
 
     return (
         <Card sx={cardStyle}>
             <Box sx={parentBoxStyle}>
-                {weather?.forecast.map((data) => (
+                {weather?.forecast.map((val) => (
                     <ForecastItem
-                        item={data}
+                        item={val}
                         timezone={weather?.timezone}
-                        key={data.time}
+                        key={val.time}
                     />
                 ))}
             </Box>

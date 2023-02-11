@@ -4,7 +4,7 @@ import { DEFAULT_FETCH_CONFIG, REFETCH_INTERVAL, SESSION_STATUS_API } from "../c
 
 export const useGetAuthStatus = (cb?: (status: boolean) => void) =>
     useQuery<boolean, Error>({
-        queryKey: [ServerStateKeysEnum.auth_status],
+        queryKey: [ServerStateKeysEnum.auth_status, cb],
         queryFn: async () => fetch(SESSION_STATUS_API, DEFAULT_FETCH_CONFIG)
             .then((res) => handleResponse(res.status, cb))
             .catch(err => { throw err; }),

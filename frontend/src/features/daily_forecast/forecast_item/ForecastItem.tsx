@@ -1,34 +1,28 @@
 import { Box, Typography } from '@mui/material';
-import { useCallback, useEffect, useState } from 'react';
-import { fetchBlob } from '../../../app/fetch';
-import { WEATHER_API } from '../../../constants/api';
-import { TEMP_UNIT, WEATHER_ICON_ZOOM } from '../../../constants/weather';
+import { TEMP_UNIT } from '../../../constants/weather';
 import unknownWeatherIcon from '../../../assets/unknown-weather.svg'
 import { WeatherForecastResource } from '../../../models/daily_forecast';
 import { forecastImg, minMaxBoxStyle, dailyStyle } from '../style';
-import { getDayName } from '../../../app/dateParser';
 import { boldText, smallFontSize } from '../../../assets/styles/theme';
+import { useGetWeatherIcon } from '../../../apis/weather_icon';
+import { useGetDayName } from '../../../apis/day_name';
 
 interface IForecastItem {
     item: WeatherForecastResource,
 }
 
 const ForecastItem = ({ item }: IForecastItem) => {
-    const [icon, setIcon] = useState<string>(unknownWeatherIcon);
-    const [dayName, setDayName] = useState<string>("")
+    const {
+        data: dayName
+    } = useGetDayName(new Date(item.date))
 
-    const getWeatherIcon = useCallback(async () => {
-        fetchBlob(`${WEATHER_API}/icon/${item.weather_icon}@${WEATHER_ICON_ZOOM}`)
-            .then((blob) => URL.createObjectURL(blob))
-            .then(icon => setIcon(icon))
-            .catch(() => setIcon(unknownWeatherIcon));
-    }, [item.weather_icon])
+    const {
+        data: icon,
+        isLoading: iconLoading,
+        error: iconError
+    } = useGetWeatherIcon(item.weather_icon)
 
-    useEffect(() => {
-        getWeatherIcon();
-        const date = new Date(item.date);
-        setDayName(getDayName(date, 'en-us'));
-    }, [item.date, getWeatherIcon]);
+    const weatherIcon = iconError || iconLoading ? unknownWeatherIcon : icon
 
     return (
         <Box sx={dailyStyle}>
@@ -38,7 +32,7 @@ const ForecastItem = ({ item }: IForecastItem) => {
             <Box
                 component="img"
                 sx={forecastImg}
-                src={icon}
+                src={weatherIcon}
                 alt="Weather Icon"
             />
             <Box sx={minMaxBoxStyle}>

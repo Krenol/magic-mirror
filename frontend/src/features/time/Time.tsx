@@ -4,7 +4,7 @@ import { card_small } from '../../assets/styles/cards';
 import { smallFontSize } from '../../assets/styles/theme';
 import { useAppDispatch } from '../../app/hooks';
 import { setNewDay } from './timeSlice';
-import { useGetTime } from '../../apis/time';
+import { useGetTime } from '../../apis/current_time';
 import { CardFrame } from '../CardFrame';
 
 export const Time = () => {

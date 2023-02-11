@@ -6,9 +6,8 @@ import { WEATHER_ICON_ZOOM } from "../constants/weather";
 
 export const useGetWeatherIcon = (weather_icon: string, icon_zoom: string = WEATHER_ICON_ZOOM) =>
     useQuery<string, Error>({
-        queryKey: [ServerStateKeysEnum.weather_icon],
+        queryKey: [ServerStateKeysEnum.weather_icon, weather_icon, icon_zoom],
         queryFn: async () => fetchBlob(`${WEATHER_API}/icon/${weather_icon}@${icon_zoom}`)
             .then((blob) => URL.createObjectURL(blob))
-            .catch(err => { throw err; }),
-        refetchInterval: REFETCH_INTERVAL,
+            .catch(err => { throw err; })
     });

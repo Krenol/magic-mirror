@@ -27,6 +27,8 @@ const CurrentWeather = () => {
         error: iconError
     } = useGetWeatherIcon(weather?.weather_icon || "")
 
+    const weatherIcon = iconError || iconLoading ? unknownWeatherIcon : icon
+
     const boxContent = <React.Fragment>
         <Typography variant="h3">
             {weather?.temperature.current.toFixed() || "-"}{TEMP_UNIT}
@@ -48,8 +50,6 @@ const CurrentWeather = () => {
             Precipitaiton: {weather?.precipitation_sum.toFixed(1) || weather?.precipitation_sum === 0 ? weather?.precipitation_sum : "-"} {PRECIPITATION_UNIT}
         </Typography>
     </React.Fragment>
-
-    const weatherIcon = iconError || iconLoading ? unknownWeatherIcon : icon
 
     const cardContent = <CardMedia
         component="img"

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { DEFAULT_FETCH_CONFIG, LOGOUT_URL } from '../constants/api';
-import { APP_BASE_URL } from '../constants/app';
+import { APP_BASE_URL } from '../constants/defaults';
 
 const Logout = () => {
     useEffect(() => {

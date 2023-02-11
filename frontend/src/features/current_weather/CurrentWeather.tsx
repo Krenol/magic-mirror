@@ -1,82 +1,68 @@
-import Card from '@mui/material/Card';
-import { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CardMedia from '@mui/material/CardMedia/CardMedia';
 import Typography from '@mui/material/Typography';
 import unknownWeatherIcon from '../../assets/unknown-weather.svg'
-import { fetchBlob, fetchJson } from '../../app/fetch';
+import { fetchBlob } from '../../app/fetch';
 import { WEATHER_API } from '../../constants/api';
-import { LATITUDE, WEATHER_ICON_ZOOM, LONGITUDE, TEMP_UNIT, PRECIPITATION_UNIT } from '../../constants/weather';
-import { Weather } from '../../models/weather';
-import { parseWeatherJson } from './parser';
+import { WEATHER_ICON_ZOOM, TEMP_UNIT, PRECIPITATION_UNIT } from '../../constants/weather';
 import { Box } from '@mui/material';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { cardStyle, minMaxBoxStyle, parentBoxStyle } from './style';
-import { REFRESH_MILLIS } from '../../constants/app';
 import { smallFontSize } from '../../assets/styles/theme';
-import { CurrentWeatherResource } from '../../models/current_weather';
+import { useGetCurrentWeather } from '../../apis/current_weather';
+import { CardFrame } from '../CardFrame';
+import { useGetWeatherIcon } from '../../apis/weather_icon';
 
 const CurrentWeather = () => {
-    const [weather, setWeather] = useState<Weather>();
-    const [icon, setIcon] = useState<string>(unknownWeatherIcon);
+    const {
+        data: weather,
+        isLoading,
+        error
+    } = useGetCurrentWeather();
 
-    const setWeatherData = useCallback(async (data: any) => {
-        const newWeather = await parseWeatherJson(data);
-        setWeather(newWeather);
-    }, [])
+    const {
+        data: icon,
+        isLoading: iconLoading,
+        error: iconError
+    } = useGetWeatherIcon(weather?.weather_icon || "")
 
-    const getCurrentWeather = useCallback(async () => {
-        fetchJson(`${WEATHER_API}/current?latitude=${LATITUDE}&longitude=${LONGITUDE}`)
-            .then(data => setWeatherData(data as CurrentWeatherResource))
-            .catch(err => console.log(err));
-    }, [setWeatherData]);
+    const boxContent = <React.Fragment>
+        <Typography variant="h3">
+            {weather?.temperature.current.toFixed() || "-"}{TEMP_UNIT}
+        </Typography>
+        <Box sx={minMaxBoxStyle}>
+            <ArrowDropUpIcon />
+            <Typography variant="subtitle2" color="text.primary">
+                {weather?.temperature.max.toFixed() || "-"}{TEMP_UNIT}
+            </Typography>
+            <ArrowDropDownIcon />
+            <Typography variant="subtitle2" color="text.primary">
+                {weather?.temperature.min.toFixed() || "-"}{TEMP_UNIT}
+            </Typography>
+        </Box>
+        <Typography variant="subtitle2" color="text.secondary" sx={smallFontSize}>
+            Feels like {weather?.temperature.feels_like.toFixed() || "-"}{TEMP_UNIT}
+        </Typography>
+        <Typography variant="subtitle2" color="text.secondary" sx={smallFontSize}>
+            Precipitaiton: {weather?.precipitation_sum.toFixed(1) || weather?.precipitation_sum === 0 ? weather?.precipitation_sum : "-"} {PRECIPITATION_UNIT}
+        </Typography>
+    </React.Fragment>
 
-    useEffect(() => {
-        getCurrentWeather();
-        const timer = setInterval(() => {
-            getCurrentWeather();
-        }, REFRESH_MILLIS);
-        return () => clearInterval(timer);
-    }, [getCurrentWeather]);
+    const weatherIcon = iconError || iconLoading ? unknownWeatherIcon : icon
 
-    useEffect(() => {
-        fetchBlob(`${WEATHER_API}/icon/${weather?.iconCode}@${WEATHER_ICON_ZOOM}`)
-            .then((blob) => URL.createObjectURL(blob))
-            .then(icon => setIcon(icon))
-            .catch(err => setIcon(unknownWeatherIcon));
-    }, [weather?.iconCode]);
+    const cardContent = <CardMedia
+        component="img"
+        sx={{ width: 'auto', height: '100%' }}
+        src={weatherIcon}
+        alt="Current Weather Icon"
+    />
 
-    return (
-        <Card sx={cardStyle}>
-            <Box sx={parentBoxStyle}>
-                <Typography variant="h3">
-                    {weather?.currentTemp || "-"}{TEMP_UNIT}
-                </Typography>
-                <Box sx={minMaxBoxStyle}>
-                    <ArrowDropUpIcon />
-                    <Typography variant="subtitle2" color="text.primary">
-                        {weather?.todayMaxTemp || "-"}{TEMP_UNIT}
-                    </Typography>
-                    <ArrowDropDownIcon />
-                    <Typography variant="subtitle2" color="text.primary">
-                        {weather?.todayMinTemp || "-"}{TEMP_UNIT}
-                    </Typography>
-                </Box>
-                <Typography variant="subtitle2" color="text.secondary" sx={smallFontSize}>
-                    Feels like {weather?.feelsLike || "-"}{TEMP_UNIT}
-                </Typography>
-                <Typography variant="subtitle2" color="text.secondary" sx={smallFontSize}>
-                    Precipitaiton: {weather?.precipitation || weather?.precipitation === 0 ? weather?.precipitation : "-"} {PRECIPITATION_UNIT}
-                </Typography>
-            </Box>
-            <CardMedia
-                component="img"
-                sx={{ width: 'auto', height: '100%' }}
-                src={icon}
-                alt="Current Weather Icon"
-            />
-        </Card>
-    );
+    if (isLoading) return (<CardFrame boxContent={"Loading..."} cardStyle={cardStyle} parentBoxStyle={parentBoxStyle} />);
+
+    if (error) return (<CardFrame boxContent={"Error!"} cardStyle={cardStyle} parentBoxStyle={parentBoxStyle} />);
+
+    return (<CardFrame boxContent={boxContent} cardContent={cardContent} cardStyle={cardStyle} parentBoxStyle={parentBoxStyle} />);
 }
 
 export default CurrentWeather;

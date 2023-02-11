@@ -44,4 +44,5 @@ const BirthdayItem = ({ item }: IBirthdayItem) => {
         </Typography>
     )
 }
+
 export default BirthdayItem

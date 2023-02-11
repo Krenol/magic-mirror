@@ -1,4 +1,4 @@
-export type weather_daily = {
+export type DailyWeatherObject = {
     latitude: number,
     longitude: number,
     timezone: string,
@@ -8,8 +8,8 @@ export type weather_daily = {
 
 export type WeatherForecastResource = {
     date: string,
-    temperature: temperature,
-    precipitation: precipitation,
+    temperature: Temperature,
+    precipitation: Precipitation,
     weather_icon: string,
     sunrise: string,
     sunset: string,
@@ -17,13 +17,13 @@ export type WeatherForecastResource = {
     description: string
 }
 
-export type precipitation = {
+export type Precipitation = {
     amount: number
     hours: number
     amount_unit: string
 }
 
-export type temperature = {
+export type Temperature = {
     min: number,
     max: number,
     unit: string

@@ -1,45 +1,28 @@
-import Card from '@mui/material/Card';
-import { Box } from '@mui/material';
 import { cardStyle, parentBoxStyle } from './style';
-import { HourlyWeatherList } from '../../models/hourly_forecast';
-import { useCallback, useEffect, useState } from 'react';
-import { WEATHER_API } from '../../constants/api';
-import { fetchJson } from '../../app/fetch';
-import { HOURLY_FORECAST_HOURS, LATITUDE, LONGITUDE } from '../../constants/weather';
 import ForecastItem from './forecast_item/ForecastItem';
-import { REFRESH_MILLIS } from '../../constants/app';
-
+import { useGetHourlyWeather } from '../../apis/hourly_weather';
+import { CardFrame } from '../CardFrame';
 
 const HourlyWeather = () => {
-    const [weather, setWeather] = useState<HourlyWeatherList>();
+    const {
+        data: weather,
+        isLoading,
+        error
+    } = useGetHourlyWeather();
 
-    const getHourlyWeather = useCallback(async () => {
-        fetchJson(`${WEATHER_API}/hourly?latitude=${LATITUDE}&longitude=${LONGITUDE}&hours=${HOURLY_FORECAST_HOURS}`)
-            .then(data => setWeather(data))
-            .catch(err => console.log(err));
-    }, []);
+    const content = weather?.forecast.map((val) => (
+        <ForecastItem
+            item={val}
+            timezone={weather?.timezone}
+            key={val.time}
+        />
+    ));
 
-    useEffect(() => {
-        getHourlyWeather();
-        const timer = setInterval(() => {
-            getHourlyWeather();
-        }, REFRESH_MILLIS);
-        return () => clearInterval(timer);
-    }, [getHourlyWeather]);
+    if (isLoading) return (<CardFrame boxContent={"Loading..."} cardStyle={cardStyle} parentBoxStyle={parentBoxStyle} />);
 
-    return (
-        <Card sx={cardStyle}>
-            <Box sx={parentBoxStyle}>
-                {weather?.forecast.map((data) => (
-                    <ForecastItem
-                        item={data}
-                        timezone={weather?.timezone}
-                        key={data.time}
-                    />
-                ))}
-            </Box>
-        </Card>
-    );
+    if (error) return (<CardFrame boxContent={"Error!"} cardStyle={cardStyle} parentBoxStyle={parentBoxStyle} />);
+
+    return (<CardFrame boxContent={content} cardStyle={cardStyle} parentBoxStyle={parentBoxStyle} />);
 }
 
 export default HourlyWeather;

@@ -12,7 +12,7 @@ const server = new Server(SERVER_PORT);
 
 server.app.use('/weather', WeatherRoute)
 server.app.use('/calendar', CalendarRoute)
-server.app.use('/Birthdays', BirthdaysRoute)
+server.app.use('/birthdays', BirthdaysRoute)
 server.app.use('/', AuthRoute)
 
 // ERROR HANDLING

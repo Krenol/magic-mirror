@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import CardMedia from '@mui/material/CardMedia/CardMedia';
 import Typography from '@mui/material/Typography';
 import unknownWeatherIcon from '../../assets/unknown-weather.svg'
-import { fetchBlob } from '../../app/fetch';
-import { WEATHER_API } from '../../constants/api';
-import { WEATHER_ICON_ZOOM, TEMP_UNIT, PRECIPITATION_UNIT } from '../../constants/weather';
+import { TEMP_UNIT, PRECIPITATION_UNIT } from '../../constants/weather';
 import { Box } from '@mui/material';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';

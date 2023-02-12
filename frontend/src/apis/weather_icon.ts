@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 import { fetchBlob } from "../app/fetch";
 import { ServerStateKeysEnum } from "../app/statekeys";
-import { REFETCH_INTERVAL, WEATHER_API } from "../constants/api";
+import { WEATHER_API } from "../constants/api";
 import { WEATHER_ICON_ZOOM } from "../constants/weather";
 
 export const useGetWeatherIcon = (weather_icon: string, icon_zoom: string = WEATHER_ICON_ZOOM) =>

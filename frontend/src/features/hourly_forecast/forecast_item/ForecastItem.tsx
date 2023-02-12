@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
-import { PRECIPITATION_UNIT, TEMP_UNIT, WEATHER_ICON_ZOOM } from '../../../constants/weather';
+import { PRECIPITATION_UNIT, TEMP_UNIT } from '../../../constants/weather';
 import unknownWeatherIcon from '../../../assets/unknown-weather.svg'
 import { HourlyWeatherResource } from '../../../models/hourly_forecast';
 import { parseTime } from '../../../app/timeParser';
@@ -28,7 +28,7 @@ const ForecastItem = ({ item, timezone }: IForecastItem) => {
         const t = new Date(item.time + getTimeOffset());
         setHours(parseTime(t.getHours()));
         setMinutes(parseTime(t.getMinutes()));
-    }, [timezone, item.time]);
+    }, [timezone, item.time, getTimeOffset]);
 
     const {
         data: icon,

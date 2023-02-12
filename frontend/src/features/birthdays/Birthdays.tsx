@@ -21,7 +21,7 @@ export const Birthdays = () => {
 
     useEffect(() => {
         refetch()
-    }, [newDayBegun]);
+    }, [newDayBegun, refetch]);
 
     const content = <React.Fragment>
         <Box sx={headingBoxStyle}>

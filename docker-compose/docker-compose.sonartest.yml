@@ -3,7 +3,7 @@ name: magic-mirror-sonartests
 services:
   frontend:
     build:
-      context: ./frontend
+      context: ../frontend
       dockerfile: docker/Dockerfile.sonar
     env_file:
       - frontend.env
@@ -11,7 +11,7 @@ services:
       - magic-mirror-sonar_ext-sonar-network
   middleware:
     build:
-      context: ./middleware
+      context: ../middleware
       dockerfile: docker/Dockerfile.sonar
     env_file:
       - middleware.env

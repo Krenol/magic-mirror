@@ -1,15 +1,15 @@
 version: "3.9"
-name: magic-mirror-test
+name: magic-mirror-dev
 services:
   frontend:
     build:
-      context: ./frontend
-      dockerfile: docker/Dockerfile.test
+      context: ../frontend
+      dockerfile: docker/Dockerfile.dev
       args:
         NODE_IMG_VERSION: ${NODE_IMG_VERSION}
     volumes:
-      - ./frontend/src:/opt/src
-      - ./frontend/public:/opt/public
+      - ../frontend/src:/opt/src
+      - ../frontend/public:/opt/public
     ports:
       - "3000:3000"
     depends_on:
@@ -18,13 +18,12 @@ services:
       - frontend.env
   middleware:
     build:
-      context: ./middleware
-      dockerfile: docker/Dockerfile.test
+      context: ../middleware
+      dockerfile: docker/Dockerfile.dev
       args:
         NODE_IMG_VERSION: ${NODE_IMG_VERSION}
     volumes:
-      - ./middleware/src:/opt/src
-      - ./auth_files:/etc/auth
+      - ../middleware/src:/opt/src
     ports:
       - "3001:3001"
     env_file:

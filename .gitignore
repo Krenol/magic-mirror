@@ -112,3 +112,6 @@ credentials.json
 token.json
 
 .scannerwork
+
+*.pem
+*.key

@@ -96,6 +96,19 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@sagold/json-pointer@^5.0.0":
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/@sagold/json-pointer/-/json-pointer-5.0.1.tgz#94319addbd798c2da571bd6eab86fb0b3265349d"
+  integrity sha512-cKY4N+3YC7CHUW28lOgqH6020EMqFS5nW9cT+/MBdUNXWEmLWeTsOtiaHxXuixL5jCJNv4AFqtGi4dQIYGG8XQ==
+
+"@sagold/json-query@^6.0.0":
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/@sagold/json-query/-/json-query-6.0.0.tgz#a250a98d19cc20d8c06e8e9eeaf9d1de833f1ed4"
+  integrity sha512-fk9BimvNrzlhXiy+dvlwyA97W2N6GmPWCJo/2kwKEtU9oc93cVKamca9NcnjKx1hhjECjPfu30NQ8Tg2JGv/pA==
+  dependencies:
+    "@sagold/json-pointer" "^5.0.0"
+    ebnf "^1.9.0"
+
 "@tsconfig/node10@^1.0.7":
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/@tsconfig/node10/-/node10-1.0.9.tgz#df4907fc07a886922637b15e02d4cebc4c0021b2"
@@ -1500,25 +1513,6 @@ grapheme-splitter@^1.0.4:
   resolved "https://registry.yarnpkg.com/grapheme-splitter/-/grapheme-splitter-1.0.4.tgz#9cf3a665c6247479896834af35cf1dbb4400767e"
   integrity sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==
 
-gson-conform@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/gson-conform/-/gson-conform-1.0.3.tgz#6f982f98ea84199280bd48b6bfbcd0ae7447f1e2"
-  integrity sha512-gaZQN/5ZbohkLBOs4JKHkg/IdOB9kuuEr5SVLAjHUs+Q+Nl746DRe18GgQy4oxxVXStO//Zga2wg4eWL9Mfshw==
-
-gson-pointer@4.1.1, gson-pointer@^4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/gson-pointer/-/gson-pointer-4.1.1.tgz#088d6aa38d52753530288d13b5a75b6a43170e9b"
-  integrity sha512-rOS/zCLUI8BT0+/U+p5nzI0RfhIyRmzkpwzyCj8gcLoRl3rHuysk6ci1IQ955AQQZDSNN3mVec26Sx9wRZ0EjA==
-
-gson-query@^5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/gson-query/-/gson-query-5.1.0.tgz#8f34a062849f8c08be0c35eddaa2ad18a4326a49"
-  integrity sha512-xKb/90XfmLLKGgX8Y7LRF4yKnMR/ckV5WOQ/Ip0pRXuDh7jUhdY1UYjPvQnF7/UMbNsAo0168j2j0yt9+4QdaA==
-  dependencies:
-    ebnf "^1.9.0"
-    gson-conform "^1.0.3"
-    gson-pointer "4.1.1"
-
 has-flag@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/has-flag/-/has-flag-3.0.0.tgz#b5d454dc2199ae225699f3467e5a07f3b955bafd"
@@ -1719,15 +1713,15 @@ js-yaml@4.1.0, js-yaml@^4.1.0:
   dependencies:
     argparse "^2.0.1"
 
-json-schema-library@^7.3.0:
-  version "7.3.0"
-  resolved "https://registry.yarnpkg.com/json-schema-library/-/json-schema-library-7.3.0.tgz#bb2c507a0f40126500eb78efb851d1d36e7a2da4"
-  integrity sha512-UOZokI/kc0oVCDJ/De5XH1A0pPTI2N0wh8WDe9ZnIFNp0p2Nd/1xI+/JAs3y/ALnCbxJ78Hzv5ogsSvsKUlULQ==
+json-schema-library@^7.4.7:
+  version "7.4.7"
+  resolved "https://registry.yarnpkg.com/json-schema-library/-/json-schema-library-7.4.7.tgz#764f03e6759053d6d9d18fad71c3d4e3c2b32449"
+  integrity sha512-m7MzIVbwDH6L0RzrPjQAZfpEffaa0wUyyJ049xK5YWX9yXQfOh89ER4WqiFGA+6OPK8dlCPGLmFb3q12FkeriQ==
   dependencies:
+    "@sagold/json-pointer" "^5.0.0"
+    "@sagold/json-query" "^6.0.0"
     deepmerge "^4.2.2"
     fast-deep-equal "^3.1.3"
-    gson-pointer "^4.1.1"
-    gson-query "^5.1.0"
     valid-url "^1.0.9"
 
 json-schema-traverse@^0.4.1:

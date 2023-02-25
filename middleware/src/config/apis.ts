@@ -8,3 +8,8 @@ export const ALLOWED_URLS = [
     WEATHER_API_URL,
     OPENWEATHER_URL
 ]
+
+export const RATE_LIMIT = {
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 500
+}

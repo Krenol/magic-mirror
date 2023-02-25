@@ -8,7 +8,7 @@ import { locationMiddleware } from "../middleware/location_middleware";
 import { validateHourlyForecastHours } from "../middleware/validate_hourly_forecast_hours";
 import { validateWeatherForecastDays } from "../middleware/validate_weather_forecast_days";
 import RateLimit from "express-rate-limit";
-import { RATE_LIMIT } from "../config/server";
+import { RATE_LIMIT } from "../config/apis";
 
 const router = Router();
 var limiter = RateLimit(RATE_LIMIT);

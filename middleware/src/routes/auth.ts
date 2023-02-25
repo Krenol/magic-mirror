@@ -3,7 +3,7 @@ import RateLimit from "express-rate-limit";
 import passport from "passport";
 import { FAILURE_REDIRECT_URI, REDIRECT_URI } from "../config/auth";
 import { SCOPES } from "../config/google";
-import { RATE_LIMIT } from "../config/server";
+import { RATE_LIMIT } from "../config/apis";
 import { authCheck, logout } from "../controllers/auth";
 import { checkAuthenticated } from "../middleware/authenticated";
 

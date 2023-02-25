@@ -8498,10 +8498,10 @@ sockjs@^0.3.24:
     uuid "^8.3.2"
     websocket-driver "^0.7.4"
 
-sonarqube-scanner@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/sonarqube-scanner/-/sonarqube-scanner-3.0.0.tgz#e8187437d8fa793e69dd3662e48bbdc83f3919a8"
-  integrity sha512-qJz06on6UZ00emVckmIj6BF7HdBh1xLwkMw44LkTw7IrjKkxqenPDPGAUdb1+OCGL2s6/ccmolxRI5UNTM2o/w==
+sonarqube-scanner@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/sonarqube-scanner/-/sonarqube-scanner-3.0.1.tgz#6266a059935ffdb0c1fe3ad90b347305e39d580c"
+  integrity sha512-u8HJITRe6E6HJWzerbSNAaH20rymSb8TJtnGd5H41jFxQm1hM+87+CqJaWDGzzkyufe2u8TdbTV4vb/4sFfqCA==
   dependencies:
     decompress "^4.2.1"
     fancy-log "^2.0.0"

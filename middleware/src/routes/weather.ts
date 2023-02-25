@@ -7,8 +7,12 @@ import { checkAuthenticated } from "../middleware/authenticated";
 import { locationMiddleware } from "../middleware/location_middleware";
 import { validateHourlyForecastHours } from "../middleware/validate_hourly_forecast_hours";
 import { validateWeatherForecastDays } from "../middleware/validate_weather_forecast_days";
+import RateLimit from "express-rate-limit";
+import { RATE_LIMIT } from "../config/server";
 
 const router = Router();
+var limiter = RateLimit(RATE_LIMIT);
+router.use(limiter);
 
 router.use(checkAuthenticated)
 

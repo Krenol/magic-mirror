@@ -6,6 +6,8 @@ WORKDIR /opt
 
 COPY . .
 
+RUN mv ssl /etc/express
+
 RUN yarn install 
 
 CMD [ "yarn", "dev" ]

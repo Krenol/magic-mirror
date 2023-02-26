@@ -1,5 +1,6 @@
-import { SERVER_PORT } from './config/server';
-import { Server } from './server';
+import { ENABLE_HTTPS, SERVER_PORT } from './config/server';
+import { HttpServer } from './http_server';
+import { HttpsServer } from './https_server';
 import { default as WeatherRoute } from './routes/weather'
 import { default as CalendarRoute } from './routes/calendar'
 import { default as BirthdaysRoute } from './routes/birthdays'
@@ -8,7 +9,7 @@ import { NextFunction, Request, Response } from 'express';
 import { ApiError } from './models/api_error';
 import { EXPRESS_ERROR_LOGGER } from './services/loggers';
 
-const server = new Server(SERVER_PORT);
+const server = ENABLE_HTTPS ? new HttpsServer(SERVER_PORT) : new HttpServer(SERVER_PORT);
 
 server.app.use('/weather', WeatherRoute)
 server.app.use('/calendar', CalendarRoute)

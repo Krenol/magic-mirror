@@ -1,25 +1,26 @@
-import * as http from "http";
 import express, { Express } from "express";
 import { default as session } from "express-session";
 import bodyParser from "body-parser";
-import { SESSION_SECRET } from "./config/server";
+import { ENABLE_HTTPS, SESSION_SECRET } from "./config/server";
 import { setupPassport } from "./services/auth/setup";
 import { default as cors } from "cors";
 import { FRONTEND_URL } from "./config/auth";
 import winston from "winston"
 import expressWinston from "express-winston"
-import { LOGGER } from "./services/loggers";
+import * as http from "http";
+import * as https from "https";
 
-export class Server {
-    private readonly _app: Express;
+export abstract class Server<T extends http.Server | https.Server> {
+    protected readonly _app: Express;
+    protected readonly _port: number;
 
     get app(): Express {
         return this._app;
     }
 
-    private _server!: http.Server;
+    protected _server!: T;
 
-    get server(): http.Server {
+    get server(): T {
         return this._server;
     }
 
@@ -27,6 +28,7 @@ export class Server {
         this._app = express();
         this._app.set("port", port);
         this.configureMiddleware();
+        this._port = port
     }
 
     public configureMiddleware() {
@@ -59,7 +61,10 @@ export class Server {
             secret: SESSION_SECRET,
             resave: false,
             saveUninitialized: false,
-            cookie: { secure: false }
+            cookie: {
+                secure: ENABLE_HTTPS,
+                httpOnly: true
+            }
         }))
     }
 
@@ -74,11 +79,5 @@ export class Server {
 
     private async setupOIDC() {
         setupPassport(this._app);
-    }
-
-    public start() {
-        this._server = this._app.listen(this._app.get("port"), () => {
-            LOGGER.info(`Server is running on port ${this._app.get("port")}`);
-        });
     }
 }

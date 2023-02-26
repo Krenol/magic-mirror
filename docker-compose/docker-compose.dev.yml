@@ -1,16 +1,6 @@
 version: "3.9"
 name: magic-mirror-dev
 services:
-  nginx_frontend:
-    image: nginx:latest
-    hostname: magic-mirror.local.com
-    ports:
-      - 80:80
-      - 443:443
-    restart: always
-    volumes:
-      - ../frontend/nginx/conf/:/etc/nginx/conf.d/:ro
-      - ../frontend/nginx/ssl/:/etc/ssl/:ro
   frontend:
     build:
       context: ../frontend
@@ -20,23 +10,25 @@ services:
     volumes:
       - ../frontend/src:/opt/src
       - ../frontend/public:/opt/public
-    ports:
-      - "3000:3000"
     depends_on:
       - middleware
-      - nginx_frontend
+      - nginx
     env_file:
       - frontend.env
-  nginx_middleware:
+  nginx:
     image: nginx:latest
-    hostname: api.magic-mirror.local.com
     ports:
-      - 81:80
-      - 444:443
+      - 80:80
+      - 443:443
     restart: always
     volumes:
-      - ../middleware/nginx/conf/:/etc/nginx/conf.d/:ro
-      - ../middleware/nginx/ssl/:/etc/ssl/:ro
+      - ../nginx/conf/:/etc/nginx/conf.d/:ro
+      - ../nginx/ssl/:/etc/ssl/:ro
+    networks:
+      default:
+        aliases:
+          - api.magic-mirror.local.com
+          - magic-mirror.local.com
   middleware:
     build:
       context: ../middleware
@@ -44,10 +36,9 @@ services:
       args:
         NODE_IMG_VERSION: ${NODE_IMG_VERSION}
     depends_on:
-      - nginx_middleware
+      - nginx
     volumes:
       - ../middleware/src:/opt/src
-    ports:
-      - "3001:3001"
+      - ../middleware/ssl:/etc/express
     env_file:
       - middleware.env

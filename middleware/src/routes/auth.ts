@@ -1,7 +1,7 @@
 import { Router } from "express";
 import RateLimit from "express-rate-limit";
 import passport from "passport";
-import { FAILURE_REDIRECT_URI, REDIRECT_URI } from "../config/auth";
+import { FAILURE_REDIRECT_URI, GOOGLE_CALLBACK_CONTEXT, REDIRECT_URI } from "../config/auth";
 import { SCOPES } from "../config/google";
 import { RATE_LIMIT } from "../config/apis";
 import { authCheck, logout } from "../controllers/auth";
@@ -17,7 +17,7 @@ router.get('/auth/google', passport.authenticate('google', <object>{
     prompt: 'consent',
 }));
 
-router.get('/auth/callback', passport.authenticate('google',
+router.get(GOOGLE_CALLBACK_CONTEXT, passport.authenticate('google',
     { successRedirect: REDIRECT_URI, failureRedirect: FAILURE_REDIRECT_URI }
 ));
 

@@ -80,4 +80,6 @@ export abstract class Server<T extends http.Server | https.Server> {
     private async setupOIDC() {
         setupPassport(this._app);
     }
+
+    public abstract start(): void;
 }

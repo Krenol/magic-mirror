@@ -1,3 +1,9 @@
+export type EventRequestParams = {
+    maxResults: number,
+    startTime: string,
+    endTime: string | undefined
+}
+
 export type EventList = {
     count: number,
     list: Array<EventItem>

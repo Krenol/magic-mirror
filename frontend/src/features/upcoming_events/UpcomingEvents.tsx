@@ -4,7 +4,9 @@ import { Box } from '@mui/material';
 import { cardStyle, parentBoxStyle } from './style';
 import { CardFrame } from '../CardFrame';
 import { useGetEvents } from '../../apis/events';
-import { isToday } from '../../app/dateParser';
+import { getDifferenceInDays, isToday } from '../../app/dateParser';
+import { asyncFilter } from '../../app/misc';
+import { EventItem } from '../../models/calendar';
 
 const UpcomingEvents = () => {
     const {
@@ -13,10 +15,7 @@ const UpcomingEvents = () => {
         error
     } = useGetEvents();
 
-    const todaysEvents = events?.list.filter((ev) => !isToday(new Date(ev.start)));
-
-
-    const todaysEventItems = (todaysEvents?.length || 0) > 0 ? todaysEvents?.map((ev) => <Typography>{ev.summary}</Typography>) :
+    const todaysEventItems = (events?.count || 0) > 0 ? events?.list.map((ev) => <Typography>{ev.summary}</Typography>) :
         <Typography color="text.secondary" variant='subtitle2'>No events today</Typography>;
 
 

@@ -1,6 +1,14 @@
 export type events_list = {
     count: number,
-    list: Array<GcalApiEventResource>
+    list: Array<EventItem>
+}
+
+export type EventItem = {
+    summary: string,
+    description: string,
+    location: string,
+    start: string,
+    end: string
 }
 
 export type GcalApiEventList = {

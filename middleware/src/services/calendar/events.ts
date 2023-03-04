@@ -1,5 +1,5 @@
 import { CALENDAR_CONFIG, GOOGLE_CALENDAR_ENDPOINT } from "../../config/google";
-import { events_list, GcalApiEventList, GcalApiEventResource } from "../../models/calendar";
+import { events_list, EventItem, GcalApiEventList, GcalApiEventResource } from "../../models/calendar";
 import { User } from "../../models/user";
 import { fetchJson } from "../fetch";
 import { LOGGER } from "../loggers";
@@ -10,12 +10,6 @@ export const getCalendarEvents = async (user: User, maxResults: number = CALENDA
     const access_token = await getAccessToken(user);
     const events = await getEvents(email, access_token, maxResults, orderBy);
     return events;
-}
-
-export const getBirthdayEvents = async (user: User, maxResults: number = CALENDAR_CONFIG.DEFAULT_EVENT_COUNT, orderBy = 'startTime'): Promise<GcalApiEventList> => {
-    const access_token = await getAccessToken(user);
-    const calendarID = encodeURIComponent(CALENDAR_CONFIG.BIRTHDAY_ID);
-    return getEvents(calendarID, access_token, maxResults, orderBy);
 }
 
 export const getEvents = async (calendarId: string, access_token: string, maxResults: number = CALENDAR_CONFIG.DEFAULT_EVENT_COUNT, orderBy = 'startTime'): Promise<GcalApiEventList> => {
@@ -36,10 +30,27 @@ const buildApiUrl = async (calendarId: string, maxResults: number = CALENDAR_CON
 export const parseRetrievedEvents = async (events: GcalApiEventList): Promise<events_list> => {
     return {
         count: events.items.length,
-        list: events.items
+        list: await parseEvents(events.items)
     };
 }
 
-export const parseNextEvent = async (events: GcalApiEventList): Promise<GcalApiEventResource> => {
-    return events.items[0];
+const parseEvents = async (gcalEventList: Array<GcalApiEventResource>): Promise<Array<EventItem>> => {
+    const allEvents: Array<Promise<EventItem>> = [];
+    gcalEventList
+        .forEach(e => allEvents.push(parseEvent(e)));
+    return Promise.all(allEvents);
+}
+
+export const parseNextEvent = async (events: GcalApiEventList): Promise<EventItem> => {
+    return parseEvent(events.items[0]);
+}
+
+const parseEvent = async (gcalEvent: GcalApiEventResource): Promise<EventItem> => {
+    return {
+        summary: gcalEvent.summary,
+        description: gcalEvent.description,
+        location: gcalEvent.location,
+        start: new Date(gcalEvent.start.dateTime || gcalEvent.start.date).toISOString(),
+        end: new Date(gcalEvent.end.dateTime || gcalEvent.end.date).toISOString()
+    }
 }

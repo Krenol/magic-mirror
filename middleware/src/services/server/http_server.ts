@@ -1,5 +1,5 @@
 import * as http from "http";
-import { LOGGER } from "./services/loggers";
+import { LOGGER } from "../loggers";
 import { Server } from "./server";
 
 export class HttpServer extends Server<http.Server> {

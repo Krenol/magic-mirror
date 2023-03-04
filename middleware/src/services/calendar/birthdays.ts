@@ -1,5 +1,15 @@
 import { GcalApiEventList } from "../../models/calendar";
 import { Birthday, BirthdayList, GcalApiBirthdayEventResource } from "../../models/birthdays";
+import { getAccessToken } from "../user";
+import { CALENDAR_CONFIG } from "../../config/google";
+import { User } from "../../models/user";
+import { getEvents } from "./events";
+
+export const getBirthdayEvents = async (user: User, maxResults: number = CALENDAR_CONFIG.DEFAULT_EVENT_COUNT, orderBy = 'startTime'): Promise<GcalApiEventList> => {
+    const access_token = await getAccessToken(user);
+    const calendarID = encodeURIComponent(CALENDAR_CONFIG.BIRTHDAY_ID);
+    return getEvents(calendarID, access_token, maxResults, orderBy);
+}
 
 export const parseRetrievedBirthdays = async (events: GcalApiEventList): Promise<BirthdayList> => {
     return {
@@ -9,15 +19,17 @@ export const parseRetrievedBirthdays = async (events: GcalApiEventList): Promise
     };
 }
 
-const parseBirthdays = async (BirthdaysList: Array<GcalApiBirthdayEventResource>): Promise<Array<Birthday>> => {
-    const Birthdays: Array<Promise<Birthday>> = [];
-    BirthdaysList.forEach(b => Birthdays.push(parseBirthday(b)));
-    return Promise.all(Birthdays);
+const parseBirthdays = async (birthdaysList: Array<GcalApiBirthdayEventResource>): Promise<Array<Birthday>> => {
+    const bdays: Array<Promise<Birthday>> = [];
+    birthdaysList
+        .filter(b => b.gadget.preferences['goo.contactsEventType'].toUpperCase() === 'BIRTHDAY')
+        .forEach(b => bdays.push(parseBirthday(b)));
+    return Promise.all(bdays);
 }
 
-const parseBirthday = async (Birthday: GcalApiBirthdayEventResource): Promise<Birthday> => {
+const parseBirthday = async (birthday: GcalApiBirthdayEventResource): Promise<Birthday> => {
     return {
-        name: Birthday.gadget.preferences['goo.contactsFullName'],
-        date: Birthday.start.date
+        name: birthday.gadget.preferences['goo.contactsFullName'],
+        date: birthday.start.date
     }
 }

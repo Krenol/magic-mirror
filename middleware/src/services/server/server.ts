@@ -1,10 +1,10 @@
 import express, { Express } from "express";
 import { default as session } from "express-session";
 import bodyParser from "body-parser";
-import { ENABLE_HTTPS, SESSION_SECRET } from "./config/server";
-import { setupPassport } from "./services/auth/setup";
+import { ENABLE_HTTPS, SESSION_SECRET } from "../../config/server";
+import { setupPassport } from "../auth/setup";
 import { default as cors } from "cors";
-import { FRONTEND_URL } from "./config/auth";
+import { FRONTEND_URL } from "../../config/auth";
 import winston from "winston"
 import expressWinston from "express-winston"
 import * as http from "http";

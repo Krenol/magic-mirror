@@ -30,7 +30,7 @@ export const Birthdays = () => {
             </Typography>
             <CakeIcon fontSize='small' />
         </Box>
-        {birthdays?.list.map((data) => (
+        {birthdays?.list.slice(0, 4).map((data) => (
             <BirthdayItem item={data} key={data.name} />
         ))}
     </React.Fragment>

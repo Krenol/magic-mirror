@@ -1,6 +1,6 @@
 import { ENABLE_HTTPS, SERVER_PORT } from './config/server';
-import { HttpServer } from './http_server';
-import { HttpsServer } from './https_server';
+import { HttpServer } from './services/server/http_server';
+import { HttpsServer } from './services/server/https_server';
 import { default as WeatherRoute } from './routes/weather'
 import { default as CalendarRoute } from './routes/calendar'
 import { default as BirthdaysRoute } from './routes/birthdays'

@@ -1,9 +1,7 @@
 import React from 'react';
-import CardMedia from '@mui/material/CardMedia/CardMedia';
 import Typography from '@mui/material/Typography';
 import { Box } from '@mui/material';
-import { cardStyle, minMaxBoxStyle, parentBoxStyle } from './style';
-import { smallFontSize } from '../../assets/styles/theme';
+import { cardStyle, parentBoxStyle } from './style';
 import { CardFrame } from '../CardFrame';
 import { useGetEvents } from '../../apis/events';
 import { isToday } from '../../app/dateParser';
@@ -29,11 +27,8 @@ const UpcomingEvents = () => {
         {todaysEventItems}
     </React.Fragment>
 
-    const cardContent = <CardMedia
-        component="img"
-        sx={{ width: 'auto', height: '100%' }}
-        src={""}
-        alt="Current Weather Icon"
+    const cardContent = <Box
+
     />
 
     if (isLoading) return (<CardFrame boxContent={"Loading..."} cardStyle={cardStyle} parentBoxStyle={parentBoxStyle} />);

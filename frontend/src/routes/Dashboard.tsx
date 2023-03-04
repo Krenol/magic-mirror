@@ -6,10 +6,10 @@ import { getAuthStatus } from '../features/auth/authSlice';
 import { Box, Button } from '@mui/material';
 import SessionCheck from '../features/auth/AuthHelper';
 import { dashboardStyle } from '../assets/styles/dashboard';
-
 import DailyForecast from '../features/daily_forecast/DailyForecast';
 import Birthdays from '../features/birthdays/Birthdays';
 import HourlyWeather from '../features/hourly_forecast/HourlyForecast';
+import UpcomingEvents from '../features/upcoming_events/UpcomingEvents';
 
 export const Dashboard = () => {
   const authStatus = useAppSelector(getAuthStatus);
@@ -21,6 +21,7 @@ export const Dashboard = () => {
       <Box sx={dashboardStyle}>
         <Time />
         <Birthdays />
+        <UpcomingEvents />
         <CurrentWeather />
         <HourlyWeather />
         <DailyForecast />

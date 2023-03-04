@@ -2,9 +2,10 @@ import { useQuery } from "react-query";
 import { getDayName } from "../app/dateParser";
 import { ServerStateKeysEnum } from "../app/statekeys";
 import { DEFAULT_LOCALE } from "../constants/defaults";
+import { WeekdayFormat } from "../models/time";
 
-export const useGetDayName = (date: Date, locale: string = DEFAULT_LOCALE) =>
+export const useGetDayName = (date: Date, locale: string = DEFAULT_LOCALE, weekdayFormat: WeekdayFormat = 'short') =>
     useQuery<string, Error>({
-        queryKey: [ServerStateKeysEnum.time, date, locale],
-        queryFn: async () => getDayName(date, locale)
+        queryKey: [ServerStateKeysEnum.time, date, locale, weekdayFormat],
+        queryFn: async () => getDayName(date, locale, weekdayFormat)
     });

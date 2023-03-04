@@ -1,4 +1,4 @@
-export type events_list = {
+export type EventList = {
     count: number,
     list: Array<EventItem>
 }

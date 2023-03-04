@@ -4,3 +4,4 @@ export type TimeObject = {
     currentDate: string,
     timezoneOffset: string
 }
+export type WeekdayFormat = "short" | "long" | "narrow" | undefined

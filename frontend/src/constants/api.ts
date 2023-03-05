@@ -1,8 +1,9 @@
+const regex = RegExp('^/(.*)$')
 export const API_BACKEND_HOST = process.env.REACT_APP_API_BACKEND_HOST || "localhost"
 export const API_BACKEND_CONTEXT = process.env.REACT_APP_API_BACKEND_CONTEXT || ""
 export const API_BACKEND_PORT = process.env.REACT_APP_API_BACKEND_PORT || 3001
 export const API_BACKEND_PROTOCOL = process.env.REACT_APP_API_BACKEND_PROTOCOL || "http"
-export const BACKEND_BASE_URL = `${API_BACKEND_PROTOCOL}://${API_BACKEND_HOST}:${API_BACKEND_PORT}${API_BACKEND_CONTEXT.startsWith('/') ? API_BACKEND_CONTEXT : '/' + API_BACKEND_CONTEXT}`
+export const BACKEND_BASE_URL = `${API_BACKEND_PROTOCOL}://${API_BACKEND_HOST}:${API_BACKEND_PORT}/${API_BACKEND_CONTEXT.replace(regex, '$1')}`
 const WEATHER_ENDPOINT_CONTEXT = "weather"
 const AUTH_CONTEXT = "auth"
 const BIRTHDAY_ENDPOINT_CONTEXT = "birthdays"

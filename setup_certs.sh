@@ -6,12 +6,14 @@ if ! [ -x "$(command -v mkcert)" ]; then
 fi
 
 ssl_dir="./nginx/ssl"
+hostname="magic-mirror.local.com"
+addtional_hostnames="localhost 127.0.0.1 ::1"
 
-mkcert -key-file $ssl_dir/magic-mirror.local.com.key -cert-file $ssl_dir/magic-mirror.local.com.pem magic-mirror.local.com localhost 127.0.0.1 ::1
-cp $ssl_dir/magic-mirror.local.com.pem $ssl_dir/magic-mirror.local.com.bundle.pem
-echo "$(cat $(mkcert -CAROOT)/rootCA.pem)" >> $ssl_dir/magic-mirror.local.com.bundle.pem
+mkcert -key-file $ssl_dir/$hostname.key -cert-file $ssl_dir/$hostname.pem $hostname $addtional_hostnames
+cp $ssl_dir/$hostname.pem $ssl_dir/$hostname.bundle.pem
+echo "$(cat $(mkcert -CAROOT)/rootCA.pem)" >> $ssl_dir/$hostname.bundle.pem
 
-mkcert -key-file ./middleware/ssl/express.key -cert-file ./middleware/ssl/express.pem magic-mirror.local.com middleware localhost 127.0.0.1 ::1
+mkcert -key-file ./middleware/ssl/express.key -cert-file ./middleware/ssl/express.pem $hostname middleware $addtional_hostnames
 
-#echo "127.0.0.1 magic-mirror.local.com" >> /etc/hosts
-# echo "127.0.0.1 magic-mirror.local.com" >> /mnt/c/Windows/System32/drivers/etc/hosts
+# echo "127.0.0.1 $hostname" >> /etc/hosts
+# echo "127.0.0.1 $hostname" >> /mnt/c/Windows/System32/drivers/etc/hosts

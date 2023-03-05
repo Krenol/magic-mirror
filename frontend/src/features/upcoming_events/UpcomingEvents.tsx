@@ -5,8 +5,6 @@ import { cardStyle, parentBoxStyle } from './style';
 import { CardFrame } from '../CardFrame';
 import { useGetEvents } from '../../apis/events';
 import { getDifferenceInDays, isToday } from '../../app/dateParser';
-import { asyncFilter } from '../../app/misc';
-import { EventItem } from '../../models/calendar';
 
 const UpcomingEvents = () => {
     const {
@@ -17,7 +15,6 @@ const UpcomingEvents = () => {
 
     const todaysEventItems = (events?.count || 0) > 0 ? events?.list.map((ev) => <Typography>{ev.summary}</Typography>) :
         <Typography color="text.secondary" variant='subtitle2'>No events today</Typography>;
-
 
     const boxContent = <React.Fragment>
         <Typography variant="h5">

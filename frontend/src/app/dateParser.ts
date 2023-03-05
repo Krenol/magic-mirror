@@ -29,7 +29,7 @@ export const getDifferenceInDays = async (startDate: Date, endDate: Date): Promi
 export const isToday = async (date: Date): Promise<boolean> => {
     let today = new Date()
     console.log(date.toString())
-    return date.getDate() == today.getDate() &&
-        date.getMonth() == today.getMonth() &&
-        date.getFullYear() == today.getFullYear()
+    return date.getDate() === today.getDate() &&
+        date.getMonth() === today.getMonth() &&
+        date.getFullYear() === today.getFullYear()
 }

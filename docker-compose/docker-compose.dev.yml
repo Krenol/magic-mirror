@@ -16,7 +16,8 @@ services:
     env_file:
       - frontend.env
   nginx:
-    image: nginx:latest
+    build:
+      context: ../nginx
     ports:
       - 80:80
       - 443:443
@@ -27,7 +28,6 @@ services:
     networks:
       default:
         aliases:
-          - api.magic-mirror.local.com
           - magic-mirror.local.com
   middleware:
     build:

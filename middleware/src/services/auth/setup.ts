@@ -31,6 +31,7 @@ const initPassport = () => {
 
 const authenticateUser = (request: any, accessToken: any, refreshToken: any, profile: any, done: VerifyCallback) => {
     LOGGER.info(`User ${profile.displayName} signed in`);
+    LOGGER.info(accessToken)
     profile.access_token = accessToken;
     profile.refresh_token = refreshToken;
     return done(null, profile);

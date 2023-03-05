@@ -11,7 +11,12 @@ const UpcomingEvents = () => {
         data: events,
         isLoading,
         error
-    } = useGetEvents();
+    } = useGetEvents([
+        {
+            name: 'endDate',
+            value: `${new Date().toISOString().split('T')[0]}T23:59:59.999Z`
+        }
+    ]);
 
     const todaysEventItems = (events?.count || 0) > 0 ? events?.list.map((ev) => <Typography>{ev.summary}</Typography>) :
         <Typography color="text.secondary" variant='subtitle2'>No events today</Typography>;

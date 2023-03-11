@@ -8,7 +8,7 @@ import { EventList } from "../models/calendar";
 
 export const useGetEvents = (query_params: QUERY_PARAMS = []) => {
     return useQuery<EventList, Error>({
-        queryKey: [ServerStateKeysEnum.events, JSON.stringify(query_params)],
+        queryKey: [ServerStateKeysEnum.events, query_params],
         queryFn: async () => buildQuery(query_params)
             .then(qry => fetchJson(`${EVENTS_API}${qry}`))
             .catch(err => { throw err; }),

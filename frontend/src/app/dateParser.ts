@@ -1,4 +1,5 @@
 import { WeekdayFormat } from "../models/time";
+import { parseTime } from "./timeParser";
 
 export const getTimezoneOffset = (): string => {
     const timezoneOffset = new Date().getTimezoneOffset() / -60.0;
@@ -32,4 +33,22 @@ export const isToday = async (date: Date): Promise<boolean> => {
     return date.getDate() === today.getDate() &&
         date.getMonth() === today.getMonth() &&
         date.getFullYear() === today.getFullYear()
+}
+
+export const getDateInXDays = (daysInFuture: number = 0): Date => {
+    let date = new Date();
+    date.setDate(date.getDate() + daysInFuture);
+    return date;
+}
+
+export const getISODayStartString = (date: Date): string => {
+    return `${date.toISOString().split('T')[0]}T00:00:00.000Z`
+}
+
+export const getISODayEndString = (date: Date): string => {
+    return `${date.toISOString().split('T')[0]}T23:59:59.999Z`
+}
+
+export const getTimeFromDate = (date: Date): string => {
+    return `${parseTime(date.getHours())}:${parseTime(date.getMinutes())}`
 }

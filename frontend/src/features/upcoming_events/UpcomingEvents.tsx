@@ -7,6 +7,8 @@ import { getDateInXDays, getISODayEndString, getISODayStartString } from '../../
 import { EventList } from '../../models/calendar';
 import { Event } from "./event/Event"
 import { boldText, xSmallFontSize } from '../../assets/styles/theme';
+import React from 'react';
+import { EventItem } from "../../models/calendar";
 
 type UpcomingEventObject = {
     todayEvents: EventList | undefined,
@@ -16,26 +18,20 @@ type UpcomingEventObject = {
     errors: Array<Error | null>
 }
 
-enum NoEventsEnum {
-    today = "No events today",
-    tmrw = "No events tomorrow",
-    overmrw = "No events overmorrow"
+enum EventTextEnum {
+    noEvents = "No events",
+    manyToday = "{{X}} more events",
+    many = "{{X}} events"
 }
 
 const UpcomingEvents = () => {
     const upcomingEvents = GetUpcomingEvents();
 
-    const todaysEventItems = (upcomingEvents.todayEvents?.count || 0) > 0 ?
-        upcomingEvents.todayEvents?.list.map((ev) => <Event item={ev} showDetails={(upcomingEvents.todayEvents?.count || 0) === 2} />) :
-        noEventsItem(NoEventsEnum.today);
+    const todaysEventItems = GetTodaysEventItems(upcomingEvents.todayEvents);
 
-    const tmrwsEventItems = (upcomingEvents.tmrwEvents?.count || 0) > 0 ?
-        upcomingEvents.tmrwEvents?.list.map((ev) => <Event item={ev} showDetails={(upcomingEvents.tmrwEvents?.count || 0) === 1} />) :
-        noEventsItem(NoEventsEnum.tmrw);
+    const tmrwsEventItems = GetFutureEventItems(upcomingEvents.tmrwEvents);
 
-    const overmrwsEventItems = (upcomingEvents.overmrwEvents?.count || 0) > 0 ?
-        upcomingEvents.overmrwEvents?.list.map((ev) => <Event item={ev} showDetails={(upcomingEvents.overmrwEvents?.count || 0) === 1} />) :
-        noEventsItem(NoEventsEnum.overmrw);
+    const overmrwsEventItems = GetFutureEventItems(upcomingEvents.overmrwEvents);
 
     const boxContent = <Box>
         <Typography variant="h6">
@@ -121,8 +117,43 @@ const GetUpcomingEvents = (): UpcomingEventObject => {
     }
 }
 
-const noEventsItem = (timeFrame: NoEventsEnum) => {
-    return <Typography color="text.secondary" variant='subtitle2'>{timeFrame}</Typography>;
+const GetTodaysEventItems = (events: EventList | undefined): JSX.Element | JSX.Element[] | undefined => {
+    const eventCount = (events?.count || 0);
+    if (eventCount === 0) return NoEventsItem(EventTextEnum.noEvents);
+    if (eventCount <= 2) return events?.list.map((ev) => <Event item={ev} showDetails={true} />);
+    const summary = EventTextEnum.manyToday.replace("{{X}}", `${eventCount - 1}`);
+    const eventItem: EventItem = {
+        summary,
+        description: "",
+        start: events!.list[1].start,
+        end: events!.list[eventCount - 1].end,
+        location: ""
+    }
+    return (
+        <React.Fragment>
+            <Event item={events!.list[0]} showDetails={true} />
+            <Event item={eventItem} showDetails={true} />
+        </React.Fragment>
+    )
+}
+
+const GetFutureEventItems = (events: EventList | undefined): JSX.Element | undefined => {
+    const eventCount = (events?.count || 0);
+    if (eventCount === 0) return NoEventsItem(EventTextEnum.noEvents);
+    if (eventCount === 1) return <Event item={events!.list[0]} showDetails={true} />;
+    const summary = EventTextEnum.many.replace("{{X}}", `${eventCount}`);
+    const eventItem: EventItem = {
+        summary,
+        description: "",
+        start: events!.list[0].start,
+        end: events!.list[eventCount - 1].end,
+        location: ""
+    }
+    return <Event item={eventItem} showDetails={true} />;
+}
+
+const NoEventsItem = (timeFrame: EventTextEnum): JSX.Element => {
+    return <Typography color="text.secondary" sx={xSmallFontSize}>{timeFrame}</Typography>;
 }
 
 export default UpcomingEvents;

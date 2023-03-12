@@ -11,12 +11,12 @@ interface IEventItem {
     showDetails?: boolean
 }
 
-const MAX_STRING_LENGTH = 23
+const MAX_STRING_LENGTH = 30
 const SHOW_LOCATION = false
 
 export const Event = ({ item, showDetails = true }: IEventItem) => {
-    const [startDate, setStartDate] = useState(new Date(item.start))
-    const [endDate, setEndDate] = useState(new Date(item.end))
+    const [startDate] = useState(new Date(item.start))
+    const [endDate] = useState(new Date(item.end))
     const [summary, setSummary] = useState(item.summary)
     const [location, setLocation] = useState(item.location)
 

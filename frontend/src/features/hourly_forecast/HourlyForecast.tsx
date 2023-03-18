@@ -1,7 +1,8 @@
-import { cardStyle, parentBoxStyle } from './style';
+import { cardStyle, hourBoxStyle, parentBoxStyle } from './style';
 import ForecastItem from './forecast_item/ForecastItem';
 import { useGetHourlyWeather } from '../../apis/hourly_weather';
 import { CardFrame } from '../CardFrame';
+import { Box } from '@mui/material';
 
 const HourlyWeather = () => {
     const {
@@ -10,13 +11,17 @@ const HourlyWeather = () => {
         error
     } = useGetHourlyWeather();
 
-    const content = weather?.forecast.map((val) => (
-        <ForecastItem
-            item={val}
-            timezone={weather?.timezone}
-            key={val.time}
-        />
-    ));
+    const content = <Box sx={hourBoxStyle}>
+        {
+            weather?.forecast.map((val) => (
+                <ForecastItem
+                    item={val}
+                    timezone={weather?.timezone}
+                    key={val.time}
+                />
+            ))
+        }
+    </Box>
 
     if (isLoading) return (<CardFrame boxContent={"Loading..."} cardStyle={cardStyle} parentBoxStyle={parentBoxStyle} />);
 

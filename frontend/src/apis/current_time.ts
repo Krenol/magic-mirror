@@ -18,15 +18,17 @@ const getTime = async (new_day_cb?: (isNewDay: boolean) => void, delim: string =
     const timeObj: TimeObject = {
         hour: parseTime(now.getHours()),
         minute: parseTime(now.getMinutes()),
-        currentDate: parseDate(now, delim, locale),
-        timezoneOffset: getTimezoneOffset()
+        currentDate: parseDate(now, delim),
+        timezoneOffset: getTimezoneOffset(),
+        weekdayLong: getDayName(now, locale, 'long'),
+        weekdayShort: getDayName(now, locale, 'short')
     };
     if (new_day_cb) handleNewDayCb(timeObj, new_day_cb);
     return timeObj;
 }
 
-const parseDate = (date: Date, delim: string = ".", locale: string = DEFAULT_LOCALE): string => {
-    return `${getDayName(date, locale)} ${[getDay(date), getMonth(date), getYear(date)].join(delim)}`
+const parseDate = (date: Date, delim: string = "."): string => {
+    return `${[getDay(date), getMonth(date), getYear(date)].join(delim)}`
 }
 
 const handleNewDayCb = async (timeObj: TimeObject, new_day_cb: (isNewDay: boolean) => void) => {

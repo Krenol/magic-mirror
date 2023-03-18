@@ -16,7 +16,7 @@ export const theme = createTheme({
                 root: {
                     display: "inline-block",
                     margin: MARGIN,
-                    padding: 15,
+                    padding: 10,
                     marginRight: 0,
                     marginBottom: 0
                 }

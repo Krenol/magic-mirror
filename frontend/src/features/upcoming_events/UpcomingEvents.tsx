@@ -1,6 +1,6 @@
 import Typography from '@mui/material/Typography';
 import { Box } from '@mui/material';
-import { cardStyle, parentBoxStyle } from './style';
+import { cardStyle, columnBoxStyle, parentBoxStyle } from './style';
 import { CardFrame } from '../CardFrame';
 import { useGetEvents } from '../../apis/events';
 import { getDateInXDays, getISODayEndString, getISODayStartString } from '../../app/dateParser';
@@ -19,6 +19,7 @@ type UpcomingEventObject = {
 }
 
 enum EventTextEnum {
+    noEventsToday = "No more events today",
     noEvents = "No events",
     manyToday = "{{X}} more events",
     many = "{{X}} events"
@@ -33,14 +34,14 @@ const UpcomingEvents = () => {
 
     const overmrwsEventItems = GetFutureEventItems(upcomingEvents.overmrwEvents);
 
-    const boxContent = <Box>
-        <Typography variant="h6">
+    const boxContent = <Box sx={columnBoxStyle}>
+        <Typography variant="body1">
             TODAY
         </Typography>
         {todaysEventItems}
     </Box>
 
-    const cardContent = <Box>
+    const cardContent = <Box sx={columnBoxStyle}>
         <Box>
             <Typography sx={{ ...xSmallFontSize, ...boldText }}>
                 TOMORROW
@@ -119,7 +120,7 @@ const GetUpcomingEvents = (): UpcomingEventObject => {
 
 const GetTodaysEventItems = (events: EventList | undefined): JSX.Element | JSX.Element[] | undefined => {
     const eventCount = (events?.count || 0);
-    if (eventCount === 0) return NoEventsItem(EventTextEnum.noEvents);
+    if (eventCount === 0) return NoEventsItem(EventTextEnum.noEventsToday);
     if (eventCount <= 2) return events?.list.map((ev) => <Event item={ev} showDetails={true} />);
     const summary = EventTextEnum.manyToday.replace("{{X}}", `${eventCount - 1}`);
     const eventItem: EventItem = {

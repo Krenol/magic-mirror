@@ -1,4 +1,3 @@
-import React from 'react';
 import CardMedia from '@mui/material/CardMedia/CardMedia';
 import Typography from '@mui/material/Typography';
 import unknownWeatherIcon from '../../assets/unknown-weather.svg'
@@ -6,7 +5,7 @@ import { TEMP_UNIT, PRECIPITATION_UNIT } from '../../constants/weather';
 import { Box } from '@mui/material';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import { cardStyle, minMaxBoxStyle, parentBoxStyle } from './style';
+import { cardStyle, mainBoxStyle, minMaxBoxStyle, parentBoxStyle } from './style';
 import { smallFontSize } from '../../assets/styles/theme';
 import { useGetCurrentWeather } from '../../apis/current_weather';
 import { CardFrame } from '../CardFrame';
@@ -27,7 +26,7 @@ const CurrentWeather = () => {
 
     const weatherIcon = iconError || iconLoading ? unknownWeatherIcon : icon
 
-    const boxContent = <React.Fragment>
+    const boxContent = <Box sx={mainBoxStyle}>
         <Typography variant="h3">
             {weather?.temperature.current.toFixed() || "-"}{TEMP_UNIT}
         </Typography>
@@ -47,7 +46,7 @@ const CurrentWeather = () => {
         <Typography variant="subtitle2" color="text.secondary" sx={smallFontSize}>
             Precipitaiton: {weather?.precipitation_sum.toFixed(1) || weather?.precipitation_sum === 0 ? weather?.precipitation_sum : "-"} {PRECIPITATION_UNIT}
         </Typography>
-    </React.Fragment>
+    </Box>
 
     const cardContent = <CardMedia
         component="img"

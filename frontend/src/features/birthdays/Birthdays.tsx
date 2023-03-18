@@ -1,7 +1,7 @@
 import Typography from '@mui/material/Typography';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Box } from '@mui/material';
-import { cardStyle, headingBoxStyle } from './style';
+import { cardStyle, headingBoxStyle, itemBoxStyle, mainBoxStyle } from './style';
 import CakeIcon from '@mui/icons-material/Cake';
 import BirthdayItem from './BirthdayItem/BirthdayItem';
 import { useAppSelector } from '../../app/hooks';
@@ -23,17 +23,19 @@ export const Birthdays = () => {
         refetch()
     }, [newDayBegun, refetch]);
 
-    const content = <React.Fragment>
+    const content = <Box sx={mainBoxStyle}>
         <Box sx={headingBoxStyle}>
             <Typography color="text.primary" variant="body1" gutterBottom>
                 Upcoming Birthdays
             </Typography>
             <CakeIcon fontSize='small' />
         </Box>
-        {birthdays?.list.slice(0, 4).map((data) => (
-            <BirthdayItem item={data} key={data.name} />
-        ))}
-    </React.Fragment>
+        <Box sx={itemBoxStyle}>
+            {birthdays?.list.slice(0, 4).map((data) => (
+                <BirthdayItem item={data} key={data.name} />
+            ))}
+        </Box>
+    </Box>
 
     if (isLoading) return (<CardFrame cardContent={"Loading..."} cardStyle={cardStyle} />);
 

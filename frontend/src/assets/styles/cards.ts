@@ -1,6 +1,6 @@
 import { MARGIN } from "./theme"
 
-export const BASE_CARD_SIZE = 150
+export const BASE_CARD_SIZE = 155
 
 export const card_small = {
     width: BASE_CARD_SIZE,

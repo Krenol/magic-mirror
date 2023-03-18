@@ -35,7 +35,7 @@
     "@types/passport-google-oauth2": "^0.1.5",
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^5.55.0",
-    "@typescript-eslint/parser": "^5.54.1",
+    "@typescript-eslint/parser": "^5.55.0",
     "chai": "^4.3.7",
     "eslint": "^8.35.0",
     "json-schema-library": "^7.4.7",

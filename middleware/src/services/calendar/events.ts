@@ -2,7 +2,6 @@ import { GOOGLE_CALENDAR_ENDPOINT } from "../../config/google";
 import { EventList, EventItem, GcalApiEventList, GcalApiEventResource, EventRequestParams } from "../../models/calendar";
 import { User } from "../../models/user";
 import { fetchJson } from "../fetch";
-import { LOGGER } from "../loggers";
 import { getAccessToken, getEmail } from "../user";
 
 export const getCalendarEvents = async (user: User, params: EventRequestParams, orderBy = 'startTime'): Promise<GcalApiEventList> => {
@@ -14,7 +13,6 @@ export const getCalendarEvents = async (user: User, params: EventRequestParams, 
 
 export const getEvents = async (calendarId: string, access_token: string, params: EventRequestParams, orderBy = 'startTime'): Promise<GcalApiEventList> => {
     const url = await buildApiUrl(calendarId, params, orderBy)
-    LOGGER.info(`Retrieving events via call to ${url}`)
     return fetchJson(url, { headers: { Authorization: `Bearer ${access_token}` } })
         .then(data => data.body as GcalApiEventList)
         .catch(err => { throw err })

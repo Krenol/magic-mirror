@@ -4,4 +4,4 @@ export const cardStyle = { ...card_medium, ...{ display: 'flex', justifyContent:
 
 export const parentBoxStyle = { display: 'flex' }
 
-export const columnBoxStyle = { display: 'flex', justifyContent: 'space-between', flexDirection: 'column' }
+export const columnBoxStyle = { display: 'flex', justifyContent: 'start', flexDirection: 'column' }

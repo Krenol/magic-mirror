@@ -115,3 +115,11 @@ token.json
 
 *.pem
 *.key
+
+# Mongo data
+*.wt
+*.lock
+*.bson
+*.turtle
+WiredTiger*
+mongo/*/**

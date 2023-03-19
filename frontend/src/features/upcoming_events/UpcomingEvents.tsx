@@ -41,14 +41,14 @@ const UpcomingEvents = () => {
         {todaysEventItems}
     </Box>
 
-    const cardContent = <Box sx={columnBoxStyle}>
-        <Box>
+    const cardContent = <Box>
+        <Box sx={{ ...columnBoxStyle, ...{ height: '50%' } }}>
             <Typography sx={{ ...xSmallFontSize, ...boldText }}>
                 TOMORROW
             </Typography>
             {tmrwsEventItems}
         </Box>
-        <Box>
+        <Box sx={{ ...columnBoxStyle, ...{ height: '50%' } }}>
             <Typography sx={{ ...xSmallFontSize, ...boldText }}>
                 OVERMORROW
             </Typography>

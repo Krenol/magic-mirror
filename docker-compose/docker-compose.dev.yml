@@ -15,6 +15,8 @@ services:
       - nginx
     env_file:
       - frontend.env
+    networks:
+      - nginx
   nginx:
     build:
       context: ../nginx
@@ -26,9 +28,7 @@ services:
       - ../nginx/conf/:/etc/nginx/conf.d/:ro
       - ../nginx/ssl/:/etc/ssl/:ro
     networks:
-      default:
-        aliases:
-          - magic-mirror.local.com
+      - nginx
   middleware:
     build:
       context: ../middleware
@@ -37,8 +37,31 @@ services:
         NODE_IMG_VERSION: ${NODE_IMG_VERSION}
     depends_on:
       - nginx
+      - mongo
     volumes:
       - ../middleware/src:/opt/src
       - ../middleware/ssl:/etc/express
     env_file:
       - middleware.env
+    networks:
+      - nginx
+      - db
+    environment:
+      MONGO_USERNAME: ${MONGO_ROOT_USER}
+      MONGO_PASSWORD: ${MONGO_ROOT_PW}
+  mongo:
+    image: mongo
+    restart: always
+    volumes:
+      - ../mongo:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PW}
+    networks:
+      - db
+
+networks:
+  nginx:
+    driver: bridge
+  db:
+    driver: bridge

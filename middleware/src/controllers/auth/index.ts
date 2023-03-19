@@ -9,5 +9,5 @@ export const logout = (req: Request, res: Response) => {
 export const authCheck = async (req: Request, res: Response, next: NextFunction) => {
     return postTokenInfo(req.user as User)
         .then(() => res.json({ authenticated: true }).status(200))
-        .catch((err) => { next(new ApiError('Unauthenticated request', err, 403)) })
+        .catch((err) => { next(new ApiError('Unauthenticated request', err, 401)) })
 }

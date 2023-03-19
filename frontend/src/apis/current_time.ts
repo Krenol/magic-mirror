@@ -10,7 +10,7 @@ export const useGetTime = (new_day_cb?: (isNewDay: boolean) => void, delim: stri
         queryKey: [ServerStateKeysEnum.time, new_day_cb, locale],
         queryFn: async () => getTime(new_day_cb, delim, locale)
             .catch(err => { throw err; }),
-        refetchInterval: 5000,
+        refetchInterval: 1000,
     });
 
 const getTime = async (new_day_cb?: (isNewDay: boolean) => void, delim: string = ".", locale: string = DEFAULT_LOCALE): Promise<TimeObject> => {

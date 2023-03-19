@@ -3,7 +3,8 @@ import { Response } from "express";
 export type TResponse = {
     // eslint-disable-next-line no-use-before-define
     body: any,
-    status: number
+    status: number,
+    statusOk: boolean
 }
 
 // eslint-disable-next-line no-use-before-define

@@ -5,12 +5,24 @@ import { User } from "../models/user";
 import { LOGGER } from "./loggers";
 var refresh = require('passport-oauth2-refresh');
 
-export const fetchJson = async (url: string, options: any = {}): Promise<TResponse> => {
+export const fetchJson = async (url: string, options: any = {}, logUrl: string | undefined = undefined): Promise<TResponse> => {
+    LOGGER.info(`Calling API ${logUrl || url} to get JSON`);
     return checkInputURL(url)
         .then(() => fetch(url, options))
+        .then(response => logFetch(response, logUrl || url))
         .then(response => parseJsonResponse(response))
-        .catch(err => { throw err });
+        .catch(err => logFetchErr(err, logUrl || url));
 };
+
+const logFetch = async (res: Response, url: string): Promise<Response> => {
+    LOGGER.info(`Call to API ${url} returned status code ${res.status}`);
+    return res;
+}
+
+const logFetchErr = async (err: Error, url: string) => {
+    LOGGER.error(`Call to API ${url} returned error '${err.message}'`);
+    throw err;
+}
 
 const parseJsonResponse = async (res: Response): Promise<TResponse> => {
     return {
@@ -20,18 +32,18 @@ const parseJsonResponse = async (res: Response): Promise<TResponse> => {
     }
 }
 
-export const fetchJsonGoogleAuthRefresh = async (url: string, options: any = {}, user: User): Promise<TResponse> => {
-    return _fetchJsonGoogleAuthRefresh(url, options, user, 1);
+export const fetchJsonGoogleAuthRefresh = async (url: string, options: any = {}, user: User, logUrl: string | undefined = undefined): Promise<TResponse> => {
+    return _fetchJsonGoogleAuthRefresh(url, options, user, 1, logUrl);
 };
 
-const _fetchJsonGoogleAuthRefresh = async (url: string, options: any = {}, user: User, refreshRetries: number): Promise<TResponse> => {
-    const rsp = await fetchJson(url, options);
+const _fetchJsonGoogleAuthRefresh = async (url: string, options: any = {}, user: User, refreshRetries: number, logUrl: string | undefined = undefined): Promise<TResponse> => {
+    const rsp = await fetchJson(url, options, logUrl);
     if (rsp.status === 401 && refreshRetries > 0) {
         LOGGER.info(`Unauthenticated Google Request. Retry with refresh token of user`);
         refresh.requestNewAccessToken('google', user.refresh_token, (err: Error, accessToken: string) => {
             if (err || !accessToken) throw new ApiError('Authentication expired', err, 401);
             user.access_token = accessToken;
-            _fetchJsonGoogleAuthRefresh(url, options, user, refreshRetries--);
+            _fetchJsonGoogleAuthRefresh(url, options, user, refreshRetries--, logUrl);
         })
     } else if (rsp.status === 401 && refreshRetries === 0) {
         LOGGER.warn(`Unauthenticated Google Request. No more retries left!`);
@@ -40,11 +52,13 @@ const _fetchJsonGoogleAuthRefresh = async (url: string, options: any = {}, user:
     return rsp;
 };
 
-export const fetchBuffer = async (url: string, options: any = {}): Promise<TResponse> => {
+export const fetchBuffer = async (url: string, options: any = {}, logUrl: string | undefined = undefined): Promise<TResponse> => {
+    LOGGER.info(`Calling API ${logUrl || url} to get BLOB`);
     return checkInputURL(url)
         .then(() => fetch(url, options))
+        .then(response => logFetch(response, logUrl || url))
         .then(response => parseBufferResponse(response))
-        .catch(err => { throw err });
+        .catch(err => logFetchErr(err, logUrl || url));
 };
 
 const parseBufferResponse = async (res: Response): Promise<TResponse> => {

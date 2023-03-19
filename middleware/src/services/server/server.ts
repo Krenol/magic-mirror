@@ -5,10 +5,9 @@ import { ENABLE_HTTPS, SESSION_SECRET } from "../../config/server";
 import { setupPassport } from "../auth/setup";
 import { default as cors } from "cors";
 import { FRONTEND_URL } from "../../config/auth";
-import winston from "winston"
-import expressWinston from "express-winston"
 import * as http from "http";
 import * as https from "https";
+import { EXPRESS_LOGGER } from "../loggers";
 
 export abstract class Server<T extends http.Server | https.Server> {
     protected readonly _app: Express;
@@ -40,20 +39,7 @@ export abstract class Server<T extends http.Server | https.Server> {
     }
 
     private setupLogging() {
-        this._app.use(expressWinston.logger({
-            transports: [
-                new winston.transports.Console()
-            ],
-            format: winston.format.combine(
-                winston.format.colorize(),
-                winston.format.json()
-            ),
-            headerBlacklist: ['Cookie'],
-            meta: true,
-            msg: "HTTP {{req.method}} {{req.url}}",
-            expressFormat: true,
-            colorize: true
-        }));
+        this._app.use(EXPRESS_LOGGER);
     }
 
     private setupSession() {

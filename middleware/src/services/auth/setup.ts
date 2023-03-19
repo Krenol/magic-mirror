@@ -5,6 +5,7 @@ import { OAUTH2_CLIENT } from "../../config/google";
 import { PROXY_SERVER_CONTEXT, PROXY_SERVER_HOSTNAME, PROXY_SERVER_PORT, PROXY_SERVER_PROTOCOL } from "../../config/server";
 import { LOGGER } from "../loggers";
 import { GOOGLE_CALLBACK_CONTEXT } from "../../config/auth";
+var refresh = require('passport-oauth2-refresh')
 
 const regex = RegExp('^/(.*)$')
 
@@ -28,6 +29,7 @@ const initPassport = () => {
     passport.deserializeUser((user: Express.User, done: (err: any, user?: false | Express.User | null | undefined) => void) => {
         done(null, user)
     })
+    refresh.use(strategy)
 }
 
 const authenticateUser = (request: any, accessToken: any, refreshToken: any, profile: any, done: VerifyCallback) => {

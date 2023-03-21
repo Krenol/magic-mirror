@@ -1,0 +1,13 @@
+ARG GRAFANA_VERSION=8.2.6
+
+FROM grafana/grafana:${GRAFANA_VERSION}
+
+USER grafana
+
+WORKDIR /etc/grafana
+
+COPY provisioning/datasources ./provisioning/datasources
+
+COPY grafana.ini .
+
+COPY ssl /etc/ssl

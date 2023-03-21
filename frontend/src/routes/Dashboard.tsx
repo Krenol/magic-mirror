@@ -3,13 +3,14 @@ import Time from '../features/time/Time';
 import React from 'react';
 import { useAppSelector } from '../app/hooks';
 import { getAuthStatus } from '../features/auth/authSlice';
-import { Box, Button } from '@mui/material';
+import { Box } from '@mui/material';
 import SessionCheck from '../features/auth/AuthHelper';
 import { dashboardStyle } from '../assets/styles/dashboard';
 import DailyForecast from '../features/daily_forecast/DailyForecast';
 import Birthdays from '../features/birthdays/Birthdays';
 import HourlyWeather from '../features/hourly_forecast/HourlyForecast';
 import UpcomingEvents from '../features/upcoming_events/UpcomingEvents';
+import { LogoutButton } from '../features/logout_button/LogoutButton';
 
 export const Dashboard = () => {
   const authStatus = useAppSelector(getAuthStatus);
@@ -26,7 +27,7 @@ export const Dashboard = () => {
         <HourlyWeather />
         <DailyForecast />
       </Box>
-      <Button variant="outlined" href="/logout">Logout</Button>
+      <LogoutButton />
     </React.Fragment>
   );
 }

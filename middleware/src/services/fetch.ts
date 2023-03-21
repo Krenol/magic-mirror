@@ -1,7 +1,7 @@
 import { ALLOWED_URLS } from "../config/apis";
 import { ApiError } from "../models/api_error";
 import { TResponse } from "../models/fetch";
-import { User } from "../models/user";
+import { GoogleUser } from "../models/express_user";
 import { LOGGER } from "./loggers";
 var refresh = require('passport-oauth2-refresh');
 
@@ -32,11 +32,11 @@ const parseJsonResponse = async (res: Response): Promise<TResponse> => {
     }
 }
 
-export const fetchJsonGoogleAuthRefresh = async (url: string, options: any = {}, user: User, logUrl: string | undefined = undefined): Promise<TResponse> => {
+export const fetchJsonGoogleAuthRefresh = async (url: string, options: any = {}, user: GoogleUser, logUrl: string | undefined = undefined): Promise<TResponse> => {
     return _fetchJsonGoogleAuthRefresh(url, options, user, 1, logUrl);
 };
 
-const _fetchJsonGoogleAuthRefresh = async (url: string, options: any = {}, user: User, refreshRetries: number, logUrl: string | undefined = undefined): Promise<TResponse> => {
+const _fetchJsonGoogleAuthRefresh = async (url: string, options: any = {}, user: GoogleUser, refreshRetries: number, logUrl: string | undefined = undefined): Promise<TResponse> => {
     const rsp = await fetchJson(url, options, logUrl);
     if (rsp.status === 401 && refreshRetries > 0) {
         LOGGER.info(`Unauthenticated Google Request. Retry with refresh token of user`);

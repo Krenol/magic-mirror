@@ -1,10 +1,10 @@
 import { GOOGLE_CALENDAR_ENDPOINT } from "../../config/google";
 import { EventList, EventItem, GcalApiEventList, GcalApiEventResource, EventRequestParams } from "../../models/calendar";
-import { User } from "../../models/user";
+import { GoogleUser } from "../../models/express_user";
 import { fetchJson } from "../fetch";
 import { getAccessToken, getEmail } from "../user";
 
-export const getCalendarEvents = async (user: User, params: EventRequestParams, orderBy = 'startTime'): Promise<GcalApiEventList> => {
+export const getCalendarEvents = async (user: GoogleUser, params: EventRequestParams, orderBy = 'startTime'): Promise<GcalApiEventList> => {
     const email = await getEmail(user);
     const access_token = await getAccessToken(user);
     const events = await getEvents(email, access_token, params, orderBy);

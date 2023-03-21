@@ -8,6 +8,7 @@ import { FRONTEND_URL } from "../../config/auth";
 import * as http from "http";
 import * as https from "https";
 import { EXPRESS_LOGGER } from "../loggers";
+const MongoStore = require("connect-mongo")(session);
 
 export abstract class Server<T extends http.Server | https.Server> {
     protected readonly _app: Express;

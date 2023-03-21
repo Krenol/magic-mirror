@@ -2,10 +2,10 @@ import { EventRequestParams, GcalApiEventList } from "../../models/calendar";
 import { Birthday, BirthdayList, GcalApiBirthdayEventResource } from "../../models/birthdays";
 import { getAccessToken } from "../user";
 import { CALENDAR_CONFIG } from "../../config/google";
-import { User } from "../../models/user";
+import { GoogleUser } from "../../models/express_user";
 import { getEvents } from "./events";
 
-export const getBirthdayEvents = async (user: User, params: EventRequestParams, orderBy = 'startTime'): Promise<GcalApiEventList> => {
+export const getBirthdayEvents = async (user: GoogleUser, params: EventRequestParams, orderBy = 'startTime'): Promise<GcalApiEventList> => {
     const access_token = await getAccessToken(user);
     const calendarID = encodeURIComponent(CALENDAR_CONFIG.BIRTHDAY_ID);
     return getEvents(calendarID, access_token, params, orderBy);

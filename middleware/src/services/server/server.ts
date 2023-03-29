@@ -8,7 +8,7 @@ import { FRONTEND_URL } from "../../config/auth";
 import * as http from "http";
 import * as https from "https";
 import { EXPRESS_LOGGER } from "../loggers";
-const MongoStore = require("connect-mongo")(session);
+import MongoStore from "connect-mongo";
 
 export abstract class Server<T extends http.Server | https.Server> {
     protected readonly _app: Express;
@@ -47,11 +47,12 @@ export abstract class Server<T extends http.Server | https.Server> {
         this._app.use(session({
             secret: SESSION_SECRET,
             resave: false,
-            saveUninitialized: false,
+            saveUninitialized: true,
             cookie: {
                 secure: ENABLE_HTTPS,
                 httpOnly: true
-            }
+            },
+            store: new MongoStore({ mongoUrl: `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@mongo:27017/mongo-sess?authSource=admin&ssl=false` })
         }))
     }
 

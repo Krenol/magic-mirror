@@ -29,8 +29,10 @@ const initPassport = () => {
         let u = user as GoogleUser
         done(null, u.sub)
     })
-    passport.deserializeUser((user: Express.User, done: (err: any, user?: false | Express.User | null | undefined) => void) => {
-        done(null, user)
+    passport.deserializeUser((id: string, done: (err: any, user?: false | Express.User | null | undefined) => void) => {
+        DbUser.findOne({ sub: id })
+            .then(user => done(null, user))
+            .catch(err => done(err, null))
     })
     refresh.use(strategy)
 }
@@ -55,5 +57,9 @@ const authenticateUser = (request: any, accessToken: any, refreshToken: any, pro
                 user.save()
                     .then(u => done(null, u));
             }
+        })
+        .catch(err => {
+            LOGGER.error(err.message);
+            done(err);
         })
 }

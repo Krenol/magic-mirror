@@ -1,5 +1,4 @@
 import { Schema, model } from "mongoose"
-import { URL } from "url"
 
 const UserSchema = new Schema(
     {
@@ -13,7 +12,7 @@ const UserSchema = new Schema(
             type: String
         },
         photo: {
-            type: URL
+            type: String
         },
         email: {
             type: String,
@@ -37,4 +36,4 @@ const UserSchema = new Schema(
     { strict: false }
 );
 
-export const DbUser = model("users", UserSchema);
+export const DbUser = model("user", UserSchema);

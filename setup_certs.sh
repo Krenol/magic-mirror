@@ -20,6 +20,9 @@ mkcert -key-file ./middleware/ssl/express.key -cert-file ./middleware/ssl/expres
 
 mkcert -key-file ./grafana/ssl/grafana.key -cert-file ./grafana/ssl/grafana.pem $hostname_grafana grafana $addtional_hostnames
 
+echo "$(cat $(mkcert -CAROOT)/rootCA.pem)" > ./grafana/rootCa.pem
+
+echo "$(cat $(mkcert -CAROOT)/rootCA.pem)" > ./middleware/rootCa.pem
 
 # echo "127.0.0.1 $hostname" >> /etc/hosts
 # echo "127.0.0.1 $hostname" >> /mnt/c/Windows/System32/drivers/etc/hosts

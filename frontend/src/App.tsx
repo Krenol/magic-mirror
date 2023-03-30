@@ -8,7 +8,8 @@ const queryCache = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: true,
-      retry: false,
+      retry: 2,
+      retryDelay: 300,
       staleTime: 60000,
     },
   },

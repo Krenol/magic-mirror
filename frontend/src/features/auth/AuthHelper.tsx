@@ -1,18 +1,24 @@
 import { useCallback } from 'react';
 import { useGetAuthStatus } from '../../apis/auth_status';
-import { logout } from '../../apis/logout';
 import { useAppDispatch } from '../../app/hooks';
 import { setAuthenticated } from './authSlice'
 
-const SessionCheck = () => {
+interface ISessionCheck {
+    onUnauthenticated?: () => void,
+    onAuthenticated?: () => void,
+}
+
+const SessionCheck = ({ onUnauthenticated, onAuthenticated }: ISessionCheck) => {
     const dispatch = useAppDispatch();
 
     const handleSessionCheckResponse = useCallback(async (authenticated: boolean) => {
         dispatch(setAuthenticated(authenticated));
-        if (!authenticated) {
-            logout();
+        if (!authenticated && onUnauthenticated) {
+            onUnauthenticated();
+        } else if (authenticated && onAuthenticated) {
+            onAuthenticated();
         }
-    }, [dispatch]);
+    }, [dispatch, onUnauthenticated, onAuthenticated]);
 
     useGetAuthStatus(handleSessionCheckResponse);
     return (null)

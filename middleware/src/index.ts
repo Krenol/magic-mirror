@@ -7,17 +7,13 @@ import { default as BirthdaysRoute } from './routes/birthdays'
 import { default as AuthRoute } from './routes/auth';
 import { NextFunction, Request, Response } from 'express';
 import { ApiError } from './models/api_error';
-import { EXPRESS_ERROR_LOGGER, LOGGER } from './services/loggers';
-import { connect } from 'mongoose';
+import { EXPRESS_ERROR_LOGGER } from './services/loggers';
+import { MongoDb } from './services/database/mongodb';
+import { mongoDbData } from './config/database';
 
-const initMongo = async () => {
-    await connect(`mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@mongo:27017/mongo-sess?authSource=admin&ssl=false`)
-    LOGGER.info("Connected to mongo")
-}
+const mongoDb: MongoDb = new MongoDb(mongoDbData);
 
-initMongo();
-
-const server = ENABLE_HTTPS ? new HttpsServer(SERVER_PORT) : new HttpServer(SERVER_PORT);
+const server = ENABLE_HTTPS ? new HttpsServer(mongoDb, SERVER_PORT) : new HttpServer(mongoDb, SERVER_PORT);
 
 server.app.use('/weather', WeatherRoute)
 server.app.use('/calendar', CalendarRoute)

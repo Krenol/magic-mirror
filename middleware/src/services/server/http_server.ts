@@ -1,10 +1,11 @@
 import * as http from "http";
+import { Database } from "../database/database";
 import { LOGGER } from "../loggers";
 import { Server } from "./server";
 
 export class HttpServer extends Server<http.Server> {
-    constructor(port = 3001) {
-        super(port)
+    constructor(database: Database, port = 3001) {
+        super(database, port)
     }
 
     public start() {

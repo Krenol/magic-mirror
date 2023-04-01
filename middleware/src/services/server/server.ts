@@ -9,10 +9,13 @@ import * as http from "http";
 import * as https from "https";
 import { EXPRESS_LOGGER } from "../loggers";
 import MongoStore from "connect-mongo";
+import { Database } from "../database/database";
+import { getSessionStore } from "./session_store";
 
 export abstract class Server<T extends http.Server | https.Server> {
     protected readonly _app: Express;
     protected readonly _port: number;
+    private readonly _database: Database;
 
     get app(): Express {
         return this._app;
@@ -24,11 +27,12 @@ export abstract class Server<T extends http.Server | https.Server> {
         return this._server;
     }
 
-    constructor(port = 3001) {
+    constructor(database: Database, port = 3001) {
+        this._port = port
+        this._database = database;
         this._app = express();
         this._app.set("port", port);
         this.configureMiddleware();
-        this._port = port
     }
 
     public configureMiddleware() {
@@ -52,7 +56,7 @@ export abstract class Server<T extends http.Server | https.Server> {
                 secure: ENABLE_HTTPS,
                 httpOnly: true
             },
-            store: new MongoStore({ mongoUrl: `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@mongo:27017/mongo-sess?authSource=admin&ssl=false` })
+            store: getSessionStore(this._database)
         }))
     }
 

@@ -1,15 +1,11 @@
 import passport from "passport";
 import { Express } from "express";
 import { Strategy, VerifyCallback } from "passport-google-oauth2";
-import { OAUTH2_CLIENT } from "../../config/google";
-import { PROXY_SERVER_CONTEXT, PROXY_SERVER_HOSTNAME, PROXY_SERVER_PORT, PROXY_SERVER_PROTOCOL } from "../../config/server";
 import { LOGGER } from "../loggers";
-import { GOOGLE_CALLBACK_CONTEXT } from "../../config/auth";
+import { GOOGLE_AUTH_STRATEGY_OPTIONS } from "../../config/auth";
 import { GoogleUser } from "../../models/express_user";
-import { DbUser } from "../../models/mongo/users";
+import { DtoUser, IDtoUser } from "../../models/mongo/users";
 var refresh = require('passport-oauth2-refresh')
-
-const regex = RegExp('^/(.*)$')
 
 export const setupPassport = (app: Express) => {
     app.use(passport.initialize());
@@ -18,19 +14,13 @@ export const setupPassport = (app: Express) => {
 }
 
 const initPassport = () => {
-    const strategy = new Strategy({
-        clientID: OAUTH2_CLIENT.CLIENT_ID,
-        clientSecret: OAUTH2_CLIENT.CLIENT_SECRET,
-        callbackURL: `${PROXY_SERVER_PROTOCOL}://${PROXY_SERVER_HOSTNAME}:${PROXY_SERVER_PORT}${PROXY_SERVER_CONTEXT}/${GOOGLE_CALLBACK_CONTEXT.replace(regex, '$1')}`,
-        passReqToCallback: true
-    }, authenticateUser);
+    const strategy = new Strategy(GOOGLE_AUTH_STRATEGY_OPTIONS, authenticateUser);
     passport.use(strategy)
     passport.serializeUser((user: Express.User, done: (err: any, id?: unknown) => void) => {
-        let u = user as GoogleUser
-        done(null, u.sub)
+        done(null, (user as GoogleUser).sub)
     })
     passport.deserializeUser((id: string, done: (err: any, user?: false | Express.User | null | undefined) => void) => {
-        DbUser.findOne({ sub: id })
+        DtoUser.findOne({ sub: id })
             .then(user => done(null, user))
             .catch(err => done(err, null))
     })
@@ -38,28 +28,48 @@ const initPassport = () => {
 }
 
 const authenticateUser = (request: any, accessToken: any, refreshToken: any, profile: any, done: VerifyCallback) => {
-    LOGGER.info(`User ${profile.sub} signed in`);
-    DbUser.findOne({ sub: profile.sub })
+    DtoUser.findOne({ sub: profile.sub })
         .then(user => {
             if (!user) {
-                const newUser = new DbUser({
-                    email: profile.email,
-                    sub: profile.sub,
-                    displayName: profile.displayName,
-                    refresh_token: refreshToken,
-                    access_token: accessToken
-                });
-                newUser.save()
-                    .then(u => done(null, u));
+                handleNewUser(profile, accessToken, refreshToken, done)
             } else {
-                user.refresh_token = refreshToken;
-                user.access_token = accessToken;
-                user.save()
-                    .then(u => done(null, u));
+                handleFoundUser(user, accessToken, refreshToken, done);
             }
         })
         .catch(err => {
             LOGGER.error(err.message);
             done(err);
         })
+}
+
+const handleNewUser = (profile: any, accessToken: any, refreshToken: any, done: VerifyCallback) => {
+    createNewUserDto(profile, accessToken, refreshToken)
+        .then(user => user.save())
+        .then(u => {
+            LOGGER.info(`New User ${profile.sub} registered with email ${profile.email}`);
+            return u;
+        })
+        .then(u => done(null, u));
+}
+
+const createNewUserDto = async (profile: any, accessToken: any, refreshToken: any): Promise<IDtoUser> => {
+    return new DtoUser({
+        email: profile.email,
+        sub: profile.sub,
+        displayName: profile.displayName,
+        refresh_token: refreshToken,
+        access_token: accessToken
+    });
+}
+
+const handleFoundUser = (user: IDtoUser, accessToken: any, refreshToken: any, done: VerifyCallback) => {
+    user.refresh_token = refreshToken;
+    user.access_token = accessToken;
+
+    user.save()
+        .then(u => {
+            LOGGER.info(`User ${user.sub} signed in`);
+            return u;
+        })
+        .then(u => done(null, u));
 }

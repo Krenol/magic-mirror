@@ -10,9 +10,10 @@ import { ApiError } from './models/api_error';
 import { EXPRESS_ERROR_LOGGER } from './services/loggers';
 import { MongoDb } from './services/database/mongodb';
 import { mongoDbData } from './config/database';
+import { setupAllowedUsers } from './services/auth/setup_authorization';
 
 const mongoDb: MongoDb = new MongoDb(mongoDbData);
-
+setupAllowedUsers();
 const server = ENABLE_HTTPS ? new HttpsServer(mongoDb, SERVER_PORT) : new HttpServer(mongoDb, SERVER_PORT);
 
 server.app.use('/weather', WeatherRoute)

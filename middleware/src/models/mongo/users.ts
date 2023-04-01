@@ -1,4 +1,15 @@
-import { Schema, model } from "mongoose"
+import { Schema, model, Document } from "mongoose"
+
+export interface IDtoUser extends Document {
+    email: string,
+    displayName?: string,
+    given_name?: string,
+    family_name?: string,
+    photo?: string,
+    sub: string,
+    access_token: string,
+    refresh_token: string
+}
 
 const UserSchema = new Schema(
     {
@@ -36,4 +47,4 @@ const UserSchema = new Schema(
     { strict: false }
 );
 
-export const DbUser = model("user", UserSchema);
+export const DtoUser = model("user", UserSchema);

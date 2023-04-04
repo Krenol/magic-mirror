@@ -1,9 +1,11 @@
 import { ALLOWED_USERS } from "../../config/auth";
 import { DtoAllowedUserEmail, IAllowedUserEmail } from "../../models/mongo/allowed_user_emails"
+import { DtoUser } from "../../models/mongo/users";
 import { LOGGER } from "../loggers";
 
 export const setupAllowedUsers = () => {
     LOGGER.debug(`Adding allowed user emails ${JSON.stringify(ALLOWED_USERS)}`);
+    DtoAllowedUserEmail.deleteMany({ email: { $nin: ALLOWED_USERS } }).exec();
     ALLOWED_USERS.forEach(email => {
         DtoAllowedUserEmail.findOne({ email })
             .then(foundEntry => handleResponse(foundEntry, email))
@@ -21,4 +23,9 @@ const handleResponse = (foundEntry: IAllowedUserEmail | null, email: string) => 
         email
     })
     return newMail.save();
+}
+
+export const removeUnauthorizedUsers = () => {
+    LOGGER.debug(`Remove unauthorized users from the DB`);
+    DtoUser.deleteMany({ email: { $nin: ALLOWED_USERS } }).exec();
 }

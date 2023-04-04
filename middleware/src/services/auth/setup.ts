@@ -5,6 +5,7 @@ import { LOGGER } from "../loggers";
 import { GOOGLE_AUTH_STRATEGY_OPTIONS } from "../../config/auth";
 import { GoogleUser } from "../../models/express_user";
 import { DtoUser, IDtoUser } from "../../models/mongo/users";
+import { DtoAllowedUserEmail } from "../../models/mongo/allowed_user_emails";
 var refresh = require('passport-oauth2-refresh')
 
 export const setupPassport = (app: Express) => {
@@ -38,18 +39,26 @@ const authenticateUser = (request: any, accessToken: any, refreshToken: any, pro
         })
         .catch(err => {
             LOGGER.error(err.message);
-            done(err);
+            done(err, null);
         })
 }
 
 const handleNewUser = (profile: any, accessToken: any, refreshToken: any, done: VerifyCallback) => {
-    createNewUserDto(profile, accessToken, refreshToken)
+    checkIfAuthorizedNewUser(profile.email)
+        .then(() => createNewUserDto(profile, accessToken, refreshToken))
         .then(user => user.save())
         .then(u => {
             LOGGER.info(`New User ${profile.sub} registered with email ${profile.email}`);
             return u;
         })
-        .then(u => done(null, u));
+        .then(u => done(null, u))
+        .catch(err => done(err, null));
+}
+
+const checkIfAuthorizedNewUser = async (email: string) => {
+    let count = await DtoAllowedUserEmail.count({ email }).exec();
+    if (count > 0) return;
+    throw new Error(`Unauthorized User with email ${email}`);
 }
 
 const createNewUserDto = async (profile: any, accessToken: any, refreshToken: any): Promise<IDtoUser> => {
@@ -65,7 +74,6 @@ const createNewUserDto = async (profile: any, accessToken: any, refreshToken: an
 const handleFoundUser = (user: IDtoUser, accessToken: any, refreshToken: any, done: VerifyCallback) => {
     user.refresh_token = refreshToken;
     user.access_token = accessToken;
-
     user.save()
         .then(u => {
             LOGGER.info(`User ${user.sub} signed in`);

@@ -1,7 +1,7 @@
 export type EventRequestParams = {
     maxResults: number,
-    startTime: string,
-    endTime: string | undefined
+    minTime: string,
+    maxTime?: string
 }
 
 export type EventList = {

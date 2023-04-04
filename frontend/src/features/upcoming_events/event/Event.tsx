@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import React, { useEffect, useState } from "react";
-import { getTimeDifferenceInHours, getTimeFromDate, getDate } from "../../../app/dateParser";
+import { getTimeDifferenceInHours, getTimeFromDate, getDate, isSameDate } from "../../../app/dateParser";
 import { xSmallFontSize } from "../../../assets/styles/theme";
 import { EventItem } from "../../../models/calendar";
 import { hideTextOverflow, sx } from "./style";
@@ -19,6 +19,7 @@ export const Event = ({ item, showDetails = true }: IEventItem) => {
     const [summary, setSummary] = useState(item.summary)
     const [location, setLocation] = useState(item.location)
     const [timeDiffInHours, setTimeDiffInHours] = useState<number>()
+    const [differentStartDate] = useState(isSameDate(new Date(), startDate))
 
     useEffect(() => {
         setSummary(item.summary || "");
@@ -33,9 +34,11 @@ export const Event = ({ item, showDetails = true }: IEventItem) => {
         </Typography>
     </React.Fragment>
 
+    const eventStartString = differentStartDate ? 'until ' : `${getTimeFromDate(startDate)}-`
+
     const eventTime = (timeDiffInHours || 0) < 24
-        ? `${getTimeFromDate(startDate)}-${getTimeFromDate(endDate)}`
-        : `${getTimeFromDate(startDate)}-${getDate(endDate)} ${getTimeFromDate(endDate)}`;
+        ? `${eventStartString}${getTimeFromDate(endDate)}`
+        : `${eventStartString}${getDate(endDate)} ${getTimeFromDate(endDate)}`;
 
     const details = <React.Fragment>
         {SHOW_LOCATION && locationItem}

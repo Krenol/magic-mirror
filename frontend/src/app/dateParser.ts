@@ -22,6 +22,10 @@ export const getYear = (date: Date): string => {
     return date.getFullYear().toString();
 }
 
+export const getIsoDate = (date: Date): string => {
+    return `${getYear(date)}-${getMonth(date)}-${getDay(date)}`
+}
+
 export const getDate = (date: Date): string => {
     return `${getDay(date)}.${getMonth(date)}.${getYear(date)}`
 }
@@ -37,10 +41,13 @@ export const getDifferenceInDays = async (startDate: Date, endDate: Date): Promi
 }
 
 export const isToday = async (date: Date): Promise<boolean> => {
-    let today = new Date()
-    return date.getDate() === today.getDate() &&
-        date.getMonth() === today.getMonth() &&
-        date.getFullYear() === today.getFullYear()
+    return isSameDate(date, new Date());
+}
+
+export const isSameDate = (date1: Date, date2: Date): boolean => {
+    return date1.getDate() === date2.getDate() &&
+        date1.getMonth() === date2.getMonth() &&
+        date1.getFullYear() === date2.getFullYear()
 }
 
 export const getDateInXDays = (daysInFuture: number = 0): Date => {

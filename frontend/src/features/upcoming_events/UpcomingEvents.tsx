@@ -3,12 +3,13 @@ import { Box } from '@mui/material';
 import { cardStyle, columnBoxStyle, parentBoxStyle } from './style';
 import { CardFrame } from '../CardFrame';
 import { useGetEvents } from '../../apis/events';
-import { getDateInXDays, getISODayEndString, getISODayStartString } from '../../app/dateParser';
+import { getIsoDate, getDateInXDays } from '../../app/dateParser';
 import { EventList } from '../../models/calendar';
 import { Event } from "./event/Event"
 import { boldText, xSmallFontSize } from '../../assets/styles/theme';
 import React from 'react';
 import { EventItem } from "../../models/calendar";
+import { getISODayEndString } from '../../app/dateParser';
 
 type UpcomingEventObject = {
     todayEvents: EventList | undefined,
@@ -74,7 +75,7 @@ const GetUpcomingEvents = (): UpcomingEventObject => {
         error: todayError
     } = useGetEvents([
         {
-            name: 'endDate',
+            name: 'maxTime',
             value: getISODayEndString(new Date())
         }
     ]);
@@ -86,11 +87,7 @@ const GetUpcomingEvents = (): UpcomingEventObject => {
     } = useGetEvents([
         {
             name: 'startDate',
-            value: getISODayStartString(getDateInXDays(1))
-        },
-        {
-            name: 'endDate',
-            value: getISODayEndString(getDateInXDays(1))
+            value: getIsoDate(getDateInXDays(1))
         }
     ]);
 
@@ -101,11 +98,7 @@ const GetUpcomingEvents = (): UpcomingEventObject => {
     } = useGetEvents([
         {
             name: 'startDate',
-            value: getISODayStartString(getDateInXDays(2))
-        },
-        {
-            name: 'endDate',
-            value: getISODayEndString(getDateInXDays(2))
+            value: getIsoDate(getDateInXDays(2))
         }
     ]);
 

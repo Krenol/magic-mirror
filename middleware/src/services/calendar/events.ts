@@ -13,14 +13,14 @@ export const getCalendarEvents = async (user: GoogleUser, params: EventRequestPa
 
 export const getEvents = async (calendarId: string, access_token: string, params: EventRequestParams, orderBy = 'startTime'): Promise<GcalApiEventList> => {
     const url = await buildApiUrl(calendarId, params, orderBy)
-    return fetchJson(url, { headers: { Authorization: `Bearer ${access_token}` } }, GOOGLE_CALENDAR_ENDPOINT)
+    return fetchJson(url, { headers: { Authorization: `Bearer ${access_token}` } })
         .then(data => data.body as GcalApiEventList)
         .catch(err => { throw err })
 }
 
 const buildApiUrl = async (calendarId: string, params: EventRequestParams, orderBy = 'startTime'): Promise<string> => {
-    let query = `timeMin=${params.startTime}&maxResults=${params.maxResults}&singleEvents=true&orderBy=${orderBy}`;
-    query += params.endTime ? `&timeMax=${params.endTime}` : "";
+    let query = `timeMin=${params.minTime}&maxResults=${params.maxResults}&singleEvents=true&orderBy=${orderBy}`;
+    query += params.maxTime ? `&timeMax=${params.maxTime}` : "";
     const url = `${GOOGLE_CALENDAR_ENDPOINT}/${calendarId}/events?${query}`
     return url;
 }

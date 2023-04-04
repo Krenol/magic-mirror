@@ -22,6 +22,15 @@ export const getYear = (date: Date): string => {
     return date.getFullYear().toString();
 }
 
+export const getDate = (date: Date): string => {
+    return `${getDay(date)}.${getMonth(date)}.${getYear(date)}`
+}
+
+export const getTimeDifferenceInHours = async (startDate: Date, endDate: Date): Promise<number> => {
+    const diffTime = endDate.getTime() - startDate.getTime();
+    return diffTime * 2.7777777777778E-7;
+}
+
 export const getDifferenceInDays = async (startDate: Date, endDate: Date): Promise<number> => {
     const diffTime = endDate.getTime() - startDate.getTime();
     return Math.round(diffTime / (1000 * 60 * 60 * 24));
@@ -29,7 +38,6 @@ export const getDifferenceInDays = async (startDate: Date, endDate: Date): Promi
 
 export const isToday = async (date: Date): Promise<boolean> => {
     let today = new Date()
-    console.log(date.toString())
     return date.getDate() === today.getDate() &&
         date.getMonth() === today.getMonth() &&
         date.getFullYear() === today.getFullYear()

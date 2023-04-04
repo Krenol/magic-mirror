@@ -20,7 +20,7 @@ const BirthdayItem = ({ item }: IBirthdayItem) => {
         const bday = new Date(item.date);
         const today = new Date(new Date().toDateString());
         getDifferenceInDays(today, bday)
-            .then(diff => setDays(diff))
+            .then(setDays)
     }, [item.date])
 
     useEffect(() => {

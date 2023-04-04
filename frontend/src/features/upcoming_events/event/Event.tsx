@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import React, { useEffect, useState } from "react";
-import { getTimeFromDate } from "../../../app/dateParser";
+import { getTimeDifferenceInHours, getTimeFromDate, getDate } from "../../../app/dateParser";
 import { xSmallFontSize } from "../../../assets/styles/theme";
 import { EventItem } from "../../../models/calendar";
 import { hideTextOverflow, sx } from "./style";
@@ -18,11 +18,14 @@ export const Event = ({ item, showDetails = true }: IEventItem) => {
     const [endDate] = useState(new Date(item.end))
     const [summary, setSummary] = useState(item.summary)
     const [location, setLocation] = useState(item.location)
+    const [timeDiffInHours, setTimeDiffInHours] = useState<number>()
 
     useEffect(() => {
-        setSummary(item.summary || "")
-        setLocation(item.location || "")
-    }, [item.summary, item.location]);
+        setSummary(item.summary || "");
+        setLocation(item.location || "");
+        getTimeDifferenceInHours(startDate, endDate)
+            .then(setTimeDiffInHours);
+    }, [item.summary, item.location, startDate, endDate]);
 
     const locationItem = <React.Fragment>
         <Typography variant="subtitle2" color="text.secondary" align="left" sx={{ ...xSmallFontSize, ...hideTextOverflow }}>
@@ -30,10 +33,14 @@ export const Event = ({ item, showDetails = true }: IEventItem) => {
         </Typography>
     </React.Fragment>
 
+    const eventTime = (timeDiffInHours || 0) < 24
+        ? `${getTimeFromDate(startDate)}-${getTimeFromDate(endDate)}`
+        : `${getTimeFromDate(startDate)}-${getDate(endDate)} ${getTimeFromDate(endDate)}`;
+
     const details = <React.Fragment>
         {SHOW_LOCATION && locationItem}
         <Typography variant="subtitle2" color="text.secondary" align="left" sx={{ ...xSmallFontSize, ...hideTextOverflow }}>
-            {getTimeFromDate(startDate)}-{getTimeFromDate(endDate)}
+            {eventTime}
         </Typography>
     </React.Fragment>
 

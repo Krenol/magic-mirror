@@ -14,11 +14,12 @@ export const sx: SxProps<Theme> = {
         paddingBottom: '2px',
         borderRadius: '5px',
         background: "rgba(28, 145, 255, 0.25)",
-        width: 125,
+        width: 138,
         height: 50,
         display: 'flex',
-        justifyContent: 'space-between',
-        flexDirection: 'column'
+        justifyContent: 'start',
+        flexDirection: 'column',
+        marginBlockEnd: '5px'
     },
     hideTextOverflow
 }

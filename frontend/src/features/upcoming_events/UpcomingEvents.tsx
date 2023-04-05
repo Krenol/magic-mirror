@@ -11,12 +11,19 @@ import React from 'react';
 import { EventItem } from "../../models/calendar";
 import { getISODayEndString } from '../../app/dateParser';
 
+type Dates = {
+    today: Date,
+    tmrw: Date,
+    overmrw: Date
+}
+
 type UpcomingEventObject = {
     todayEvents: EventList | undefined,
     tmrwEvents: EventList | undefined,
     overmrwEvents: EventList | undefined,
     loading: boolean,
     errors: Array<Error | null>
+    dates: Dates
 }
 
 enum EventTextEnum {
@@ -29,11 +36,11 @@ enum EventTextEnum {
 const UpcomingEvents = () => {
     const upcomingEvents = GetUpcomingEvents();
 
-    const todaysEventItems = GetTodaysEventItems(upcomingEvents.todayEvents);
+    const todaysEventItems = GetTodaysEventItems(upcomingEvents.todayEvents, upcomingEvents.dates.today);
 
-    const tmrwsEventItems = GetFutureEventItems(upcomingEvents.tmrwEvents);
+    const tmrwsEventItems = GetFutureEventItems(upcomingEvents.tmrwEvents, upcomingEvents.dates.tmrw);
 
-    const overmrwsEventItems = GetFutureEventItems(upcomingEvents.overmrwEvents);
+    const overmrwsEventItems = GetFutureEventItems(upcomingEvents.overmrwEvents, upcomingEvents.dates.overmrw);
 
     const boxContent = <Box sx={columnBoxStyle}>
         <Typography variant="body1">
@@ -69,6 +76,11 @@ const UpcomingEvents = () => {
 }
 
 const GetUpcomingEvents = (): UpcomingEventObject => {
+    const dates: Dates = {
+        today: new Date(),
+        tmrw: getDateInXDays(1),
+        overmrw: getDateInXDays(2)
+    }
     const {
         data: todayEvents,
         isLoading: todayLoading,
@@ -87,7 +99,7 @@ const GetUpcomingEvents = (): UpcomingEventObject => {
     } = useGetEvents([
         {
             name: 'startDate',
-            value: getIsoDate(getDateInXDays(1))
+            value: getIsoDate(dates.tmrw)
         }
     ]);
 
@@ -98,7 +110,7 @@ const GetUpcomingEvents = (): UpcomingEventObject => {
     } = useGetEvents([
         {
             name: 'startDate',
-            value: getIsoDate(getDateInXDays(2))
+            value: getIsoDate(dates.overmrw)
         }
     ]);
 
@@ -107,14 +119,15 @@ const GetUpcomingEvents = (): UpcomingEventObject => {
         tmrwEvents,
         overmrwEvents,
         loading: todayLoading || tmrwLoading || overmrwLoading,
-        errors: [todayError, tmrwError, overmrwError]
+        errors: [todayError, tmrwError, overmrwError],
+        dates
     }
 }
 
-const GetTodaysEventItems = (events: EventList | undefined): JSX.Element | JSX.Element[] | undefined => {
+const GetTodaysEventItems = (events: EventList | undefined, date: Date): JSX.Element | JSX.Element[] | undefined => {
     const eventCount = (events?.count || 0);
     if (eventCount === 0) return NoEventsItem(EventTextEnum.noEventsToday);
-    if (eventCount <= 2) return events?.list.map((ev) => <Event item={ev} showDetails={true} />);
+    if (eventCount <= 2) return events?.list.map((ev) => <Event item={ev} date={date} />);
     const summary = EventTextEnum.manyToday.replace("{{X}}", `${eventCount - 1}`);
     const eventItem: EventItem = {
         summary,
@@ -125,16 +138,16 @@ const GetTodaysEventItems = (events: EventList | undefined): JSX.Element | JSX.E
     }
     return (
         <React.Fragment>
-            <Event item={events!.list[0]} showDetails={true} />
-            <Event item={eventItem} showDetails={true} />
+            <Event item={events!.list[0]} date={date} />
+            <Event item={eventItem} date={date} />
         </React.Fragment>
     )
 }
 
-const GetFutureEventItems = (events: EventList | undefined): JSX.Element | undefined => {
+const GetFutureEventItems = (events: EventList | undefined, date: Date): JSX.Element | undefined => {
     const eventCount = (events?.count || 0);
     if (eventCount === 0) return NoEventsItem(EventTextEnum.noEvents);
-    if (eventCount === 1) return <Event item={events!.list[0]} showDetails={true} />;
+    if (eventCount === 1) return <Event item={events!.list[0]} date={date} />;
     const summary = EventTextEnum.many.replace("{{X}}", `${eventCount}`);
     const eventItem: EventItem = {
         summary,
@@ -143,7 +156,7 @@ const GetFutureEventItems = (events: EventList | undefined): JSX.Element | undef
         end: events!.list[eventCount - 1].end,
         location: ""
     }
-    return <Event item={eventItem} showDetails={true} />;
+    return <Event item={eventItem} date={date} />;
 }
 
 const NoEventsItem = (timeFrame: EventTextEnum): JSX.Element => {

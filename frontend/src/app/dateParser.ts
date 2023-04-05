@@ -6,8 +6,12 @@ export const getTimezoneOffset = (): string => {
     return timezoneOffset > 0 ? `+${timezoneOffset}` : timezoneOffset.toString();
 }
 
+export const getLocaleDateString = (date: Date, locale: string, opts: Intl.DateTimeFormatOptions) => {
+    return date.toLocaleDateString(locale, opts);
+}
+
 export const getDayName = (date: Date, locale: string, weekdayFormat: WeekdayFormat = 'short'): string => {
-    return date.toLocaleDateString(locale, { weekday: weekdayFormat });
+    return getLocaleDateString(date, locale, { weekday: weekdayFormat });
 }
 
 export const getDay = (date: Date): string => {
@@ -44,7 +48,7 @@ export const isToday = async (date: Date): Promise<boolean> => {
     return isSameDate(date, new Date());
 }
 
-export const isSameDate = (date1: Date, date2: Date): boolean => {
+export const isSameDate = async (date1: Date, date2: Date): Promise<boolean> => {
     return date1.getDate() === date2.getDate() &&
         date1.getMonth() === date2.getMonth() &&
         date1.getFullYear() === date2.getFullYear()

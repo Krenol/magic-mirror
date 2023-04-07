@@ -19,5 +19,5 @@ export const handleWeatherIconResponse = async (res: Response, response: TRespon
 
 const createIconResponse = async (res: Response, response: any): Promise<Response> => {
     res.header({ 'Content-Type': 'image/png' }).write(Buffer.from(response));
-    return res.end()
+    return res.end();
 }

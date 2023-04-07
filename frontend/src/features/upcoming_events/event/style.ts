@@ -14,7 +14,7 @@ export const sx: SxProps<Theme> = {
         paddingBottom: '2px',
         borderRadius: '5px',
         background: "rgba(28, 145, 255, 0.25)",
-        width: 138,
+        width: 140,
         height: 50,
         display: 'flex',
         justifyContent: 'start',

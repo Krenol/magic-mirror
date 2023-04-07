@@ -1,7 +1,8 @@
+import { SxProps, Theme } from "@mui/material";
 import { card_medium } from "../../assets/styles/cards";
 
-export const cardStyle = { ...card_medium, ...{ display: 'flex', justifyContent: 'space-between' } }
+export const cardStyle: SxProps<Theme> = { ...card_medium, ...{ display: 'flex', justifyContent: 'flex-start', gap: '10px' } }
 
-export const parentBoxStyle = { display: 'flex' }
+export const parentBoxStyle: SxProps<Theme> = { display: 'flex' }
 
-export const columnBoxStyle = { display: 'flex', justifyContent: 'start', flexDirection: 'column' }
+export const columnBoxStyle: SxProps<Theme> = { display: 'flex', justifyContent: 'start', flexDirection: 'column' }

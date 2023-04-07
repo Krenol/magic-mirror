@@ -26,11 +26,11 @@ export const Event = ({ item, date }: IEventItem) => {
         setLocation(item.location || "");
         isSameDate(date, startDate)
             .then(setSameStartDate)
-    }, [item.summary, item.location, startDate, endDate]);
+    }, [item.summary, item.location, startDate, endDate, date]);
 
     useEffect(() => {
-        const date = sameStartDate ? startDate : new Date();
-        getTimeDifferenceInHours(date, endDate)
+        let thisDate = sameStartDate ? startDate : new Date();
+        getTimeDifferenceInHours(thisDate, endDate)
             .then(x => x < 24)
             .then(setDayTimeDiff);
     }, [sameStartDate, startDate, endDate])

@@ -6,9 +6,9 @@ import { parseRetrievedBirthdays, getBirthdayEvents } from "../../services/calen
 import { EventRequestParams } from "../../models/calendar";
 
 export const allBirthdays = async (req: Request, res: Response, next: NextFunction) => {
-    getBirthdayApiRequestParams(parseInt((req.query.count || CALENDAR_CONFIG.DEFAULT_EVENT_COUNT).toString()))
+    return getBirthdayApiRequestParams(parseInt((req.query.count || CALENDAR_CONFIG.DEFAULT_EVENT_COUNT).toString()))
         .then(params => getBirthdayEvents(req.user as GoogleUser, params))
-        .then(response => parseRetrievedBirthdays(response))
+        .then(parseRetrievedBirthdays)
         .then(birthdays => res.status(200).json(birthdays))
         .catch((err) => next(new ApiError("Error while retrieving calendar events", err, 500)))
 }

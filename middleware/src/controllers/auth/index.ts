@@ -14,7 +14,7 @@ const _logout = async (req: Request, res: Response) => {
     LOGGER.info(`User ${(JSON.stringify(req.user as GoogleUser)) || 'unknown'} signed out`);
     return req.session.destroy(() => req.logout(() => {
         LOGGER.info(`User ${(req.user as GoogleUser) || 'unknown'} signed out`);
-        return res.status(200).json({ success: true })
+        return res.status(200).json({ success: true });
     }));
 }
 

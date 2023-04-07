@@ -31,7 +31,7 @@ export const getForecastHours = async (req: Request): Promise<number> => {
 }
 
 const createResponse = async (res: Response, response: any, forecast_hours: number): Promise<Response> => {
-    return res.json(await createResponseJson(response, forecast_hours)).status(200)
+    return res.status(200).json(await createResponseJson(response, forecast_hours));
 }
 
 const createResponseJson = async (response: any, forecast_hours: number): Promise<HourlyWeather> => {

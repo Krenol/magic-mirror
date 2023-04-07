@@ -26,11 +26,11 @@ server.app.use('/', AuthRoute)
 server.app.use(EXPRESS_ERROR_LOGGER)
 
 server.app.use((err: ApiError, req: Request, res: Response, next: NextFunction) => {
-    res.status(err.status).json({ error: err.message })
+    return res.status(err.status).json({ error: err.message });
 })
 
 server.app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    res.status(500).json({ error: "Oops... something unexpected happened!" })
+    return res.status(500).json({ error: "Oops... something unexpected happened!" });
 })
 
 server.start();

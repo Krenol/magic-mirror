@@ -23,7 +23,7 @@ export const handleCurrentWeatherResponse = async (res: Response, response: TRes
 
 const createResponse = async (res: Response, response: any): Promise<Response> => {
     const responseJson = await createResponseJson(response)
-    return res.json(responseJson).status(200)
+    return res.status(200).json(responseJson);
 }
 
 const createResponseJson = async (response: any): Promise<CurrentWeather> => {

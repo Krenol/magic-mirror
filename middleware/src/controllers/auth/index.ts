@@ -14,12 +14,12 @@ const _logout = async (req: Request, res: Response) => {
     LOGGER.info(`User ${(JSON.stringify(req.user as GoogleUser)) || 'unknown'} signed out`);
     return req.session.destroy(() => req.logout(() => {
         LOGGER.info(`User ${(req.user as GoogleUser) || 'unknown'} signed out`);
-        return res.json({ success: true }).status(200)
+        return res.status(200).json({ success: true })
     }));
 }
 
 export const authCheck = async (req: Request, res: Response, next: NextFunction) => {
     return postTokenInfo(req.user as GoogleUser)
-        .then(() => res.json({ authenticated: true }).status(200))
+        .then(() => res.status(200).json({ authenticated: true }))
         .catch((err) => { next(new ApiError('Unauthenticated request', err, 401)) })
 }

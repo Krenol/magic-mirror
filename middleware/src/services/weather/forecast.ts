@@ -39,7 +39,7 @@ export const handleWeatherForecastResponse = async (res: Response, response: TRe
 }
 
 const createResponse = async (res: Response, response: any): Promise<Response> => {
-    return res.json(await createResponseJson(response)).status(200);
+    return res.status(200).json(await createResponseJson(response));
 }
 
 const createResponseJson = async (response: any): Promise<WeatherForecast> => {

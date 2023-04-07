@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
+import { ApiError } from "../models/api_error";
 
 export const checkAuthenticated = async (req: Request, res: Response, next: NextFunction) => {
     if (req.isAuthenticated()) { return next() }
-    res.status(401).json({ error: "User not authenticated" })
+    return next(new ApiError("User not authenticated", new Error("User not authenticated"), 401));
 }

@@ -32,7 +32,7 @@ describe(`Unit test the ${ROUTE} route`, () => {
                 .get(`${ROUTE}?count=${event_list_params.neg_count}`)
                 .then(response => assert.equal(response.status, 200));
         });
-        it(`should return 400 for too hgih count`, async () => {
+        it(`should return 400 for too high count`, async () => {
             request(app)
                 .get(`${ROUTE}?count=${event_list_params.too_high_count}`)
                 .then(response => assert.equal(response.status, 200));

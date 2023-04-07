@@ -12,7 +12,7 @@ export const allEvents = async (req: Request, res: Response, next: NextFunction)
         .then(params => getCalendarEvents(req.user as GoogleUser, params))
         .then(parseRetrievedEvents)
         .then(events => applyStartDateQueryFilter(req, events))
-        .then(events => res.json(events).status(200))
+        .then(events => res.status(200).json(events))
         .catch((err) => next(new ApiError('Error while retrieving calendar events', err, 500)))
 }
 
@@ -59,7 +59,7 @@ export const nextEvent = async (req: Request, res: Response, next: NextFunction)
     return getEventApiRequestParams(1)
         .then(params => getCalendarEvents(req.user as GoogleUser, params))
         .then(events => parseNextEvent(events))
-        .then(response => res.json(response).status(200))
+        .then(response => res.status(200).json(response))
         .catch((err) => next(new ApiError('Error while retrieving next calendar event', err, 500)))
 }
 

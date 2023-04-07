@@ -9,7 +9,7 @@ export const allBirthdays = async (req: Request, res: Response, next: NextFuncti
     getBirthdayApiRequestParams(parseInt((req.query.count || CALENDAR_CONFIG.DEFAULT_EVENT_COUNT).toString()))
         .then(params => getBirthdayEvents(req.user as GoogleUser, params))
         .then(response => parseRetrievedBirthdays(response))
-        .then(birthdays => res.json(birthdays).status(200))
+        .then(birthdays => res.status(200).json(birthdays))
         .catch((err) => next(new ApiError("Error while retrieving calendar events", err, 500)))
 }
 

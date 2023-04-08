@@ -5,7 +5,6 @@ import { ServerStateKeysEnum } from "../app/statekeys";
 import { EVENTS_API, REFETCH_INTERVAL } from "../constants/api";
 import { QUERY_PARAMS } from "../models/apis";
 import { EventList } from "../models/calendar";
-import { getIsoDate } from "../app/dateParser";
 
 export const useGetEvents = (query_params: QUERY_PARAMS = []) => {
     return useQuery<EventList, Error>({

@@ -61,11 +61,11 @@ export const getDateInXDays = (daysInFuture: number = 0): Date => {
 }
 
 export const getISODayStartString = (date: Date): string => {
-    return `${date.toISOString().split('T')[0]}T00:00:00.000Z`
+    return `${getIsoDate(date)}T00:00:00.000Z`
 }
 
 export const getISODayEndString = (date: Date): string => {
-    return `${date.toISOString().split('T')[0]}T23:59:59.999Z`
+    return `${getIsoDate(date)}T23:59:59.999Z`
 }
 
 export const getTimeFromDate = (date: Date): string => {

@@ -20,6 +20,6 @@ export const sx: SxProps<Theme> = {
         flexDirection: 'column',
         marginBlockEnd: '5px'
     },
-    hideTextOverflow,
-    eventItemDimen
+    ...hideTextOverflow,
+    ...eventItemDimen
 }

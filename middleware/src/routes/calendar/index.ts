@@ -1,11 +1,11 @@
-import { allEvents, nextEvent } from "routes/calendar/api";
+import { allCalendarEvents, eventsAtDate } from "routes/calendar/api";
 import { getRouter } from "services/router_factory";
-import { allEventsMw } from "./middleware";
+import { allEventsMw, dateEventsMw } from "./middleware";
 
 const router = getRouter(true);
 
-router.get('/', allEventsMw, allEvents);
+router.get('/', allEventsMw, allCalendarEvents);
 
-router.get('/next', nextEvent)
+router.get('/:date', dateEventsMw, eventsAtDate)
 
 export default router;

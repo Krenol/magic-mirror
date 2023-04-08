@@ -2,8 +2,8 @@ import Typography from '@mui/material/Typography';
 import { Box } from '@mui/material';
 import { cardStyle, columnBoxStyle, parentBoxStyle } from './style';
 import { CardFrame } from '../CardFrame';
-import { useGetEvents } from '../../apis/events';
-import { getIsoDate, getDateInXDays } from '../../app/dateParser';
+import { useGetDateEvents, useGetEvents } from '../../apis/events';
+import { getDateInXDays } from '../../app/dateParser';
 import { EventList } from '../../models/calendar';
 import { Event } from "./event/Event"
 import { boldText, xSmallFontSize } from '../../assets/styles/theme';
@@ -96,23 +96,13 @@ const GetUpcomingEvents = (): UpcomingEventObject => {
         data: tmrwEvents,
         isLoading: tmrwLoading,
         error: tmrwError
-    } = useGetEvents([
-        {
-            name: 'startDate',
-            value: getIsoDate(dates.tmrw)
-        }
-    ]);
+    } = useGetDateEvents(dates.tmrw);
 
     const {
         data: overmrwEvents,
         isLoading: overmrwLoading,
         error: overmrwError
-    } = useGetEvents([
-        {
-            name: 'startDate',
-            value: getIsoDate(dates.overmrw)
-        }
-    ]);
+    } = useGetDateEvents(dates.overmrw);
 
     return {
         todayEvents,
@@ -127,7 +117,7 @@ const GetUpcomingEvents = (): UpcomingEventObject => {
 const GetTodaysEventItems = (events: EventList | undefined, date: Date): JSX.Element | JSX.Element[] | undefined => {
     const eventCount = (events?.count || 0);
     if (eventCount === 0) return NoEventsItem(EventTextEnum.noEventsToday);
-    if (eventCount <= 2) return events?.list.map((ev) => <Event item={ev} date={date} />);
+    if (eventCount <= 2) return events?.list.map((ev) => <Event item={ev} date={date} key={ev.start} />);
     const summary = EventTextEnum.manyToday.replace("{{X}}", `${eventCount - 1}`);
     const eventItem: EventItem = {
         summary,
@@ -138,8 +128,8 @@ const GetTodaysEventItems = (events: EventList | undefined, date: Date): JSX.Ele
     }
     return (
         <React.Fragment>
-            <Event item={events!.list[0]} date={date} />
-            <Event item={eventItem} date={date} />
+            <Event item={events!.list[0]} date={date} key={events!.list[0].start} />
+            <Event item={eventItem} date={date} key={eventItem.start} />
         </React.Fragment>
     )
 }
@@ -147,7 +137,7 @@ const GetTodaysEventItems = (events: EventList | undefined, date: Date): JSX.Ele
 const GetFutureEventItems = (events: EventList | undefined, date: Date): JSX.Element | undefined => {
     const eventCount = (events?.count || 0);
     if (eventCount === 0) return NoEventsItem(EventTextEnum.noEvents);
-    if (eventCount === 1) return <Event item={events!.list[0]} date={date} />;
+    if (eventCount === 1) return <Event item={events!.list[0]} date={date} key={events!.list[0].start} />;
     const summary = EventTextEnum.many.replace("{{X}}", `${eventCount}`);
     const eventItem: EventItem = {
         summary,
@@ -156,7 +146,7 @@ const GetFutureEventItems = (events: EventList | undefined, date: Date): JSX.Ele
         end: events!.list[eventCount - 1].end,
         location: ""
     }
-    return <Event item={eventItem} date={date} />;
+    return <Event item={eventItem} date={date} key={eventItem.start} />;
 }
 
 const NoEventsItem = (timeFrame: EventTextEnum): JSX.Element => {

@@ -1,11 +1,16 @@
-import { isIso8601DatetimeString } from "services/dateParser";
-import { CustomQueryParameterValidator } from "services/validators/custom_query_parameter_validator";
-import { RangeQueryParameterValidator } from "services/validators/range_query_parameter_validator";
+import { isDate, isIso8601DatetimeString } from "services/dateParser";
+import { CustomParameterValidator } from "services/validators/custom_parameter_validator";
+import { EParamType } from "services/validators/parameter_validator";
+import { RangeParameterValidator } from "services/validators/range_parameter_validator";
 
-const eventCountMiddleware = new RangeQueryParameterValidator('count', { min: 1, max: 100 }, false);
+const eventCountMiddleware = new RangeParameterValidator('count', { min: 1, max: 100 }, EParamType.query, false);
 
-const minTimeMiddleware = new CustomQueryParameterValidator('minTime', isIso8601DatetimeString, false);
+const minTimeMiddleware = new CustomParameterValidator('minTime', isIso8601DatetimeString, EParamType.query, false);
 
-const maxTimeMiddleware = new CustomQueryParameterValidator('maxTime', isIso8601DatetimeString, false);
+const maxTimeMiddleware = new CustomParameterValidator('maxTime', isIso8601DatetimeString, EParamType.query, false);
+
+const dateMiddleware = new CustomParameterValidator('date', isDate, EParamType.request, false);
 
 export const allEventsMw = [eventCountMiddleware.validate, minTimeMiddleware.validate, maxTimeMiddleware.validate]
+
+export const dateEventsMw = [eventCountMiddleware.validate, dateMiddleware.validate]

@@ -3,7 +3,7 @@ import { STD_API_QUERY, WEATHER_API_URL } from "config/openmeteo_api";
 import { ApiError } from "models/api/api_error";
 import { TResponse } from "models/api/fetch";
 import { CurrentWeather } from "models/api/weather";
-import { getWeatherDescription, getWeatherIconFromWeathercode, sunIsCurrentlyUp } from "./common";
+import { getWeatherDescription, getWeatherIconFromWeathercode, sunIsCurrentlyUp } from "routes/weather/services/common";
 
 export const buildCurrentWeatherUrl = async (req: Request): Promise<string> => {
     const today_date = new Date().toISOString().slice(0, 10);

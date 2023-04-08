@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { ParameterValidator } from "services/validators/parameter_validator";
 import { LOGGER } from "services/loggers";
 import { ApiError } from "models/api/api_error";
-import { EParamType } from "./parameter_validator";
+import { EParamType } from "services/validators/parameter_validator";
 
 export type IRange = {
     min: number,

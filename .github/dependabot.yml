@@ -14,11 +14,11 @@ updates:
     schedule:
       interval: "weekly"
   - package-ecosystem: "npm"
-    directory: "/middleware"
+    directory: "/backend"
     schedule:
       interval: "daily"
   - package-ecosystem: "docker"
-    directory: "/middleware/docker"
+    directory: "/backend/docker"
     schedule:
       interval: "weekly"
   - package-ecosystem: "docker"

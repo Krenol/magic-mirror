@@ -1,6 +1,6 @@
 import { StrategyOptionsWithRequest } from "passport-google-oauth2";
-import { OAUTH2_CLIENT } from "./google";
-import { PROXY_SERVER_CONTEXT, PROXY_SERVER_HOSTNAME, PROXY_SERVER_PORT, PROXY_SERVER_PROTOCOL } from "./server";
+import { OAUTH2_CLIENT } from "config/google";
+import { PROXY_SERVER_CONTEXT, PROXY_SERVER_HOSTNAME, PROXY_SERVER_PORT, PROXY_SERVER_PROTOCOL } from "config/server";
 
 export const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost"
 export const REDIRECT_URI = process.env.REDIRECT_URI || `${FRONTEND_URL}/`

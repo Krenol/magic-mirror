@@ -9,12 +9,12 @@ services:
       - frontend.env
     networks:
       - magic-mirror-sonar_ext-sonar-network
-  middleware:
+  backend:
     build:
-      context: ../middleware
+      context: ../backend
       dockerfile: docker/Dockerfile.sonar
     env_file:
-      - middleware.env
+      - backend.env
     networks:
       - magic-mirror-sonar_ext-sonar-network
 

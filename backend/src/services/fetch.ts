@@ -2,7 +2,7 @@ import { ALLOWED_URLS } from "config/apis";
 import { ApiError } from "models/api/api_error";
 import { TResponse } from "models/api/fetch";
 import { GoogleUser } from "models/api/express_user";
-import { LOGGER } from "./loggers";
+import { LOGGER } from "services/loggers";
 var refresh = require('passport-oauth2-refresh');
 
 export const fetchJson = async (url: string, options: any = {}, logUrl: string | undefined = undefined): Promise<TResponse> => {

@@ -3,7 +3,7 @@ import { getWeatherForecast } from "routes/weather/api/forecasts";
 import { getHourlyWeather } from "routes/weather/api/hourly";
 import { getWeatherIcon } from "routes/weather/api/icons";
 import { getRouter } from "services/router_factory";
-import { currentMw, daysMw, hourlyMw, weatherIconMw } from "./middleware";
+import { currentMw, daysMw, hourlyMw, weatherIconMw } from "routes/weather/middleware";
 
 const router = getRouter(true);
 

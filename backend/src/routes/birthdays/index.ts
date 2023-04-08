@@ -1,6 +1,6 @@
 import { getRouter } from "services/router_factory";
-import { allBirthdays } from "./api";
-import { eventCountMiddleware } from "./middleware";
+import { allBirthdays } from "routes/birthdays/api";
+import { eventCountMiddleware } from "routes/birthdays/middleware";
 
 const router = getRouter(true);
 

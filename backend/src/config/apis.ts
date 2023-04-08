@@ -1,6 +1,6 @@
-import { GOOGLE_API_HOST, GOOGLE_OAUTH_API_HOST } from "./google";
-import { OPENWEATHER_URL } from "./icon_api";
-import { WEATHER_API_URL } from "./openmeteo_api";
+import { GOOGLE_API_HOST, GOOGLE_OAUTH_API_HOST } from "config/google";
+import { OPENWEATHER_URL } from "config/icon_api";
+import { WEATHER_API_URL } from "config/openmeteo_api";
 
 export const ALLOWED_URLS = [
     GOOGLE_API_HOST,

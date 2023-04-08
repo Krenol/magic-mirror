@@ -3,7 +3,7 @@ import { MAX_HOURLY_FORECAST_HOURS, STD_API_QUERY, WEATHER_API_URL } from "confi
 import { ApiError } from "models/api/api_error";
 import { TResponse } from "models/api/fetch";
 import { HourlyWeatherResource, HourlyWeather } from "models/api/weather";
-import { exceedsMaxForecastTime, getWeatherDescription, getWeatherIconFromWeathercode, timeHasPassed, timeIsDuringDay } from "./common";
+import { exceedsMaxForecastTime, getWeatherDescription, getWeatherIconFromWeathercode, timeHasPassed, timeIsDuringDay } from "routes/weather/services/common";
 
 export const buildHourlyWeatherUrl = async (req: Request): Promise<string> => {
     const date = new Date();

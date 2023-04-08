@@ -1,4 +1,4 @@
-import { Database, IDatabaseConenction } from "./database";
+import { Database, IDatabaseConenction } from "services/database/database";
 import { connect } from 'mongoose';
 
 export class MongoDb extends Database {

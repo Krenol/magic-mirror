@@ -1,4 +1,4 @@
-import { GcalApiEventResource } from "./calendar";
+import { GcalApiEventResource } from "models/api/calendar";
 
 export type BirthdayList = {
     count: number,

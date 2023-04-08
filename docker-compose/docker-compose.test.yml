@@ -11,17 +11,17 @@ services:
       - ../frontend/src:/opt/src
       - ../frontend/public:/opt/public
     depends_on:
-      - middleware
+      - backend
     env_file:
       - frontend.env
-  middleware:
+  backend:
     build:
-      context: ./middleware
+      context: ./backend
       dockerfile: docker/Dockerfile.test
       args:
         NODE_IMG_VERSION: ${NODE_IMG_VERSION}
     volumes:
-      - ../middleware/src:/opt/src
-      - ../middleware/ssl:/etc/express
+      - ../backend/src:/opt/src
+      - ../backend/ssl:/etc/express
     env_file:
-      - middleware.env
+      - backend.env

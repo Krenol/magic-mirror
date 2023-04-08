@@ -3,7 +3,7 @@ import { FAILURE_REDIRECT_URI, GOOGLE_CALLBACK_CONTEXT, REDIRECT_URI } from "con
 import { SCOPES } from "config/google";
 import { checkAuthenticated } from "middleware/authenticated";
 import { getRouter } from "services/router_factory";
-import { authCheck, logout } from "./api";
+import { authCheck, logout } from "routes/auth/api";
 
 const router = getRouter(false);
 

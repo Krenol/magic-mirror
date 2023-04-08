@@ -1,5 +1,6 @@
 import { createTheme } from "@mui/material/styles";
 export const MARGIN = 15;
+export const PADDING = '10px'
 
 export const smallFontSize = { fontSize: 12.5 }
 export const xSmallFontSize = { fontSize: 10.5 }
@@ -15,10 +16,7 @@ export const theme = createTheme({
             styleOverrides: {
                 root: {
                     display: "inline-block",
-                    margin: MARGIN,
                     padding: 10,
-                    marginRight: 0,
-                    marginBottom: 0
                 }
             }
         },

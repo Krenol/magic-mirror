@@ -8,7 +8,6 @@ import DailyForecast from '../features/daily_forecast/DailyForecast';
 import Birthdays from '../features/birthdays/Birthdays';
 import HourlyWeather from '../features/hourly_forecast/HourlyForecast';
 import UpcomingEvents from '../features/upcoming_events/UpcomingEvents';
-import { LogoutButton } from '../features/logout_button/LogoutButton';
 import { logout } from "../apis/logout"
 
 export const Dashboard = () => {
@@ -23,7 +22,6 @@ export const Dashboard = () => {
         <HourlyWeather />
         <DailyForecast />
       </Box>
-      <LogoutButton />
     </React.Fragment>
   );
 }

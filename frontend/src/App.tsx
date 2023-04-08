@@ -3,6 +3,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Dashboard } from './routes/Dashboard';
 import Login from './routes/Login';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import MenuAppBar from './features/appbar/MenuAppBar';
+import { Box } from '@mui/material';
+import { PADDING } from './assets/styles/theme';
 
 const queryCache = new QueryClient({
   defaultOptions: {
@@ -18,12 +21,15 @@ const queryCache = new QueryClient({
 export const App = () => {
   return (
     <QueryClientProvider client={queryCache}>
-      <BrowserRouter>
-        <Routes>
-          <Route path='/' element={<Dashboard />} />
-          <Route path="/login" element={<Login />} />
-        </Routes>
-      </BrowserRouter>
+      <MenuAppBar />
+      <Box sx={{ padding: PADDING }}>
+        <BrowserRouter>
+          <Routes>
+            <Route path='/' element={<Dashboard />} />
+            <Route path="/login" element={<Login />} />
+          </Routes>
+        </BrowserRouter>
+      </Box>
     </QueryClientProvider>
   );
 }

@@ -7,13 +7,13 @@ import { authCheck, logout } from "./api";
 
 const router = getRouter(false);
 
-router.get('/auth/google', passport.authenticate('google', <object>{
+router.get('/auth/google', passport.authenticate('google-login', <object>{
     scope: SCOPES,
     accessType: 'offline',
     prompt: 'consent',
 }));
 
-router.get(GOOGLE_CALLBACK_CONTEXT, passport.authenticate('google',
+router.get(GOOGLE_CALLBACK_CONTEXT, passport.authenticate('google-login',
     { successRedirect: REDIRECT_URI, failureRedirect: FAILURE_REDIRECT_URI }
 ));
 

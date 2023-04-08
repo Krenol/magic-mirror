@@ -1,7 +1,7 @@
-import { ALLOWED_URLS } from "../config/apis";
-import { ApiError } from "../models/api_error";
-import { TResponse } from "../models/fetch";
-import { GoogleUser } from "../models/express_user";
+import { ALLOWED_URLS } from "config/apis";
+import { ApiError } from "models/api/api_error";
+import { TResponse } from "models/api/fetch";
+import { GoogleUser } from "models/api/express_user";
 import { LOGGER } from "./loggers";
 var refresh = require('passport-oauth2-refresh');
 

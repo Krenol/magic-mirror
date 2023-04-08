@@ -1,5 +1,7 @@
 FROM sonarsource/sonar-scanner-cli:4
 
+ENV NODE_PATH=./src
+
 RUN apk add --update nodejs npm
 
 RUN npm install -g yarn

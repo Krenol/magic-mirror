@@ -1,9 +1,9 @@
 import * as https from "https";
-import { LOGGER } from "../loggers";
-import { Server } from "./server";
+import { LOGGER } from "services/loggers";
+import { Server } from "services/server/server";
 import * as fs from "fs";
-import { SSL_CERTIFICATE, SSL_PRIVATE_KEY } from "../../config/server";
-import { Database } from "../database/database";
+import { SSL_CERTIFICATE, SSL_PRIVATE_KEY } from "config/server";
+import { Database } from "services/database/database";
 
 export class HttpsServer extends Server<https.Server> {
     private readonly _serverOptions;

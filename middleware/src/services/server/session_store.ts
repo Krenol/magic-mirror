@@ -1,6 +1,6 @@
 import MongoStore from "connect-mongo";
 import session from "express-session"
-import { Database } from "../database/database"
+import { Database } from "services/database/database"
 
 const getMongoStore = (database: Database): session.Store => {
     return new MongoStore({ mongoUrl: database.getConnectionString() })

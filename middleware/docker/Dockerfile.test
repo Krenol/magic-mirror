@@ -2,6 +2,8 @@ ARG NODE_IMG_VERSION=18.9-alpine3.15
 
 FROM node:${NODE_IMG_VERSION}
 
+ENV NODE_PATH=./src
+
 WORKDIR /opt 
 
 COPY . .

@@ -1,4 +1,4 @@
-import { IDatabaseConenction } from "../services/database/database";
+import { IDatabaseConenction } from "services/database/database";
 
 export const mongoDbData: IDatabaseConenction = {
     hostname: process.env.MONGO_HOSTNAME || "mongo",

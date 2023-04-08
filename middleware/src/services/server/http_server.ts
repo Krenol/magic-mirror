@@ -1,7 +1,7 @@
 import * as http from "http";
-import { Database } from "../database/database";
-import { LOGGER } from "../loggers";
-import { Server } from "./server";
+import { Database } from "services/database/database";
+import { LOGGER } from "services/loggers";
+import { Server } from "services/server/server";
 
 export class HttpServer extends Server<http.Server> {
     constructor(database: Database, port = 3001) {

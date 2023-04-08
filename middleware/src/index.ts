@@ -1,20 +1,17 @@
-import { ENABLE_HTTPS, SERVER_PORT } from './config/server';
-import { HttpServer } from './services/server/http_server';
-import { HttpsServer } from './services/server/https_server';
-import { default as WeatherRoute } from './routes/weather'
-import { default as CalendarRoute } from './routes/calendar'
-import { default as BirthdaysRoute } from './routes/birthdays'
-import { default as AuthRoute } from './routes/auth';
+import { ENABLE_HTTPS, SERVER_PORT } from 'config/server';
+import { HttpServer } from 'services/server/http_server';
+import { HttpsServer } from 'services/server/https_server';
+import { default as WeatherRoute } from 'routes/weather'
+import { default as CalendarRoute } from 'routes/calendar'
+import { default as BirthdaysRoute } from 'routes/birthdays'
+import { default as AuthRoute } from 'routes/auth';
 import { NextFunction, Request, Response } from 'express';
-import { ApiError } from './models/api_error';
-import { EXPRESS_ERROR_LOGGER } from './services/loggers';
-import { MongoDb } from './services/database/mongodb';
-import { mongoDbData } from './config/database';
-import { removeUnauthorizedUsers, setupAllowedUsers } from './services/auth/setup_authorization';
+import { ApiError } from 'models/api/api_error';
+import { EXPRESS_ERROR_LOGGER } from 'services/loggers';
+import { MongoDb } from 'services/database/mongodb';
+import { mongoDbData } from 'config/database';
 
 const mongoDb: MongoDb = new MongoDb(mongoDbData);
-setupAllowedUsers();
-removeUnauthorizedUsers();
 const server = ENABLE_HTTPS ? new HttpsServer(mongoDb, SERVER_PORT) : new HttpServer(mongoDb, SERVER_PORT);
 
 server.app.use('/weather', WeatherRoute)

@@ -1,16 +1,15 @@
 import express, { Express } from "express";
 import { default as session } from "express-session";
 import bodyParser from "body-parser";
-import { ENABLE_HTTPS, SESSION_SECRET } from "../../config/server";
-import { setupPassport } from "../auth/setup";
+import { ENABLE_HTTPS, SESSION_SECRET } from "config/server";
+import { setupPassport } from "services/login";
 import { default as cors } from "cors";
-import { FRONTEND_URL } from "../../config/auth";
+import { FRONTEND_URL } from "config/auth";
 import * as http from "http";
 import * as https from "https";
-import { EXPRESS_LOGGER } from "../loggers";
-import MongoStore from "connect-mongo";
-import { Database } from "../database/database";
-import { getSessionStore } from "./session_store";
+import { EXPRESS_LOGGER } from "services/loggers";
+import { Database } from "services/database/database";
+import { getSessionStore } from "services/server/session_store";
 
 export abstract class Server<T extends http.Server | https.Server> {
     protected readonly _app: Express;

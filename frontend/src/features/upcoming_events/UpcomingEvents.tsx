@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 import { cardStyle, columnBoxStyle, parentBoxStyle } from './style';
 import { CardFrame } from '../CardFrame';
 import { useGetDateEvents, useGetEvents } from '../../apis/events';
-import { getDateInXDays } from '../../app/dateParser';
+import { getDateInXDays, getIsoDate } from '../../app/dateParser';
 import { EventList } from '../../models/calendar';
 import { Event } from "./event/Event"
 import { boldText, xSmallFontSize } from '../../assets/styles/theme';
@@ -96,13 +96,13 @@ const GetUpcomingEvents = (): UpcomingEventObject => {
         data: tmrwEvents,
         isLoading: tmrwLoading,
         error: tmrwError
-    } = useGetDateEvents(dates.tmrw);
+    } = useGetDateEvents(getIsoDate(dates.tmrw));
 
     const {
         data: overmrwEvents,
         isLoading: overmrwLoading,
         error: overmrwError
-    } = useGetDateEvents(dates.overmrw);
+    } = useGetDateEvents(getIsoDate(dates.overmrw));
 
     return {
         todayEvents,

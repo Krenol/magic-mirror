@@ -3,7 +3,7 @@ import { getWeatherForecast } from "routes/weather/api/forecasts";
 import { getHourlyWeather } from "routes/weather/api/hourly";
 import { getWeatherIcon } from "routes/weather/api/icons";
 import { getRouter } from "services/router_factory";
-import { currentMw, daysMw, hourlyMw } from "./middleware";
+import { currentMw, daysMw, hourlyMw, weatherIconMw } from "./middleware";
 
 const router = getRouter(true);
 
@@ -13,6 +13,6 @@ router.get('/hourly', hourlyMw, getHourlyWeather);
 
 router.get('/forecast', daysMw, getWeatherForecast);
 
-router.get('/icon/:weatherCode', getWeatherIcon);
+router.get('/icon/:weatherCode', weatherIconMw, getWeatherIcon);
 
 export default router;

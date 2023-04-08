@@ -5,12 +5,15 @@ import { RegexParameterValidator } from "services/validators/regex_parameter_val
 
 
 const GPS_COORD_REGEX = RegExp('^\\d{1,3}.\\d+$');
+const WEATHER_ICON_REGEX = RegExp('^\\d{2}(d|n)(@[1-4]x){0,1}$')
 
 const latitudeMiddleware = new RegexParameterValidator('latitude', GPS_COORD_REGEX, EParamType.query, true);
 const longitudeMiddleware = new RegexParameterValidator('longitude', GPS_COORD_REGEX, EParamType.query, true);
 const hourlyQryMiddleware = new RangeParameterValidator('hours', { min: 1, max: MAX_HOURLY_FORECAST_HOURS }, EParamType.query, false);
 const daysQryMiddleware = new RangeParameterValidator('days', { min: 1, max: MAX_FORECAST_DAYS }, EParamType.query, false);
+const weatherIconMiddleware = new RegexParameterValidator('weatherCode', WEATHER_ICON_REGEX, EParamType.request, true);
 
 export const currentMw = [latitudeMiddleware.validate, longitudeMiddleware.validate];
 export const hourlyMw = [hourlyQryMiddleware.validate, latitudeMiddleware.validate, longitudeMiddleware.validate];
 export const daysMw = [daysQryMiddleware.validate, latitudeMiddleware.validate, longitudeMiddleware.validate];
+export const weatherIconMw = [weatherIconMiddleware.validate]

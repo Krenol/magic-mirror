@@ -48,6 +48,7 @@ const ForecastItem = ({ item, timezone }: IForecastItem) => {
                 sx={forecastImg}
                 src={weatherIcon}
                 alt="Weather Icon"
+                loading='lazy'
             />
             <Typography variant="subtitle2" color="text.primary" align='center' sx={smallFontSize}>
                 {Math.round(item.temperature)}{TEMP_UNIT}

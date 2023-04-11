@@ -34,6 +34,7 @@ const ForecastItem = ({ item }: IForecastItem) => {
                 sx={forecastImg}
                 src={weatherIcon}
                 alt="Weather Icon"
+                loading='lazy'
             />
             <Box sx={minMaxBoxStyle}>
                 <Typography variant="subtitle2" color="text.primary" sx={{ ...smallFontSize, ...boldText }}>

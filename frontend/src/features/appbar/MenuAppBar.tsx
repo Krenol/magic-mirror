@@ -11,11 +11,14 @@ import { getAuthStatus } from '../auth/authSlice';
 import { useAppSelector } from '../../app/hooks';
 import { logout } from '../../apis/logout';
 import { useQueryClient } from 'react-query';
+import { useNavigate, useLocation } from "react-router-dom";
 
 const MenuAppBar = () => {
     const auth = useAppSelector(getAuthStatus);
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const queryClient = useQueryClient();
+    const navigate = useNavigate();
+    const location = useLocation();
 
     const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -27,6 +30,11 @@ const MenuAppBar = () => {
 
     const reload = () => {
         queryClient.invalidateQueries();
+    }
+
+    const redirect = () => {
+        navigate('/settings');
+        handleClose();
     }
 
     return (
@@ -64,14 +72,16 @@ const MenuAppBar = () => {
                                 onClose={handleClose}
                             >
                                 <MenuItem onClick={reload}>Refresh</MenuItem>
-                                <MenuItem onClick={handleClose}>Settings</MenuItem>
+                                <MenuItem onClick={redirect} disabled={location.pathname === '/settings'}>
+                                    Settings
+                                </MenuItem>
                                 <MenuItem onClick={logout}>Logout</MenuItem>
                             </Menu>
                         </div>
                     )}
                 </Toolbar>
             </AppBar>
-        </Box>
+        </Box >
     );
 }
 

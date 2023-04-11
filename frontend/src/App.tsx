@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import MenuAppBar from './features/appbar/MenuAppBar';
 import { Box } from '@mui/material';
 import { PADDING } from './assets/styles/theme';
+import { Settings } from './routes/Settings';
 
 const queryCache = new QueryClient({
   defaultOptions: {
@@ -21,15 +22,16 @@ const queryCache = new QueryClient({
 export const App = () => {
   return (
     <QueryClientProvider client={queryCache}>
-      <MenuAppBar />
-      <Box sx={{ padding: PADDING }}>
-        <BrowserRouter>
+      <BrowserRouter>
+        <MenuAppBar />
+        <Box sx={{ padding: PADDING }}>
           <Routes>
             <Route path='/' element={<Dashboard />} />
+            <Route path='/settings' element={<Settings />} />
             <Route path="/login" element={<Login />} />
           </Routes>
-        </BrowserRouter>
-      </Box>
+        </Box>
+      </BrowserRouter>
     </QueryClientProvider>
   );
 }

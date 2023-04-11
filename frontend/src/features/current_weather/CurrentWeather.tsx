@@ -53,6 +53,7 @@ const CurrentWeather = () => {
         sx={{ width: 'auto', height: '100%' }}
         src={weatherIcon}
         alt="Current Weather Icon"
+        loading='lazy'
     />
 
     if (isLoading) return (<CardFrame boxContent={"Loading..."} cardStyle={cardStyle} parentBoxStyle={parentBoxStyle} />);

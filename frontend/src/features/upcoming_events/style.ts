@@ -11,7 +11,7 @@ export const cardStyle: SxProps<Theme> = {
     ...{
         display: 'flex',
         justifyContent: 'flex-start',
-        gap: '10px'
+        gap: 1
     }
 }
 
@@ -21,5 +21,6 @@ export const columnBoxStyle: SxProps<Theme> = {
     display: 'flex',
     justifyContent: 'start',
     flexDirection: 'column',
-    minWidth: eventItemDimen.width
+    minWidth: eventItemDimen.width,
+    gap: 1
 }

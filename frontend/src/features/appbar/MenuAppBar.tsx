@@ -10,6 +10,7 @@ import Menu from '@mui/material/Menu';
 import { getAuthStatus } from '../auth/authSlice';
 import { useAppSelector } from '../../app/hooks';
 import { logout } from '../../apis/logout';
+import { useQueryClient } from 'react-query';
 
 const MenuAppBar = () => {
     const auth = useAppSelector(getAuthStatus);
@@ -22,6 +23,12 @@ const MenuAppBar = () => {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const queryClient = useQueryClient()
+
+    const reload = () => {
+        queryClient.invalidateQueries()
+    }
 
     return (
         <Box sx={{ flexGrow: 1 }}>
@@ -57,6 +64,7 @@ const MenuAppBar = () => {
                                 open={Boolean(anchorEl)}
                                 onClose={handleClose}
                             >
+                                <MenuItem onClick={reload}>Refresh</MenuItem>
                                 <MenuItem onClick={handleClose}>Settings</MenuItem>
                                 <MenuItem onClick={logout}>Logout</MenuItem>
                             </Menu>

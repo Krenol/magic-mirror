@@ -42,12 +42,12 @@ const UpcomingEvents = () => {
 
     const overmrwsEventItems = GetFutureEventItems(upcomingEvents.overmrwEvents, upcomingEvents.dates.overmrw);
 
-    const boxContent = <Box sx={columnBoxStyle}>
-        <Typography variant="body1">
+    const boxContent = <Box sx={{ ...columnBoxStyle, ...{ gap: 1 } }}>
+        <Typography variant="body1" sx={{ marginBottom: '1px' }}>
             TODAY
         </Typography>
         {todaysEventItems}
-    </Box>
+    </Box >
 
     const cardContent = <Box>
         <Box sx={{ ...columnBoxStyle, ...{ height: '50%' } }}>

@@ -25,3 +25,13 @@ export const isIso8601DatetimeString = async (datetimeStr: string): Promise<bool
 export const isDate = async (date: string): Promise<boolean> => {
     return !isNaN(Date.parse(date));
 }
+
+export enum TimeUnit {
+    hours = 3600000,
+    minutes = 60000,
+    seconds = 1000
+}
+
+export const getTimeDiff = async (date1: Date, date2: Date, unit: TimeUnit = TimeUnit.hours) => {
+    return Math.abs(date1.getTime() - date2.getTime()) / unit;
+}

@@ -37,7 +37,7 @@ export const Event = ({ item, date }: IEventItem) => {
 
     const eventStartString = sameStartDate ? '' : `${getLocaleDateString(startDate, DEFAULT_LOCALE, localeStrOpts)} `
     const eventEndString = dayTimeDiff ? '' : `${getLocaleDateString(endDate, DEFAULT_LOCALE, localeStrOpts)} `
-    const eventTime = `${eventStartString}${getTimeFromDate(startDate)}-${eventEndString}${getTimeFromDate(endDate)}`
+    const eventTime = item.allDay ? 'All day' : `${eventStartString}${getTimeFromDate(startDate)}-${eventEndString}${getTimeFromDate(endDate)}`
 
     const details = <React.Fragment>
         <Typography variant="subtitle2" color="text.secondary" align="left" sx={{ ...xSmallFontSize, ...hideTextOverflow }}>

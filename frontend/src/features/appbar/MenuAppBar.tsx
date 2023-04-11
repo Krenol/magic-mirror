@@ -15,6 +15,7 @@ import { useQueryClient } from 'react-query';
 const MenuAppBar = () => {
     const auth = useAppSelector(getAuthStatus);
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const queryClient = useQueryClient();
 
     const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -24,10 +25,8 @@ const MenuAppBar = () => {
         setAnchorEl(null);
     };
 
-    const queryClient = useQueryClient()
-
     const reload = () => {
-        queryClient.invalidateQueries()
+        queryClient.invalidateQueries();
     }
 
     return (

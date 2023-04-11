@@ -8,5 +8,6 @@ export type EventItem = {
     description: string,
     location: string,
     start: string,
-    end: string
+    end: string,
+    allDay: boolean
 }

@@ -1,6 +1,7 @@
 import { GOOGLE_CALENDAR_ENDPOINT } from "config/google";
 import { EventList, EventItem, GcalApiEventList, GcalApiEventResource, EventRequestParams } from "models/api/calendar";
 import { GoogleUser } from "models/api/express_user";
+import { getTimeDiff, TimeUnit } from "services/dateParser";
 import { fetchJson } from "services/fetch";
 import { getAccessToken, getEmail } from "services/identity";
 
@@ -44,11 +45,14 @@ export const parseNextEvent = async (events: GcalApiEventList): Promise<EventIte
 }
 
 const parseEvent = async (gcalEvent: GcalApiEventResource): Promise<EventItem> => {
+    const start = new Date(gcalEvent.start.dateTime || gcalEvent.start.date);
+    const end = new Date(gcalEvent.end.dateTime || gcalEvent.end.date);
     return {
         summary: gcalEvent.summary,
         description: gcalEvent.description,
         location: gcalEvent.location,
-        start: new Date(gcalEvent.start.dateTime || gcalEvent.start.date).toISOString(),
-        end: new Date(gcalEvent.end.dateTime || gcalEvent.end.date).toISOString()
+        start: start.toISOString(),
+        end: end.toISOString(),
+        allDay: await getTimeDiff(start, end, TimeUnit.hours) === 24
     }
 }

@@ -124,7 +124,8 @@ const GetTodaysEventItems = (events: EventList | undefined, date: Date): JSX.Ele
         description: "",
         start: events!.list[1].start,
         end: events!.list[eventCount - 1].end,
-        location: ""
+        location: "",
+        allDay: false
     }
     return (
         <React.Fragment>
@@ -144,7 +145,8 @@ const GetFutureEventItems = (events: EventList | undefined, date: Date): JSX.Ele
         description: "",
         start: events!.list[0].start,
         end: events!.list[eventCount - 1].end,
-        location: ""
+        location: "",
+        allDay: false
     }
     return <Event item={eventItem} date={date} key={eventItem.start} />;
 }

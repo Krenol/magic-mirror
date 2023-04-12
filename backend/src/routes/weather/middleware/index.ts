@@ -5,7 +5,7 @@ import { RegexParameterValidator } from "services/validators/regex_parameter_val
 
 
 const GPS_COORD_REGEX = /^\d{1,3}.\d+$/;
-const WEATHER_ICON_REGEX = /^\\d{2}[dn](@[1-4]x)?$/;
+const WEATHER_ICON_REGEX = /^\d{2}[dn](@[1-4]x)?$/;
 
 const latitudeMiddleware = new RegexParameterValidator('latitude', GPS_COORD_REGEX, EParamType.query, true);
 const longitudeMiddleware = new RegexParameterValidator('longitude', GPS_COORD_REGEX, EParamType.query, true);

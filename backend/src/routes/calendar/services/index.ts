@@ -20,8 +20,8 @@ export const getEvents = async (calendarId: string, access_token: string, params
 }
 
 const buildApiUrl = async (calendarId: string, params: EventRequestParams, orderBy = 'startTime'): Promise<string> => {
-    let query = `timeMin=${params.minTime}&maxResults=${params.maxResults}&singleEvents=true&orderBy=${orderBy}`;
-    query += params.maxTime ? `&timeMax=${params.maxTime}` : "";
+    let query = `timeMin=${encodeURIComponent(params.minTime)}&maxResults=${params.maxResults}&singleEvents=true&orderBy=${orderBy}`;
+    query += params.maxTime ? `&timeMax=${encodeURIComponent(params.maxTime)}` : "";
     const url = `${GOOGLE_CALENDAR_ENDPOINT}/${calendarId}/events?${query}`
     return url;
 }

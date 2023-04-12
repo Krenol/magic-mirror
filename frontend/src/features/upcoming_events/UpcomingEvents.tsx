@@ -86,7 +86,7 @@ const GetUpcomingEvents = (): UpcomingEventObject => {
     } = useGetEvents([
         {
             name: 'maxTime',
-            value: getISODayEndString(new Date())
+            value: encodeURIComponent(getISODayEndString(new Date(), true))
         }
     ]);
 

@@ -1,3 +1,5 @@
+import { LOGGER } from "./loggers"
+
 export const isToday = async (date: Date): Promise<boolean> => {
     return isSameDate(date, new Date())
 }
@@ -16,9 +18,11 @@ export const getISODayEndString = async (date: Date): Promise<string> => {
     return `${date.toISOString().split('T')[0]}T23:59:59.999Z`
 }
 
-const ISO8601_REGEX = /(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))/;
+const ISO8601_REGEX = /^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d(\.\d+)?([+-][0-2]\d:[0-5]\d|Z)$/;
 
 export const isIso8601DatetimeString = async (datetimeStr: string): Promise<boolean> => {
+    LOGGER.warn(datetimeStr)
+    LOGGER.warn(ISO8601_REGEX.test(datetimeStr))
     return ISO8601_REGEX.test(datetimeStr)
 }
 

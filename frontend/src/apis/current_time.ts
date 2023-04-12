@@ -19,7 +19,7 @@ const getTime = async (new_day_cb?: (isNewDay: boolean) => void, delim: string =
         hour: parseTime(now.getHours()),
         minute: parseTime(now.getMinutes()),
         currentDate: parseDate(now, delim),
-        timezoneOffset: getTimezoneOffset(),
+        timezoneOffset: getTimezoneOffset(false),
         weekdayLong: getDayName(now, locale, 'long'),
         weekdayShort: getDayName(now, locale, 'short')
     };

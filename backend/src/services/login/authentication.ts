@@ -6,7 +6,7 @@ import { DtoUser, IDtoUser } from "models/mongo/users";
 import { DtoAllowedUserEmail } from "models/mongo/allowed_user_emails";
 import { LOGGER } from "services/loggers";
 
-var refresh = require('passport-oauth2-refresh')
+const refresh = require('passport-oauth2-refresh')
 
 
 export const setupPassportAuthentication = () => {
@@ -52,7 +52,7 @@ const handleNewUser = (profile: any, accessToken: any, refreshToken: any, done: 
 }
 
 const checkIfAuthorizedNewUser = async (email: string) => {
-    let count = await DtoAllowedUserEmail.count({ email }).exec();
+    const count = await DtoAllowedUserEmail.count({ email }).exec();
     if (count > 0) return;
     throw new Error(`Unauthorized User with email ${email}`);
 }

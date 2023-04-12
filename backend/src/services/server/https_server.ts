@@ -9,8 +9,8 @@ export class HttpsServer extends Server<https.Server> {
     private readonly _serverOptions;
     constructor(database: Database, port = 3001) {
         super(database, port)
-        let privateKey = fs.readFileSync(SSL_PRIVATE_KEY, 'utf8');
-        let certificate = fs.readFileSync(SSL_CERTIFICATE, 'utf8');
+        const privateKey = fs.readFileSync(SSL_PRIVATE_KEY, 'utf8');
+        const certificate = fs.readFileSync(SSL_CERTIFICATE, 'utf8');
         this._serverOptions = { key: privateKey, cert: certificate };
     }
 

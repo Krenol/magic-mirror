@@ -7,7 +7,7 @@ import { fetchJsonGoogleAuthRefresh } from "services/fetch";
 
 export const postTokenInfo = async (user: GoogleUser): Promise<boolean> => {
     const access_token = await getAccessToken(user);
-    return fetchJsonGoogleAuthRefresh(`${GOOGLE_TOKENINFO_ENDPOINT}?access_token=${access_token}`, { method: 'POST' }, user, GOOGLE_TOKENINFO_ENDPOINT)
+    return fetchJsonGoogleAuthRefresh(`${GOOGLE_TOKENINFO_ENDPOINT}?access_token=${access_token}`, user, { method: 'POST' }, GOOGLE_TOKENINFO_ENDPOINT)
         .then(response => checkTokenInfoResponse(response.body as AccessTokenInfo))
         .catch(err => { throw err })
 }

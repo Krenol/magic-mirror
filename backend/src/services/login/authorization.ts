@@ -19,7 +19,7 @@ export const setupAllowedUsers = () => {
 const handleResponse = (foundEntry: IAllowedUserEmail | null, email: string) => {
     if (foundEntry) return;
     LOGGER.debug(`Adding allowed user email ${email}`);
-    let newMail = new DtoAllowedUserEmail({
+    const newMail = new DtoAllowedUserEmail({
         email
     })
     return newMail.save();

@@ -9,7 +9,7 @@ export const GOOGLE_CALLBACK_CONTEXT = process.env.GOOGLE_CALLBACK_CONTEXT || "/
 export const GOOGLE_AUTH_STRATEGY_OPTIONS: StrategyOptionsWithRequest = {
     clientID: OAUTH2_CLIENT.CLIENT_ID,
     clientSecret: OAUTH2_CLIENT.CLIENT_SECRET,
-    callbackURL: `${PROXY_SERVER_PROTOCOL}://${PROXY_SERVER_HOSTNAME}:${PROXY_SERVER_PORT}${PROXY_SERVER_CONTEXT}/${GOOGLE_CALLBACK_CONTEXT.replace(RegExp('^/(.*)$'), '$1')}`,
+    callbackURL: `${PROXY_SERVER_PROTOCOL}://${PROXY_SERVER_HOSTNAME}:${PROXY_SERVER_PORT}${PROXY_SERVER_CONTEXT}/${GOOGLE_CALLBACK_CONTEXT.replace(/^\/(.*)$/, '$1')}`,
     passReqToCallback: true
 }
 export const ALLOWED_USERS: Array<string> = JSON.parse(process.env.ALLOWED_USER_EMAILS || "[]")

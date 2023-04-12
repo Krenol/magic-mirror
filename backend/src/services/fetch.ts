@@ -3,7 +3,7 @@ import { ApiError } from "models/api/api_error";
 import { TResponse } from "models/api/fetch";
 import { GoogleUser } from "models/api/express_user";
 import { LOGGER } from "services/loggers";
-var refresh = require('passport-oauth2-refresh');
+const refresh = require('passport-oauth2-refresh');
 
 export const fetchJson = async (url: string, options: any = {}, logUrl: string | undefined = undefined): Promise<TResponse> => {
     LOGGER.info(`Calling API ${logUrl || url} to get JSON`);
@@ -32,16 +32,19 @@ const parseJsonResponse = async (res: Response): Promise<TResponse> => {
     }
 }
 
-export const fetchJsonGoogleAuthRefresh = async (url: string, options: any = {}, user: GoogleUser, logUrl: string | undefined = undefined): Promise<TResponse> => {
-    return _fetchJsonGoogleAuthRefresh(url, options, user, 1, logUrl);
+export const fetchJsonGoogleAuthRefresh = async (url: string, user: GoogleUser, options: any = {}, logUrl: string | undefined = undefined): Promise<TResponse> => {
+    return _fetchJsonGoogleAuthRefresh(url, user, options, 1, logUrl);
 };
 
-const _fetchJsonGoogleAuthRefresh = async (url: string, options: any = {}, user: GoogleUser, refreshRetries: number, logUrl: string | undefined = undefined): Promise<TResponse> => {
+const _fetchJsonGoogleAuthRefresh = async (url: string, user: GoogleUser, options: any = {}, refreshRetries: number, logUrl: string | undefined = undefined): Promise<TResponse> => {
     const rsp = await fetchJson(url, options, logUrl);
     if (rsp.status === 401 && refreshRetries > 0) {
         LOGGER.info(`Unauthenticated Google Request. Retry with refresh token of user`);
         refresh.requestNewAccessToken('google', user.refresh_token, (err: Error, accessToken: string) => {
-            if (err || !accessToken) throw new ApiError('Authentication expired', err, 401);
+            if (err || !accessToken) {
+                LOGGER.error(`Refresh request failed with error ${err.message}`)
+                throw new ApiError('Authentication expired', err, 401);
+            }
             user.access_token = accessToken;
             _fetchJsonGoogleAuthRefresh(url, options, user, refreshRetries--, logUrl);
         })

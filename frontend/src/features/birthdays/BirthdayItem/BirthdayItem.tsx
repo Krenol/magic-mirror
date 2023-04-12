@@ -1,10 +1,9 @@
-import { Typography } from "@mui/material";
+import { Typography, SxProps } from "@mui/material";
 import { Birthday } from "../../../models/birthdays";
 import { boldText } from '../../../assets/styles/theme';
 import { useEffect, useState } from "react";
 import { getDifferenceInDays } from "../../../app/dateParser";
 import { Theme } from "@emotion/react"
-import { SxProps } from "@mui/material"
 
 interface IBirthdayItem {
     item: Birthday,

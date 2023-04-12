@@ -1,4 +1,4 @@
-FROM sonarsource/sonar-scanner-cli:4
+FROM sonarsource/sonar-scanner-cli
 
 RUN apk add --update nodejs npm
 
@@ -10,8 +10,8 @@ RUN yarn install
 
 RUN npm init @eslint/config -y
 
-RUN mv docker/sonar-project.properties .
+# RUN mv docker/sonar-project.properties .
 
-RUN mv docker/sonar-test.sh .
+# RUN mv docker/sonar-test.sh .
 
 CMD ["sh", "sonar-test.sh"]

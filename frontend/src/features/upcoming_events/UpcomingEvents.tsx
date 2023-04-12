@@ -3,13 +3,11 @@ import { Box } from '@mui/material';
 import { cardStyle, columnBoxStyle, parentBoxStyle } from './style';
 import { CardFrame } from '../CardFrame';
 import { useGetDateEvents, useGetEvents } from '../../apis/events';
-import { getDateInXDays, getIsoDate } from '../../app/dateParser';
-import { EventList } from '../../models/calendar';
+import { getDateInXDays, getIsoDate, getISODayEndString } from '../../app/dateParser';
+import { EventList, EventItem } from '../../models/calendar';
 import { Event } from "./event/Event"
 import { boldText, xSmallFontSize } from '../../assets/styles/theme';
 import React from 'react';
-import { EventItem } from "../../models/calendar";
-import { getISODayEndString } from '../../app/dateParser';
 
 type Dates = {
     today: Date,

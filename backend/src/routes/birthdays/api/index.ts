@@ -13,7 +13,7 @@ export const allBirthdays = async (req: Request, res: Response, next: NextFuncti
         .catch((err) => next(new ApiError("Error while retrieving calendar events", err, 500)))
 }
 
-const getBirthdayApiRequestParams = async (maxResults: number = 1): Promise<EventRequestParams> => {
+const getBirthdayApiRequestParams = async (maxResults = 1): Promise<EventRequestParams> => {
     const minTime = (new Date()).toISOString();
     return {
         maxResults,

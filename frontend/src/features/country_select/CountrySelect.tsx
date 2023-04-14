@@ -19,7 +19,7 @@ export default function CountrySelect({ inputCallback, defaultCityCode }: Props)
             id="country-select"
             sx={{ width: '50ch' }}
             options={countries}
-            defaultValue={countries.find(x => x.code === defaultCityCode)}
+            value={countries.find(x => x.code === defaultCityCode)}
             autoHighlight
             onChange={onChange}
             getOptionLabel={(option) => option.label}

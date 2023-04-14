@@ -13,16 +13,20 @@ import { logout } from '../../apis/logout';
 import { useQueryClient } from 'react-query';
 import { useNavigate, useLocation } from "react-router-dom";
 
+type IMenuItem = {
+    text: string,
+    onClick?: () => void
+}
+
 const MenuAppBar = () => {
     const auth = useAppSelector(getAuthStatus);
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const queryClient = useQueryClient();
     const navigate = useNavigate();
-    const location = useLocation();
-
     const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
+    const location = useLocation();
 
     const handleClose = () => {
         setAnchorEl(null);
@@ -32,10 +36,38 @@ const MenuAppBar = () => {
         queryClient.invalidateQueries();
     }
 
-    const redirect = () => {
-        navigate('/settings');
+    const redirect = (path: string) => {
+        navigate(path);
         handleClose();
     }
+
+    const settingMenuItemMap = new Map<string, Array<string>>([
+        ["/", ["refresh", "settings", "logout"]],
+        ["/settings", ["logout"]]
+    ])
+
+    const menuItemArray = new Map<string, IMenuItem>([
+        ["refresh",
+            {
+                text: "Refresh",
+                onClick: reload
+            },
+        ],
+        ["settings",
+            {
+                text: "Settings",
+                onClick: () => redirect("/settings")
+            },
+        ],
+        ["logout",
+            {
+                text: "Logout",
+                onClick: logout
+            },
+        ]
+    ]);
+
+    const menuItems = getMenuItems(location.pathname, settingMenuItemMap, menuItemArray);
 
     return (
         <Box sx={{ flexGrow: 1 }}>
@@ -71,15 +103,9 @@ const MenuAppBar = () => {
                                 open={Boolean(anchorEl)}
                                 onClose={handleClose}
                             >
-                                {location.pathname !== '/settings' &&
-                                    (<React.Fragment><MenuItem onClick={reload}>Refresh</MenuItem>
-                                        <MenuItem onClick={redirect}>
-                                            Settings
-                                        </MenuItem>
-                                    </React.Fragment>)
+                                {
+                                    menuItems.map(menuItem => <MenuItem onClick={menuItem.onClick} key={menuItem.text}>{menuItem.text}</MenuItem>)
                                 }
-
-                                <MenuItem onClick={logout}>Logout</MenuItem>
                             </Menu>
                         </div>
                     )}
@@ -88,5 +114,17 @@ const MenuAppBar = () => {
         </Box >
     );
 }
+
+const getMenuItems = (path: string, settingMenuItemMap: Map<string, Array<string>>, menuItemArray: Map<string, IMenuItem>): Array<IMenuItem> => {
+    let menuItems: Array<IMenuItem> = [];
+    const items = settingMenuItemMap.get(path);
+    items?.forEach(id => {
+        if (menuItemArray.has(id)) {
+            menuItems.push(menuItemArray.get(id)!);
+        }
+    })
+    return menuItems;
+}
+
 
 export default MenuAppBar;

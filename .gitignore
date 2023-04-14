@@ -115,6 +115,7 @@ token.json
 
 *.pem
 *.key
+*.csr
 
 # Mongo data
 *.wt

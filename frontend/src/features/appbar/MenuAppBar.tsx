@@ -71,10 +71,14 @@ const MenuAppBar = () => {
                                 open={Boolean(anchorEl)}
                                 onClose={handleClose}
                             >
-                                <MenuItem onClick={reload}>Refresh</MenuItem>
-                                <MenuItem onClick={redirect} disabled={location.pathname === '/settings'}>
-                                    Settings
-                                </MenuItem>
+                                {location.pathname !== '/settings' &&
+                                    (<React.Fragment><MenuItem onClick={reload}>Refresh</MenuItem>
+                                        <MenuItem onClick={redirect}>
+                                            Settings
+                                        </MenuItem>
+                                    </React.Fragment>)
+                                }
+
                                 <MenuItem onClick={logout}>Logout</MenuItem>
                             </Menu>
                         </div>

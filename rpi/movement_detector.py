@@ -32,11 +32,12 @@ class MotionSensor:
 
     def multiMotionIsDetect(self, count: int = 5):
         res = []
+        threshold = count / 2
         while count > 0:
             res.append(self.motionIsDetected())
             count = count - 1
             time.sleep(50/1000)
-        return sum(res) >= count / 2
+        return sum(res) >= threshold
 
 
 def loop():

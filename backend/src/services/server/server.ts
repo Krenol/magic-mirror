@@ -58,7 +58,7 @@ export abstract class Server<T extends http2.Http2Server> {
                 secure: ENABLE_HTTPS,
                 httpOnly: true,
                 sameSite: true,
-                maxAge: 900000 //15min
+                maxAge: 2.592e+9 //30d
             },
             store: getSessionStore(this._database)
         }))

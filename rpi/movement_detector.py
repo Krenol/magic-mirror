@@ -32,15 +32,17 @@ class MotionSensor:
 
 
 def loop():
-    print("Start loop!")
+    print("Start display state loop")
     motionSensor = MotionSensor(sensorPin)
     screenToggle = ScreenToggle()
     while True:
         if motionSensor.motionIsDetected():
-            screenToggle.setScreenState("on")
+            print("Turn display on")
+            screenToggle.setScreenState(DisplayState.on)
             time.sleep(1)
         else:
-            screenToggle.setScreenState("off")
+            print("Turn display off")
+            screenToggle.setScreenState(DisplayState.off)
 
 
 if __name__ == '__main__':  # Program start from here

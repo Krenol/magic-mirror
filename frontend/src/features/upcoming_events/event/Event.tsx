@@ -29,7 +29,7 @@ export const Event = ({ item, date }: IEventItem) => {
     }, [item.summary, item.location, startDate, endDate, date]);
 
     useEffect(() => {
-        let thisDate = sameStartDate ? startDate : new Date();
+        const thisDate = sameStartDate ? startDate : new Date();
         getTimeDifferenceInHours(thisDate, endDate)
             .then(x => x < 24)
             .then(setDayTimeDiff);

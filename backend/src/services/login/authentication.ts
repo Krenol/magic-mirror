@@ -14,9 +14,11 @@ export const setupPassportAuthentication = () => {
     const strategy = new Strategy(GOOGLE_AUTH_STRATEGY_OPTIONS, authenticateUser);
     passport.use('google-login', strategy);
     passport.serializeUser((user: Express.User, done: (err: any, id?: unknown) => void) => {
+        LOGGER.info(`Serialize user with id ${(user as GoogleUser).sub}`);
         done(null, (user as GoogleUser).sub)
     })
     passport.deserializeUser((id: string, done: (err: any, user?: false | Express.User | null | undefined) => void) => {
+        LOGGER.info(`Deserialize User with id ${id}`);
         DtoUser.findOne({ sub: id })
             .then(user => done(null, user))
             .catch(err => done(err, null))

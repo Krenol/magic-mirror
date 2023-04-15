@@ -1,12 +1,11 @@
 import passport from "passport";
-import { Express } from "express";
+import express from "express";
 import { LOGGER } from "services/loggers";
 import { removeUnauthorizedUsers, setupAllowedUsers } from 'services/login/authorization';
 import { setupPassportAuthentication } from "services/login/authentication";
 
-export const setupPassport = (app: Express) => {
-    app.use(passport.initialize());
-    app.use(passport.session());
+export const setupPassport = (app: express.Application) => {
+    app.use(passport.authenticate('session'));
     setupAuthentication();
     setupAuthorization();
 }

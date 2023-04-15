@@ -49,7 +49,7 @@ const _fetchJsonGoogleAuthRefresh = async (url: string, user: GoogleUser, option
             _fetchJsonGoogleAuthRefresh(url, options, user, refreshRetries--, logUrl);
         })
     } else if (rsp.status === 401 && refreshRetries === 0) {
-        LOGGER.warn(`Unauthenticated Google Request. No more retries left!`);
+        LOGGER.error(`Unauthenticated Google Request. No more retries left!`);
         throw new ApiError('Unauthenticated request', new Error(), 401);
     }
     return rsp;

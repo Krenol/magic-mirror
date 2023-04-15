@@ -1,22 +1,24 @@
-import express, { Express } from "express";
+import express, { Express, Request, Response } from "express";
 import { default as session } from "express-session";
 import bodyParser from "body-parser";
 import { ENABLE_HTTPS, SESSION_SECRET } from "config/server";
 import { setupPassport } from "services/login";
 import { default as cors } from "cors";
 import { FRONTEND_URL } from "config/auth";
-import * as http from "http";
-import * as https from "https";
+
 import { EXPRESS_LOGGER } from "services/loggers";
 import { Database } from "services/database/database";
 import { getSessionStore } from "services/server/session_store";
+import * as http2 from "http2";
+import http2Express from "http2-express-bridge";
 
-export abstract class Server<T extends http.Server | https.Server> {
-    protected readonly _app: Express;
+
+export abstract class Server<T extends http2.Http2Server> {
+    protected readonly _app: express.Application;
     protected readonly _port: number;
     private readonly _database: Database;
 
-    get app(): Express {
+    get app(): express.Application {
         return this._app;
     }
 
@@ -29,12 +31,12 @@ export abstract class Server<T extends http.Server | https.Server> {
     constructor(database: Database, port = 3001) {
         this._port = port
         this._database = database;
-        this._app = express();
+        this._app = http2Express(express);;
         this._app.set("port", port);
-        this.configureMiddleware();
+        this.configureExpress();
     }
 
-    public configureMiddleware() {
+    private configureExpress() {
         this.setupLogging();
         this.setupSession();
         this.setupBodyParsers();
@@ -50,10 +52,13 @@ export abstract class Server<T extends http.Server | https.Server> {
         this._app.use(session({
             secret: SESSION_SECRET,
             resave: false,
-            saveUninitialized: true,
+            saveUninitialized: false,
+            rolling: false,
             cookie: {
                 secure: ENABLE_HTTPS,
-                httpOnly: true
+                httpOnly: true,
+                sameSite: true,
+                maxAge: 900000 //15min
             },
             store: getSessionStore(this._database)
         }))

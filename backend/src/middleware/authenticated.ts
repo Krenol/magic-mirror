@@ -4,6 +4,8 @@ import { LOGGER } from "services/loggers";
 
 export const checkAuthenticated = async (req: Request, res: Response, next: NextFunction) => {
     LOGGER.info("Check if request is authenticated");
+    LOGGER.warn(JSON.stringify(req.user || { error: 'No user found' }));
+
     if (req.isAuthenticated()) {
         LOGGER.info("Authenticated request - continuing");
         return next();

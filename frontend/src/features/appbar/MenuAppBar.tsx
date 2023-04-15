@@ -104,7 +104,9 @@ const MenuAppBar = () => {
                                 onClose={handleClose}
                             >
                                 {
-                                    menuItems.map(menuItem => <MenuItem onClick={menuItem.onClick} key={menuItem.text}>{menuItem.text}</MenuItem>)
+                                    menuItems.map(menuItem =>
+                                        <MenuItem onClick={menuItem.onClick} key={menuItem.text}>{menuItem.text}</MenuItem>
+                                    )
                                 }
                             </Menu>
                         </div>
@@ -116,7 +118,7 @@ const MenuAppBar = () => {
 }
 
 const getMenuItems = (path: string, settingMenuItemMap: Map<string, Array<string>>, menuItemArray: Map<string, IMenuItem>): Array<IMenuItem> => {
-    let menuItems: Array<IMenuItem> = [];
+    const menuItems: Array<IMenuItem> = [];
     const items = settingMenuItemMap.get(path);
     items?.forEach(id => {
         if (menuItemArray.has(id)) {

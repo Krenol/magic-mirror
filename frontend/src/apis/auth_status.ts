@@ -12,7 +12,7 @@ export const useGetAuthStatus = (cb?: (status: boolean) => void) =>
     });
 
 const handleResponse = async (status: number, cb?: (status: boolean) => void): Promise<boolean> => {
-    let is_authenticated = status === 200;
+    const is_authenticated = status === 200;
     if (cb) {
         cb(is_authenticated);
     }

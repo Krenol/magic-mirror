@@ -30,19 +30,27 @@ class MotionSensor:
     def motionIsDetected(self) -> bool:
         return GPIO.input(self._pin) == GPIO.HIGH
 
+    def multiMotionIsDetect(self, count: int = 5):
+        res = []
+        while count > 0:
+            res.append(self.motionIsDetected())
+            count = count - 1
+            time.sleep(50/1000)
+        return sum(res) >= count / 2
+
 
 def loop():
     print("Start display state loop")
     motionSensor = MotionSensor(sensorPin)
     screenToggle = ScreenToggle()
     while True:
-        if motionSensor.motionIsDetected():
+        if motionSensor.multiMotionIsDetect(5):
             print("Turn display on")
             screenToggle.setScreenState(DisplayState.on)
-            time.sleep(1)
         else:
             print("Turn display off")
             screenToggle.setScreenState(DisplayState.off)
+        time.sleep(1)
 
 
 if __name__ == '__main__':  # Program start from here

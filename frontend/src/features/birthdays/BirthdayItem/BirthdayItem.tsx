@@ -1,9 +1,10 @@
-import { Typography, SxProps } from "@mui/material";
+import { Typography, SxProps, Box } from "@mui/material";
 import { Birthday } from "../../../models/birthdays";
-import { boldText } from '../../../assets/styles/theme';
+import { boldText, xSmallFontSize } from '../../../assets/styles/theme';
 import { useEffect, useState } from "react";
 import { getDifferenceInDays } from "../../../app/dateParser";
 import { Theme } from "@emotion/react"
+import { boxStyle, hideTextOverflow } from "../../../assets/styles/coloredBox";
 
 interface IBirthdayItem {
     item: Birthday,
@@ -35,15 +36,23 @@ const BirthdayItem = ({ item }: IBirthdayItem) => {
         else {
             setSx(undefined)
             setColor('text.secondary')
-            setTimeText(`in ${days} days`)
+            setTimeText(`${days} days`)
         }
     }, [days])
 
     return (
-        <Typography color={color} variant="subtitle2" sx={sx}>
-            {item.name} {timeText}
-        </Typography>
-    )
+        <Box sx={boxStyle}>
+            <Box sx={{ display: 'flex', gap: 0.5 }}>
+                <Typography variant="subtitle2" color={color} align="left" sx={{ ...xSmallFontSize, ...sx }}>
+                    {item.name}
+                </Typography>
+                <Typography variant="subtitle2" color={color} align="left" sx={{ ...xSmallFontSize, ...hideTextOverflow, ...sx }}>
+                    {timeText}
+                </Typography>
+            </Box>
+        </Box>
+    );
+
 }
 
 export default BirthdayItem

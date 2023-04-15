@@ -1,7 +1,7 @@
-import { card_medium } from "../../assets/styles/cards";
+import { card_small } from "../../assets/styles/cards";
 
 export const cardStyle = {
-    ...card_medium,
+    ...card_small,
     ...{
         display: 'flex',
         justifyContent: 'start'
@@ -24,5 +24,6 @@ export const mainBoxStyle = {
 export const itemBoxStyle = {
     display: 'flex',
     justifyContent: 'space-between',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    gap: 1
 };

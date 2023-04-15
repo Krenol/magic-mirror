@@ -1,35 +1,13 @@
 import Typography from '@mui/material/Typography';
-import { Box } from '@mui/material';
+import { Box, Card } from '@mui/material';
 import { cardStyle, columnBoxStyle, parentBoxStyle } from './style';
 import { CardFrame } from '../CardFrame';
-import { useGetDateEvents, useGetEvents } from '../../apis/events';
-import { getDateInXDays, getIsoDate, getISODayEndString } from '../../app/dateParser';
 import { EventList, EventItem } from '../../models/calendar';
 import { Event } from "./event/Event"
 import { boldText, xSmallFontSize } from '../../assets/styles/theme';
 import React from 'react';
-
-type Dates = {
-    today: Date,
-    tmrw: Date,
-    overmrw: Date
-}
-
-type UpcomingEventObject = {
-    todayEvents: EventList | undefined,
-    tmrwEvents: EventList | undefined,
-    overmrwEvents: EventList | undefined,
-    loading: boolean,
-    errors: Array<Error | null>
-    dates: Dates
-}
-
-enum EventTextEnum {
-    noEventsToday = "No more events today",
-    noEvents = "No events",
-    manyToday = "{{X}} more events",
-    many = "{{X}} events"
-}
+import { GetUpcomingEvents } from './helpers';
+import { EventTextEnum } from './types';
 
 const UpcomingEvents = () => {
     const upcomingEvents = GetUpcomingEvents();
@@ -47,7 +25,7 @@ const UpcomingEvents = () => {
         {todaysEventItems}
     </Box >
 
-    const cardContent = <Box>
+    const cardContent = <Box sx={{ marginLeft: '2px' }} >
         <Box sx={{ ...columnBoxStyle, ...{ height: '50%' } }}>
             <Typography sx={{ ...xSmallFontSize, ...boldText }}>
                 TOMORROW
@@ -70,46 +48,18 @@ const UpcomingEvents = () => {
         return (<CardFrame boxContent={"Error!"} cardStyle={cardStyle} parentBoxStyle={parentBoxStyle} />);
     }
 
-    return (<CardFrame boxContent={boxContent} cardContent={cardContent} cardStyle={cardStyle} parentBoxStyle={parentBoxStyle} />);
-}
-
-const GetUpcomingEvents = (): UpcomingEventObject => {
-    const dates: Dates = {
-        today: new Date(),
-        tmrw: getDateInXDays(1),
-        overmrw: getDateInXDays(2)
-    }
-    const {
-        data: todayEvents,
-        isLoading: todayLoading,
-        error: todayError
-    } = useGetEvents([
-        {
-            name: 'maxTime',
-            value: encodeURIComponent(getISODayEndString(new Date(), true))
-        }
-    ]);
-
-    const {
-        data: tmrwEvents,
-        isLoading: tmrwLoading,
-        error: tmrwError
-    } = useGetDateEvents(getIsoDate(dates.tmrw));
-
-    const {
-        data: overmrwEvents,
-        isLoading: overmrwLoading,
-        error: overmrwError
-    } = useGetDateEvents(getIsoDate(dates.overmrw));
-
-    return {
-        todayEvents,
-        tmrwEvents,
-        overmrwEvents,
-        loading: todayLoading || tmrwLoading || overmrwLoading,
-        errors: [todayError, tmrwError, overmrwError],
-        dates
-    }
+    return (
+        <Card sx={cardStyle}>
+            <Box sx={{
+                display: 'flex',
+                gap: 2,
+                justifyContent: 'space-between'
+            }}>
+                {boxContent}
+                {cardContent}
+            </Box>
+        </Card>
+    );
 }
 
 const GetTodaysEventItems = (events: EventList | undefined, date: Date): JSX.Element | JSX.Element[] | undefined => {

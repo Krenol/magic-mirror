@@ -26,12 +26,12 @@ export const Birthdays = () => {
     const content = <Box sx={mainBoxStyle}>
         <Box sx={headingBoxStyle}>
             <Typography color="text.primary" variant="body1" gutterBottom>
-                Upcoming Birthdays
+                Birthdays
             </Typography>
             <CakeIcon fontSize='small' />
         </Box>
         <Box sx={itemBoxStyle}>
-            {birthdays?.list.slice(0, 4).map((data) => (
+            {birthdays?.list.slice(0, 3).map((data) => (
                 <BirthdayItem item={data} key={data.name} />
             ))}
         </Box>

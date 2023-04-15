@@ -1,6 +1,5 @@
 import { Theme } from "@emotion/react"
 import { SxProps } from "@mui/material"
-import { eventItemDimen } from "../style"
 
 export const hideTextOverflow: SxProps<Theme> = {
     whiteSpace: 'nowrap',
@@ -8,7 +7,7 @@ export const hideTextOverflow: SxProps<Theme> = {
     textOverflow: 'ellipsis'
 }
 
-export const sx: SxProps<Theme> = {
+export const boxStyle: SxProps<Theme> = {
     ...{
         padding: 1,
         borderRadius: 1,
@@ -17,6 +16,5 @@ export const sx: SxProps<Theme> = {
         justifyContent: 'start',
         flexDirection: 'column',
     },
-    ...hideTextOverflow,
-    ...eventItemDimen
+    ...hideTextOverflow
 }

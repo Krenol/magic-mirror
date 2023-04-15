@@ -1,4 +1,4 @@
-import { StrategyOptionsWithRequest } from "passport-google-oauth2";
+import { StrategyOptionsWithRequest } from "passport-google-oauth20";
 import { OAUTH2_CLIENT } from "config/google";
 import { PROXY_SERVER_CONTEXT, PROXY_SERVER_HOSTNAME, PROXY_SERVER_PORT, PROXY_SERVER_PROTOCOL } from "config/server";
 

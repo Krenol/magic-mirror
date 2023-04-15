@@ -1,34 +1,45 @@
 import winston from "winston"
 import expressWinston from "express-winston"
 import LokiTransport from "winston-loki"
+import os from "os";
 
-const lokiTransporter = new LokiTransport({
+const LOKI_TRANSPORTER = new LokiTransport({
     host: "http://loki:3100",
-})
+});
+const LOG_META = {
+    service: 'express-backend',
+    hostname: os.hostname()
+};
+const LOG_FORMAT = winston.format.json();
+
+const DEFAULT_LOG_CONFIG = {
+    baseMeta: LOG_META,
+    format: LOG_FORMAT,
+    transports: [
+        LOKI_TRANSPORTER
+    ]
+};
 
 export const EXPRESS_ERROR_LOGGER = expressWinston.errorLogger({
-    transports: [
-        lokiTransporter
-    ]
+    ...DEFAULT_LOG_CONFIG,
+    headerBlacklist: ['Cookie', 'cookie'],
 })
-
-const logConfiguration = {
-    'transports': [
-        lokiTransporter
-    ],
-};
 
 export const LOG_LEVELS = { ERROR: 'error', WARN: 'warn', INFO: 'info', DEBUG: 'debug' }
 
-export const LOGGER = winston.createLogger(logConfiguration);
+export const LOGGER = winston.createLogger(
+    {
+        defaultMeta: LOG_META,
+        format: LOG_FORMAT,
+        transports: [
+            LOKI_TRANSPORTER
+        ]
+    }
+);
 
 export const EXPRESS_LOGGER = expressWinston.logger({
-    transports: [
-        lokiTransporter
-    ],
+    ...DEFAULT_LOG_CONFIG,
     headerBlacklist: ['Cookie', 'cookie'],
     meta: true,
-    msg: "HTTP {{req.method}} {{req.url}}",
-    expressFormat: true,
-    colorize: true
+    expressFormat: false,
 })

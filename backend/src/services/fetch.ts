@@ -3,7 +3,8 @@ import { ApiError } from "models/api/api_error";
 import { TResponse } from "models/api/fetch";
 import { GoogleUser } from "models/api/express_user";
 import { LOGGER } from "services/loggers";
-const refresh = require('passport-oauth2-refresh');
+import AuthTokenRefresh from "passport-oauth2-refresh"
+
 
 export const fetchJson = async (url: string, options: any = {}, logUrl: string | undefined = undefined): Promise<TResponse> => {
     LOGGER.info(`Calling API ${logUrl || url} to get JSON`);
@@ -38,12 +39,13 @@ export const fetchJsonGoogleAuthRefresh = async (url: string, user: GoogleUser, 
 
 const _fetchJsonGoogleAuthRefresh = async (url: string, user: GoogleUser, options: any = {}, refreshRetries: number, logUrl: string | undefined = undefined): Promise<TResponse> => {
     const rsp = await fetchJson(url, options, logUrl);
-    if (rsp.status === 401 && refreshRetries > 0) {
+    LOGGER.info(rsp)
+    if (rsp.status === 400 && refreshRetries > 0) {
         LOGGER.info(`Unauthenticated Google Request. Retry with refresh token of user`);
-        refresh.requestNewAccessToken('google', user.refresh_token, (err: Error, accessToken: string) => {
+        AuthTokenRefresh.requestNewAccessToken('google', user.refresh_token, (err: { statusCode: number; data?: any; }, accessToken: string) => {
             if (err || !accessToken) {
-                LOGGER.error(`Refresh request failed with error ${err.message}`)
-                throw new ApiError('Authentication expired', err, 401);
+                LOGGER.error(`Refresh request failed with error ${err.data}`)
+                throw new ApiError('Authentication expired', undefined, 401);
             }
             user.access_token = accessToken;
             _fetchJsonGoogleAuthRefresh(url, options, user, refreshRetries--, logUrl);

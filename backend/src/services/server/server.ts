@@ -51,9 +51,9 @@ export abstract class Server<T extends http2.Http2Server> {
     private setupSession() {
         this._app.use(session({
             secret: SESSION_SECRET,
-            resave: false,
+            resave: true,
             saveUninitialized: false,
-            rolling: false,
+            rolling: true,
             cookie: {
                 secure: ENABLE_HTTPS,
                 httpOnly: true,

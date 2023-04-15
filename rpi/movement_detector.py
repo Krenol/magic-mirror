@@ -37,10 +37,10 @@ def loop():
     screenToggle = ScreenToggle()
     while True:
         if motionSensor.motionIsDetected():
-            screenToggle.toggleScreen("on")
+            screenToggle.setScreenState("on")
             time.sleep(1)
         else:
-            screenToggle.toggleScreen("off")
+            screenToggle.setScreenState("off")
 
 
 if __name__ == '__main__':  # Program start from here

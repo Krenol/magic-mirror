@@ -1,4 +1,5 @@
 import RPi.GPIO as GPIO
+import time
 
 sensorPin = 7  # define the sensorPin
 
@@ -14,6 +15,7 @@ def loop():
     while True:
         if GPIO.input(sensorPin) == GPIO.HIGH:
             print("Motion detected")
+            time.sleep(1)
 
 
 def destroy():

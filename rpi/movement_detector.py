@@ -1,6 +1,6 @@
 import RPi.GPIO as GPIO
 
-sensorPin = 11  # define the sensorPin
+sensorPin = 7  # define the sensorPin
 
 
 def setup():
@@ -10,6 +10,7 @@ def setup():
 
 
 def loop():
+    print("Start loop!")
     while True:
         if GPIO.input(sensorPin) == GPIO.HIGH:
             print("Motion detected")

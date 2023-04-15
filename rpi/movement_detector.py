@@ -1,7 +1,9 @@
+import subprocess
 import RPi.GPIO as GPIO
 import time
 
-sensorPin = 7  # define the sensorPin
+sensorPin = 11  # define the sensorPin
+currentScreenState = "off"
 
 
 def setup():
@@ -16,6 +18,19 @@ def loop():
         if GPIO.input(sensorPin) == GPIO.HIGH:
             print("Motion detected")
             time.sleep(1)
+            toggleScreen(True)
+        else:
+            toggleScreen(False)
+
+
+def toggleScreen(turnOn: bool):
+    stateStr = "off"
+    if turnOn:
+        stateStr = "on"
+    if currentScreenState != stateStr:
+        subprocess.run(
+            ["xset", "-display", ":0.0", "dpms", "force", stateStr])
+        currentScreenState = stateStr
 
 
 def destroy():

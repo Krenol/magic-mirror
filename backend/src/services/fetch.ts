@@ -1,9 +1,7 @@
 import { ALLOWED_URLS } from "config/apis";
 import { TResponse } from "models/api/fetch";
 import { LOGGER } from "services/loggers";
-import AuthTokenRefresh from "passport-oauth2-refresh";
 import { IDtoUser } from "models/mongo/users";
-import { LOGIN_STRATEGY_NAME } from "config/auth";
 import { userTokenRefresh } from "./identity/user";
 import { ApiError } from "models/api/api_error";
 
@@ -42,7 +40,7 @@ const _fetchJsonGoogleAuthRefresh = async (url: string, user: IDtoUser, options:
     const rsp = await fetchJson(url, options, logUrl);
     if (rsp.status === 401 && refreshRetries > 0) {
         LOGGER.info(`Unauthenticated Google Request. Retry with refresh token of user`);
-        handleTokenRefresh(url, options, user, refreshRetries, logUrl);
+        handleTokenRefresh(url, user, options, refreshRetries, logUrl);
     } else if (rsp.status === 401 && refreshRetries === 0) {
         LOGGER.error(`Unauthenticated Google Request. No more retries left!`);
         return return401Response();
@@ -58,7 +56,7 @@ const handleTokenRefresh = async (url: string, user: IDtoUser, options: any = {}
 }
 
 const checkTokenRefreshResponse = async (user?: IDtoUser): Promise<IDtoUser> => {
-    if(user) return user;
+    if (user) return user;
     throw new ApiError("Error during token refresh", undefined, 500);
 }
 

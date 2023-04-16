@@ -1,5 +1,4 @@
 import { LOGIN_STRATEGY_NAME } from "config/auth";
-import { ApiError } from "models/api/api_error";
 import { IDtoUser } from "models/mongo/users";
 import AuthTokenRefresh from "passport-oauth2-refresh";
 import { LOGGER } from "services/loggers";

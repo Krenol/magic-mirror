@@ -5,6 +5,7 @@ import AuthTokenRefresh from "passport-oauth2-refresh";
 import { IDtoUser } from "models/mongo/users";
 import { LOGIN_STRATEGY_NAME } from "config/auth";
 import { userTokenRefresh } from "./identity/user";
+import { ApiError } from "models/api/api_error";
 
 export const fetchJson = async (url: string, options: RequestInit = {}, logUrl: string | undefined = undefined): Promise<TResponse> => {
     LOGGER.info(`Calling API ${logUrl || url} to get JSON`);

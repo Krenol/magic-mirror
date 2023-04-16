@@ -36,11 +36,11 @@ export const getAuthenticationHeader = async (user?: IDtoUser): Promise<RequestI
     return { headers: { Authorization: `Bearer ${access_token}` } }
 }
 
-export const userTokenRefresh = async (user: IDtoUser): Promise<IDtoUser> => {
+export const userTokenRefresh = async (user: IDtoUser): Promise<IDtoUser | undefined> => {
     return AuthTokenRefresh.requestNewAccessToken(LOGIN_STRATEGY_NAME, user.refresh_token, async (err: { statusCode: number; data?: any; }, accessToken: string) => {
         if (err || !accessToken) {
             LOGGER.error(`Refresh request failed with error ${err.data}`);
-            throw new ApiError(err.data, undefined, 401);
+            return;
         }
         user.access_token = accessToken;
         user.save();

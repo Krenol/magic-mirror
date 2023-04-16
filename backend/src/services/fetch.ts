@@ -51,8 +51,14 @@ const _fetchJsonGoogleAuthRefresh = async (url: string, user: IDtoUser, options:
 
 const handleTokenRefresh = async (url: string, user: IDtoUser, options: any = {}, refreshRetries: number, logUrl: string | undefined = undefined) => {
     userTokenRefresh(user)
+        .then(checkTokenRefreshResponse)
         .then(u => _fetchJsonGoogleAuthRefresh(url, { ...options, headers: { Authorization: `Bearer ${u.access_token}` } }, u, --refreshRetries, logUrl))
         .catch(return401Response);
+}
+
+const checkTokenRefreshResponse = async (user?: IDtoUser): Promise<IDtoUser> => {
+    if(user) return user;
+    throw new ApiError("Error during token refresh, undefined, 500);
 }
 
 const return401Response = async (): Promise<TResponse> => {

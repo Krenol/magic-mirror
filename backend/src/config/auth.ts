@@ -13,3 +13,5 @@ export const GOOGLE_AUTH_STRATEGY_OPTIONS: StrategyOptionsWithRequest = {
     passReqToCallback: true
 }
 export const ALLOWED_USERS: Array<string> = JSON.parse(process.env.ALLOWED_USER_EMAILS || "[]")
+
+export const LOGIN_STRATEGY_NAME = 'google-login';

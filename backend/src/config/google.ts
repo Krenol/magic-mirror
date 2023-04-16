@@ -5,6 +5,7 @@ export const GOOGLE_API_HOST = 'https://www.googleapis.com'
 export const GOOGLE_API_VERSION = 'v3'
 export const GOOGLE_CALENDAR_ENDPOINT = `${GOOGLE_API_HOST}/calendar/${GOOGLE_API_VERSION}/calendars`
 export const GOOGLE_TOKENINFO_ENDPOINT = `${GOOGLE_OAUTH_API_HOST}/tokeninfo`
+export const GOOGLE_USER_INFO_ENDPOINT = `${GOOGLE_API_HOST}/oauth2/v1/userinfo`
 
 export const OAUTH2_CLIENT = {
     CLIENT_ID: process.env.CLIENT_ID || "undefined",

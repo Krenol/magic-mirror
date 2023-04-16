@@ -1,18 +1,18 @@
 import { CALENDAR_CONFIG } from "config/google"
 import { NextFunction, Request, Response } from "express";
 import { getCalendarEvents, parseRetrievedEvents } from "routes/calendar/services";
-import { GoogleUser } from "models/api/express_user";
 import { ApiError } from "models/api/api_error";
 import { EventList, EventRequestParams } from "models/api/calendar";
 import { getISODayEndString, getISODayStartString, isSameDate, isToday } from "services/dateParser";
 import { LOGGER } from "services/loggers";
+import { IDtoUser } from "models/mongo/users";
 
 export const allCalendarEvents = async (req: Request, res: Response, next: NextFunction) => {
     const count = await parseCountQueryParameter(req);
     const minTime = await parseMinTimeParam(req);
     const maxTime = await parseMaxTimeQueryParam(req);
     return getRequestParams(count, minTime, maxTime)
-        .then(params => getCalendarEvents(req.user as GoogleUser, params))
+        .then(params => getCalendarEvents(req.user as IDtoUser, params))
         .then(parseRetrievedEvents)
         .then(events => res.status(200).json(events))
         .catch((err) => next(new ApiError('Error while retrieving calendar events', err, 500)))
@@ -23,7 +23,7 @@ export const eventsAtDate = async (req: Request, res: Response, next: NextFuncti
     const date = await parseDateQueryParam(new Date(req.params.date.toString()));
     const maxTime = await getISODayEndString(new Date(req.params.date.toString()));
     return getRequestParams(count, date, maxTime)
-        .then(params => getCalendarEvents(req.user as GoogleUser, params))
+        .then(params => getCalendarEvents(req.user as IDtoUser, params))
         .then(parseRetrievedEvents)
         .then(ev => applyDateFilter(ev, date))
         .then(events => res.status(200).json(events))

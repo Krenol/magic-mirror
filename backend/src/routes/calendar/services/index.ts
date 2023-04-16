@@ -1,20 +1,20 @@
 import { GOOGLE_CALENDAR_ENDPOINT } from "config/google";
 import { EventList, EventItem, GcalApiEventList, GcalApiEventResource, EventRequestParams } from "models/api/calendar";
-import { GoogleUser } from "models/api/express_user";
+import { IDtoUser } from "models/mongo/users";
 import { getTimeDiff, TimeUnit } from "services/dateParser";
 import { fetchJson } from "services/fetch";
-import { getAccessToken, getEmail } from "services/identity";
+import { getAuthenticationHeader, getEmail } from "services/identity/user";
 
-export const getCalendarEvents = async (user: GoogleUser, params: EventRequestParams, orderBy = 'startTime'): Promise<GcalApiEventList> => {
+export const getCalendarEvents = async (user: IDtoUser, params: EventRequestParams, orderBy = 'startTime'): Promise<GcalApiEventList> => {
     const email = await getEmail(user);
-    const access_token = await getAccessToken(user);
-    const events = await getEvents(email, access_token, params, orderBy);
+    const events = await getEvents(email, user, params, orderBy);
     return events;
 }
 
-export const getEvents = async (calendarId: string, access_token: string, params: EventRequestParams, orderBy = 'startTime'): Promise<GcalApiEventList> => {
-    const url = await buildApiUrl(calendarId, params, orderBy)
-    return fetchJson(url, { headers: { Authorization: `Bearer ${access_token}` } })
+export const getEvents = async (calendarId: string, user: IDtoUser, params: EventRequestParams, orderBy = 'startTime'): Promise<GcalApiEventList> => {
+    const url = await buildApiUrl(calendarId, params, orderBy);
+    const authHeader = await getAuthenticationHeader(user);
+    return fetchJson(url, authHeader)
         .then(data => data.body as GcalApiEventList)
         .catch(err => { throw err })
 }

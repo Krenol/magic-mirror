@@ -2,7 +2,7 @@ import express, { Express, Request, Response } from "express";
 import { default as session } from "express-session";
 import bodyParser from "body-parser";
 import { ENABLE_HTTPS, SESSION_SECRET } from "config/server";
-import { setupPassport } from "services/login";
+import { setupPassport } from "services/identity";
 import { default as cors } from "cors";
 import { FRONTEND_URL } from "config/auth";
 

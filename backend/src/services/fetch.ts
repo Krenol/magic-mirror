@@ -1,12 +1,12 @@
 import { ALLOWED_URLS } from "config/apis";
-import { ApiError } from "models/api/api_error";
 import { TResponse } from "models/api/fetch";
-import { GoogleUser } from "models/api/express_user";
 import { LOGGER } from "services/loggers";
-import AuthTokenRefresh from "passport-oauth2-refresh"
+import AuthTokenRefresh from "passport-oauth2-refresh";
+import { IDtoUser } from "models/mongo/users";
+import { LOGIN_STRATEGY_NAME } from "config/auth";
+import { userTokenRefresh } from "./identity/user";
 
-
-export const fetchJson = async (url: string, options: any = {}, logUrl: string | undefined = undefined): Promise<TResponse> => {
+export const fetchJson = async (url: string, options: RequestInit = {}, logUrl: string | undefined = undefined): Promise<TResponse> => {
     LOGGER.info(`Calling API ${logUrl || url} to get JSON`);
     return checkInputURL(url)
         .then(() => fetch(url, options))
@@ -33,29 +33,35 @@ const parseJsonResponse = async (res: Response): Promise<TResponse> => {
     }
 }
 
-export const fetchJsonGoogleAuthRefresh = async (url: string, user: GoogleUser, options: any = {}, logUrl: string | undefined = undefined): Promise<TResponse> => {
+export const fetchJsonGoogleAuthRefresh = async (url: string, user: IDtoUser, options: any = {}, logUrl: string | undefined = undefined): Promise<TResponse> => {
     return _fetchJsonGoogleAuthRefresh(url, user, options, 1, logUrl);
 };
 
-const _fetchJsonGoogleAuthRefresh = async (url: string, user: GoogleUser, options: any = {}, refreshRetries: number, logUrl: string | undefined = undefined): Promise<TResponse> => {
+const _fetchJsonGoogleAuthRefresh = async (url: string, user: IDtoUser, options: any = {}, refreshRetries: number, logUrl: string | undefined = undefined): Promise<TResponse> => {
     const rsp = await fetchJson(url, options, logUrl);
-    LOGGER.info(rsp)
-    if (rsp.status === 400 && refreshRetries > 0) {
+    if (rsp.status === 401 && refreshRetries > 0) {
         LOGGER.info(`Unauthenticated Google Request. Retry with refresh token of user`);
-        AuthTokenRefresh.requestNewAccessToken('google', user.refresh_token, (err: { statusCode: number; data?: any; }, accessToken: string) => {
-            if (err || !accessToken) {
-                LOGGER.error(`Refresh request failed with error ${err.data}`)
-                throw new ApiError('Authentication expired', undefined, 401);
-            }
-            user.access_token = accessToken;
-            _fetchJsonGoogleAuthRefresh(url, options, user, refreshRetries--, logUrl);
-        })
+        handleTokenRefresh(url, options, user, refreshRetries, logUrl);
     } else if (rsp.status === 401 && refreshRetries === 0) {
         LOGGER.error(`Unauthenticated Google Request. No more retries left!`);
-        throw new ApiError('Unauthenticated request', new Error(), 401);
+        return return401Response();
     }
     return rsp;
 };
+
+const handleTokenRefresh = async (url: string, user: IDtoUser, options: any = {}, refreshRetries: number, logUrl: string | undefined = undefined) => {
+    userTokenRefresh(user)
+        .then(u => _fetchJsonGoogleAuthRefresh(url, { ...options, headers: { Authorization: `Bearer ${u.access_token}` } }, u, --refreshRetries, logUrl))
+        .catch(return401Response);
+}
+
+const return401Response = async (): Promise<TResponse> => {
+    return {
+        body: { error: 'Unauthenticated request' },
+        status: 401,
+        statusOk: false
+    }
+}
 
 export const fetchBuffer = async (url: string, options: any = {}, logUrl: string | undefined = undefined): Promise<TResponse> => {
     LOGGER.info(`Calling API ${logUrl || url} to get BLOB`);

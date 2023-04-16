@@ -1,28 +1,22 @@
-import { GoogleUser } from "models/api/express_user";
+import passport from "passport";
+import express from "express";
+import { LOGGER } from "services/loggers";
+import { removeUnauthorizedUsers, setupAllowedUsers } from 'services/identity/authorization';
+import { setupPassportAuthentication } from "services/identity/authentication";
 
-export const getEmail = async (user?: GoogleUser): Promise<string> => {
-    if (user?.email) {
-        return user.email;
-    }
-    throw Object.assign(
-        new Error(`User has no email address defined!`),
-    );
+export const setupPassport = (app: express.Application) => {
+    app.use(passport.session());
+    setupAuthentication();
+    setupAuthorization();
 }
 
-export const getAccessToken = async (user?: GoogleUser): Promise<string> => {
-    if (user?.access_token) {
-        return user.access_token;
-    }
-    throw Object.assign(
-        new Error(`User has no access_token defined!`),
-    );
+const setupAuthorization = () => {
+    LOGGER.info("Setup authorization for passport OIDC");
+    setupAllowedUsers();
+    removeUnauthorizedUsers();
 }
 
-export const getRefreshToken = async (user?: GoogleUser): Promise<string> => {
-    if (user?.refresh_token) {
-        return user.refresh_token;
-    }
-    throw Object.assign(
-        new Error(`User has no refresh_token defined!`),
-    );
+const setupAuthentication = () => {
+    LOGGER.info("Setup authentication with passport OIDC");
+    setupPassportAuthentication();
 }

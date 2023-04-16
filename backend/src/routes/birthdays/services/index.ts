@@ -1,20 +1,20 @@
 import { CALENDAR_CONFIG, GOOGLE_CALENDAR_ENDPOINT } from "config/google";
 import { BirthdayList, GcalApiBirthdayEventResource, Birthday } from "models/api/birthdays";
 import { EventRequestParams, GcalApiEventList } from "models/api/calendar";
-import { GoogleUser } from "models/api/express_user";
+import { IDtoUser } from "models/mongo/users";
 import { fetchJson } from "services/fetch";
-import { getAccessToken } from "services/identity";
+import { getAuthenticationHeader } from "services/identity/user";
 
-
-export const getBirthdayEvents = async (user: GoogleUser, params: EventRequestParams, orderBy = 'startTime'): Promise<BirthdayList> => {
-    const access_token = await getAccessToken(user);
+export const getBirthdayEvents = async (user: IDtoUser, params: EventRequestParams, orderBy = 'startTime'): Promise<BirthdayList> => {
     const calendarID = encodeURIComponent(CALENDAR_CONFIG.BIRTHDAY_ID);
+    const authHeader = await getAuthenticationHeader(user);
     return buildApiUrl(calendarID, params, orderBy)
-        .then(url => fetchJson(url, { headers: { Authorization: `Bearer ${access_token}` } }))
+        .then(url => fetchJson(url, authHeader))
         .then(data => data.body as GcalApiEventList)
         .then(parseRetrievedBirthdays)
         .catch(err => { throw err })
 }
+
 const buildApiUrl = async (calendarId: string, params: EventRequestParams, orderBy = 'startTime'): Promise<string> => {
     let query = `timeMin=${params.minTime}&maxResults=${params.maxResults}&singleEvents=true&orderBy=${orderBy}`;
     query += params.maxTime ? `&timeMax=${params.maxTime}` : "";

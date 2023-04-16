@@ -1,6 +1,5 @@
 import passport from "passport";
-import { GOOGLE_AUTH_STRATEGY_OPTIONS } from "config/auth";
-import { GoogleUser } from "models/api/express_user";
+import { GOOGLE_AUTH_STRATEGY_OPTIONS, LOGIN_STRATEGY_NAME } from "config/auth";
 import { DtoUser, IDtoUser } from "models/mongo/users";
 import { DtoAllowedUserEmail } from "models/mongo/allowed_user_emails";
 import { LOGGER } from "services/loggers";
@@ -11,10 +10,10 @@ import { Strategy, VerifyCallback } from "passport-google-oauth20";
 export const setupPassportAuthentication = () => {
     LOGGER.info("Setup passport strategy");
     const strategy = new Strategy(GOOGLE_AUTH_STRATEGY_OPTIONS, authenticateUser);
-    passport.use('google-login', strategy);
+    passport.use(LOGIN_STRATEGY_NAME, strategy);
     passport.serializeUser(serializeUser);
     passport.deserializeUser(deserializeUser);
-    AuthTokenRefresh.use('google-login', strategy);
+    AuthTokenRefresh.use(LOGIN_STRATEGY_NAME, strategy);
 }
 
 const authenticateUser = (request: any, accessToken: any, refreshToken: any, profile: any, done: VerifyCallback) => {
@@ -72,8 +71,8 @@ const handleFoundUser = (user: IDtoUser, accessToken: any, refreshToken: any, do
 }
 
 const serializeUser = (user: Express.User, done: (err: any, id?: unknown) => void) => {
-    LOGGER.info(`Serialize user with id ${(user as GoogleUser).sub}`);
-    done(null, (user as GoogleUser).sub)
+    LOGGER.info(`Serialize user with id ${(user as IDtoUser).sub}`);
+    done(null, (user as IDtoUser).sub)
 }
 
 const deserializeUser = (id: string, done: (err: any, user?: false | Express.User | null | undefined) => void) => {

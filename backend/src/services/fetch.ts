@@ -59,7 +59,7 @@ const handleTokenRefresh = async (url: string, user: IDtoUser, options: any = {}
 
 const checkTokenRefreshResponse = async (user?: IDtoUser): Promise<IDtoUser> => {
     if(user) return user;
-    throw new ApiError("Error during token refresh, undefined, 500);
+    throw new ApiError("Error during token refresh", undefined, 500);
 }
 
 const return401Response = async (): Promise<TResponse> => {

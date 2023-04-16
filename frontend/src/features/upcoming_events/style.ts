@@ -6,7 +6,6 @@ export const colorBoxDimen = {
     height: 50,
 }
 
-
 export const cardStyle: SxProps<Theme> = {
     ...card_medium,
     ...{

@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getLocaleDateString, getTimeDifferenceInHours, getTimeFromDate, isSameDate } from "../../../app/dateParser";
 import { xSmallFontSize } from "../../../assets/styles/theme";
 import { EventItem } from "../../../models/calendar";
@@ -40,17 +40,17 @@ export const Event = ({ item, date }: IEventItem) => {
     const eventEndString = dayTimeDiff ? '' : `${getLocaleDateString(endDate, DEFAULT_LOCALE, localeStrOpts)} `
     const eventTime = item.allDay ? 'All day' : `${eventStartString}${getTimeFromDate(startDate)}-${eventEndString}${getTimeFromDate(endDate)}`
 
-    const details = <Box>
+    const details = <React.Fragment>
         <Typography variant="subtitle2" color="text.secondary" align="left" sx={{ ...xSmallFontSize, ...hideTextOverflow }}>
             {eventTime}
         </Typography>
         <Typography variant="subtitle2" color="text.secondary" align="left" sx={{ ...xSmallFontSize, ...hideTextOverflow }}>
             {location}
         </Typography>
-    </Box>
+    </React.Fragment>
 
     return (
-        <Box sx={{ ...boxStyle, colorBoxDimen }}>
+        <Box sx={{ ...boxStyle, ...colorBoxDimen }}>
             <Typography variant="subtitle2" color="text.primary" align="left" sx={{ ...xSmallFontSize, ...hideTextOverflow }}>
                 {summary}
             </Typography>

@@ -1,4 +1,4 @@
-import { CALENDAR_CONFIG, GOOGLE_CALENDAR_ENDPOINT } from "config/google";
+import { CALENDAR_CONFIG, GOOGLE_CALENDAR_ENDPOINT } from "config";
 import { BirthdayList, GcalApiBirthdayEventResource, Birthday } from "models/api/birthdays";
 import { EventRequestParams, GcalApiEventList } from "models/api/calendar";
 import { IDtoUser } from "models/mongo/users";

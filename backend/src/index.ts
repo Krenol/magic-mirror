@@ -1,4 +1,4 @@
-import { ENABLE_HTTPS, SERVER_PORT } from 'config/server';
+import { ENABLE_HTTPS, SERVER_PORT } from 'config';
 import { HttpServer } from 'services/server/http_server';
 import { HttpsServer } from 'services/server/https_server';
 import { default as WeatherRoute } from 'routes/weather'
@@ -9,7 +9,7 @@ import { NextFunction, Request, Response } from 'express';
 import { ApiError } from 'models/api/api_error';
 import { EXPRESS_ERROR_LOGGER } from 'services/loggers';
 import { MongoDb } from 'services/database/mongodb';
-import { mongoDbData } from 'config/database';
+import { mongoDbData } from 'config';
 
 const mongoDb: MongoDb = new MongoDb(mongoDbData);
 const server = ENABLE_HTTPS ? new HttpsServer(mongoDb, SERVER_PORT) : new HttpServer(mongoDb, SERVER_PORT);

@@ -1,1 +1,0 @@
-export const OPENWEATHER_URL = 'https://openweathermap.org'

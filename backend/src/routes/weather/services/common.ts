@@ -1,5 +1,5 @@
 import { weather_code_list, WeatherCodeEntry } from "models/api/weather";
-import { MAX_HOURLY_FORECAST_HOURS } from "config/openmeteo_api";
+import { MAX_HOURLY_FORECAST_HOURS } from "config";
 
 export const getWeatherIconFromWeathercode = async (useDayIcons: boolean, weathercode: number): Promise<string> => {
     const WeatherCodeEntry = await getWeatherCodeEntry(weathercode)

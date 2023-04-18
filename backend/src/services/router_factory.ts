@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { RATE_LIMIT } from "config/apis";
+import { RATE_LIMIT } from "config";
 import RateLimit from "express-rate-limit";
 import { checkAuthenticated } from "middleware/authenticated";
 

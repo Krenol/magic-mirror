@@ -1,5 +1,5 @@
 import passport from "passport";
-import { GOOGLE_AUTH_STRATEGY_OPTIONS, LOGIN_STRATEGY_NAME } from "config/auth";
+import { GOOGLE_AUTH_STRATEGY_OPTIONS, LOGIN_STRATEGY_NAME } from "config";
 import { DtoUser, IDtoUser } from "models/mongo/users";
 import { DtoAllowedUserEmail } from "models/mongo/allowed_user_emails";
 import { LOGGER } from "services/loggers";

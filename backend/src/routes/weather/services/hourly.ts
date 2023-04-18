@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { MAX_HOURLY_FORECAST_HOURS, STD_API_QUERY, WEATHER_API_URL } from "config/openmeteo_api";
+import { MAX_HOURLY_FORECAST_HOURS, STD_API_QUERY, WEATHER_API_URL } from "config";
 import { ApiError } from "models/api/api_error";
 import { TResponse } from "models/api/fetch";
 import { HourlyWeatherResource, HourlyWeather } from "models/api/weather";

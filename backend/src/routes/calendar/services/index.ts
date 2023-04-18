@@ -1,4 +1,4 @@
-import { GOOGLE_CALENDAR_ENDPOINT } from "config/google";
+import { GOOGLE_CALENDAR_ENDPOINT } from "config";
 import { EventList, EventItem, GcalApiEventList, GcalApiEventResource, EventRequestParams } from "models/api/calendar";
 import { IDtoUser } from "models/mongo/users";
 import { getTimeDiff, TimeUnit } from "services/dateParser";

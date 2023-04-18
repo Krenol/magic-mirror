@@ -1,4 +1,4 @@
-import { MAX_FORECAST_DAYS, MAX_HOURLY_FORECAST_HOURS } from "config/openmeteo_api";
+import { MAX_FORECAST_DAYS, MAX_HOURLY_FORECAST_HOURS } from "config";
 import { EParamType } from "services/validators/parameter_validator";
 import { RangeParameterValidator } from "services/validators/range_parameter_validator";
 import { RegexParameterValidator } from "services/validators/regex_parameter_validator";

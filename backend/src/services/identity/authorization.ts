@@ -1,4 +1,4 @@
-import { ALLOWED_USERS } from "config/auth";
+import { ALLOWED_USERS } from "config";
 import { DtoAllowedUserEmail, IAllowedUserEmail } from "models/mongo/allowed_user_emails"
 import { DtoUser } from "models/mongo/users";
 import { LOGGER } from "services/loggers";

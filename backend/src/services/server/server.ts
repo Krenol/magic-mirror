@@ -1,10 +1,10 @@
 import express, { Express, Request, Response } from "express";
 import { default as session } from "express-session";
 import bodyParser from "body-parser";
-import { ENABLE_HTTPS, SESSION_SECRET } from "config/server";
+import { ENABLE_HTTPS, SESSION_SECRET } from "config";
 import { setupPassport } from "services/identity";
 import { default as cors } from "cors";
-import { FRONTEND_URL } from "config/auth";
+import { FRONTEND_URL } from "config";
 
 import { EXPRESS_LOGGER } from "services/loggers";
 import { Database } from "services/database/database";

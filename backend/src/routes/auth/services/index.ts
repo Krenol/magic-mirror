@@ -1,4 +1,4 @@
-import { GOOGLE_TOKENINFO_ENDPOINT, GOOGLE_USER_INFO_ENDPOINT } from "config/google";
+import { GOOGLE_TOKENINFO_ENDPOINT, GOOGLE_USER_INFO_ENDPOINT } from "config";
 import { ApiError } from "models/api/api_error";
 import { AccessTokenInfo } from "models/api/tokeninfo";
 import { getAccessToken, getAuthenticationHeader } from "services/identity/user";

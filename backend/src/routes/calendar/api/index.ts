@@ -1,4 +1,4 @@
-import { CALENDAR_CONFIG } from "config/google"
+import { CALENDAR_CONFIG } from "config"
 import { NextFunction, Request, Response } from "express";
 import { getCalendarEvents, parseRetrievedEvents } from "routes/calendar/services";
 import { ApiError } from "models/api/api_error";

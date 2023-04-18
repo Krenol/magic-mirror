@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { STD_API_QUERY, WEATHER_API_URL } from "config/openmeteo_api";
+import { STD_API_QUERY, WEATHER_API_URL } from "config";
 import { ApiError } from "models/api/api_error";
 import { TResponse } from "models/api/fetch";
 import { CurrentWeather } from "models/api/weather";

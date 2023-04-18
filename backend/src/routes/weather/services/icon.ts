@@ -1,5 +1,5 @@
 import { Response, Request } from "express";
-import { OPENWEATHER_URL } from "config/icon_api";
+import { OPENWEATHER_URL } from "config";
 import { TResponse } from "models/api/fetch";
 import { ApiError } from "models/api/api_error";
 

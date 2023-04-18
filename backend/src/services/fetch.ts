@@ -1,4 +1,4 @@
-import { ALLOWED_URLS } from "config/apis";
+import { ALLOWED_URLS } from "config";
 import { TResponse } from "models/api/fetch";
 import { LOGGER } from "services/loggers";
 import { IDtoUser } from "models/mongo/users";

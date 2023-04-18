@@ -1,7 +1,7 @@
-import express, { Express, Request, Response } from "express";
+import express from "express";
 import { default as session } from "express-session";
 import bodyParser from "body-parser";
-import { ENABLE_HTTPS, SESSION_SECRET } from "config";
+import { ENABLE_HTTPS, SESSION_SECRET, RATE_LIMIT } from "config";
 import { setupPassport } from "services/identity";
 import { default as cors } from "cors";
 import { FRONTEND_URL } from "config";
@@ -11,6 +11,9 @@ import { Database } from "services/database/database";
 import { getSessionStore } from "services/server/session_store";
 import * as http2 from "http2";
 import http2Express from "http2-express-bridge";
+import compression from "compression";
+import helmet from "helmet";
+import RateLimit from "express-rate-limit";
 
 
 export abstract class Server<T extends http2.Http2Server> {
@@ -42,6 +45,7 @@ export abstract class Server<T extends http2.Http2Server> {
         this.setupBodyParsers();
         this.setupCors();
         this.setupOIDC();
+        this.setupDefaultMiddlewares();
     }
 
     private setupLogging() {
@@ -75,6 +79,12 @@ export abstract class Server<T extends http2.Http2Server> {
 
     private async setupOIDC() {
         setupPassport(this._app);
+    }
+
+    private async setupDefaultMiddlewares() {
+        this._app.use(compression());
+        this._app.use(helmet());
+        this._app.use(RateLimit(RATE_LIMIT));
     }
 
     public abstract start(): void;

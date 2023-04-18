@@ -1,12 +1,8 @@
 import { Router } from "express";
-import { RATE_LIMIT } from "config";
-import RateLimit from "express-rate-limit";
 import { checkAuthenticated } from "middleware/authenticated";
 
 export const getRouter = (protectedRoute: boolean): Router => {
     const router = Router();
-    const limiter = RateLimit(RATE_LIMIT);
-    router.use(limiter);
     if (protectedRoute) router.use(checkAuthenticated);
     return router;
 }

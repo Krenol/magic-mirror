@@ -34,6 +34,7 @@ const MenuAppBar = () => {
 
     const reload = () => {
         queryClient.invalidateQueries();
+        handleClose();
     }
 
     const redirect = (path: string) => {

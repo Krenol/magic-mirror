@@ -31,7 +31,7 @@ export const Birthdays = () => {
             <CakeIcon fontSize='small' />
         </Box>
         <Box sx={itemBoxStyle}>
-            {birthdays?.list.slice(0, 3).map((data) => (
+            {birthdays?.list.slice(0, 4).map((data) => (
                 <BirthdayItem item={data} key={data.name} />
             ))}
         </Box>

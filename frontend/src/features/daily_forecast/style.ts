@@ -1,7 +1,7 @@
-import { card_large } from "../../assets/styles/cards";
+import { card_medium } from "../../assets/styles/cards";
 
 export const cardStyle = {
-    ...card_large,
+    ...card_medium,
     ...{
         display: 'flex',
         justifyContent: 'center',

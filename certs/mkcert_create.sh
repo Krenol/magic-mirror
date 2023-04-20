@@ -2,11 +2,11 @@
 DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 # parent dir of that dir
 PARENT_DIRECTORY="${DIR%/*}"
-domain="local.com"
+domain="fritz.box"
 ssl_dir="$PARENT_DIRECTORY/nginx/ssl"
-hostname="magic-mirror.$domain"
+hostname="nuc.$domain"
 addtional_hostnames="localhost 127.0.0.1 ::1"
-hostname_grafana="grafana.$domain"
+hostname_grafana="nuc.$domain"
 
 mkcert -key-file $ssl_dir/$hostname.key -cert-file $ssl_dir/$hostname.pem $hostname $addtional_hostnames
 cp $ssl_dir/$hostname.pem $ssl_dir/$hostname.bundle.pem

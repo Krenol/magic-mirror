@@ -15,6 +15,7 @@ services:
       - nginx
     env_file:
       - frontend.env
+      - host.env
     networks:
       - nginx
   nginx:
@@ -25,10 +26,13 @@ services:
       - 443:443
     restart: always
     volumes:
-      - ../nginx/conf/:/etc/nginx/conf.d/:ro
+      - ../nginx/conf/:/etc/nginx/conf.d/:rw
       - ../nginx/ssl/:/etc/ssl/:ro
+      - ../nginx/template-vars:/etc/nginx/templates/10-variables.conf.template:ro
     networks:
       - nginx
+    env_file:
+      - host.env
   backend:
     build:
       context: ../backend
@@ -43,6 +47,7 @@ services:
       - ../backend/ssl:/etc/express
     env_file:
       - backend.env
+      - host.env
     networks:
       - nginx
       - db

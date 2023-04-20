@@ -8,7 +8,7 @@ export const SERVER_HOSTNAME = process.env.SERVER_HOSTNAME || "localhost";
 export const PROXY_SERVER_HOSTNAME = process.env.PROXY_SERVER_HOSTNAME || SERVER_HOSTNAME;
 export const PROXY_SERVER_PORT = process.env.PROXY_SERVER_PORT || SERVER_PORT;
 export const PROXY_SERVER_CONTEXT = process.env.PROXY_SERVER_CONTEXT || "/api";
-export const PROXY_SERVER_PROTOCOL = process.env.PROXY_SERVER_PROTOCOL || "http";
+export const PROXY_SERVER_PROTOCOL = process.env.PROXY_SERVER_PROTOCOL || "https";
 export const ENABLE_HTTPS = (process.env.ENABLE_HTTPS?.toLowerCase() || "false") === "true"
 export const SSL_PRIVATE_KEY = process.env.SSL_PRIVATE_KEY || "/etc/express/express.key"
 export const SSL_CERTIFICATE = process.env.SSL_PRIVATE_KEY || "/etc/express/express.pem"
@@ -31,7 +31,6 @@ export const mongoDbData: IDatabaseConenction = {
     ]
 }
 
-export const GOOGLE_PROJECT_NUMBER = process.env.GOOGLE_PROJECT_NUMBER
 export const SCOPES = ['email', 'profile', 'https://www.googleapis.com/auth/calendar.readonly'];
 export const GOOGLE_OAUTH_API_HOST = 'https://oauth2.googleapis.com'
 export const GOOGLE_API_HOST = 'https://www.googleapis.com'

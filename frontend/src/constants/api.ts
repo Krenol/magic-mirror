@@ -14,8 +14,5 @@ export const EVENTS_API = `${BACKEND_BASE_URL}/${EVENTS_ENDPOINT_CONTEXT}`
 export const SESSION_STATUS_API = `${BACKEND_BASE_URL}/${AUTH_CONTEXT}/check`
 export const GOOGLE_LOGIN_URL = `${BACKEND_BASE_URL}/${AUTH_CONTEXT}/google`
 export const LOGOUT_URL = `${BACKEND_BASE_URL}/logout`
-
-export const MOCK_DATA = !!process.env.REACT_APP_MOCK_DATA || false
-
 export const DEFAULT_FETCH_CONFIG: RequestInit = { credentials: 'include' }
 export const REFETCH_INTERVAL = parseInt(process.env.REACT_APP_REFRESH_MILLIS || '120000')

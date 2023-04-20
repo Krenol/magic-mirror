@@ -124,3 +124,5 @@ token.json
 *.turtle
 WiredTiger*
 mongo/*/**
+frontend/build/
+10-variables.conf

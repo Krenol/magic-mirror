@@ -1,15 +1,12 @@
 version: "3.9"
-name: magic-mirror-dev
+name: magic-mirror
 services:
   frontend:
     build:
       context: ../frontend
-      dockerfile: docker/Dockerfile.dev
+      dockerfile: docker/Dockerfile
       args:
         NODE_IMG_VERSION: ${NODE_IMG_VERSION}
-    volumes:
-      - ../frontend/src:/opt/src
-      - ../frontend/public:/opt/public
     depends_on:
       - backend
       - nginx
@@ -25,10 +22,6 @@ services:
       - 80:80
       - 443:443
     restart: always
-    volumes:
-      - ../nginx/conf/:/etc/nginx/conf.d/:rw
-      - ../nginx/ssl/:/etc/ssl/:ro
-      - ../nginx/template-vars:/etc/nginx/templates/10-variables.conf.template:ro
     networks:
       - nginx
     env_file:
@@ -39,13 +32,10 @@ services:
       dockerfile: docker/Dockerfile
       args:
         NODE_IMG_VERSION: ${NODE_IMG_VERSION}
-        NODE_ENV: development
+        NODE_ENV: production
     depends_on:
       - nginx
       - mongo
-    volumes:
-      - ../backend/src:/opt/src
-      - ../backend/ssl:/etc/express
     env_file:
       - backend.env
       - host.env
@@ -61,8 +51,6 @@ services:
     restart: always
     volumes:
       - ../mongo:/data/db
-    ports:
-      - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PW}

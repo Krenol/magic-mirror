@@ -26,3 +26,8 @@ echo "$(cat $(mkcert -CAROOT)/rootCA.pem)" > $PARENT_DIRECTORY/certs/rootCa.pem
 echo "REACT_APP_API_BACKEND_HOST=$hostname" > $PARENT_DIRECTORY/docker-compose/host.env
 echo "FRONTEND_URL=https://$hostname" >> $PARENT_DIRECTORY/docker-compose/host.env
 echo "PROXY_SERVER_HOSTNAME=$hostname" >> $PARENT_DIRECTORY/docker-compose/host.env
+
+echo "REACT_APP_API_BACKEND_HOST=$hostname" > $PARENT_DIRECTORY/frontend/.env.production
+echo "REACT_APP_API_BACKEND_PROTOCOL=https" >> $PARENT_DIRECTORY/frontend/.env.production
+echo "REACT_APP_API_BACKEND_CONTEXT=api" >> $PARENT_DIRECTORY/frontend/.env.production
+echo "REACT_APP_API_BACKEND_PORT=443" >> $PARENT_DIRECTORY/frontend/.env.production

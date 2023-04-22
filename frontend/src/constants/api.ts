@@ -1,7 +1,7 @@
 export const API_BACKEND_HOST = process.env.REACT_APP_API_BACKEND_HOST || "localhost"
-export const API_BACKEND_CONTEXT = process.env.REACT_APP_API_BACKEND_CONTEXT || ""
+export const API_BACKEND_CONTEXT = process.env.REACT_APP_API_BACKEND_CONTEXT || "api"
 export const API_BACKEND_PORT = process.env.REACT_APP_API_BACKEND_PORT || 3001
-export const API_BACKEND_PROTOCOL = process.env.REACT_APP_API_BACKEND_PROTOCOL || "http"
+export const API_BACKEND_PROTOCOL = process.env.REACT_APP_API_BACKEND_PROTOCOL || "https"
 export const BACKEND_BASE_URL = `${API_BACKEND_PROTOCOL}://${API_BACKEND_HOST}:${API_BACKEND_PORT}/${API_BACKEND_CONTEXT.replace(/^\/(.*)$/, '$1')}`
 const WEATHER_ENDPOINT_CONTEXT = "weather"
 const AUTH_CONTEXT = "auth"

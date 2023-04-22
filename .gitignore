@@ -126,3 +126,4 @@ WiredTiger*
 mongo/*/**
 frontend/build/
 10-variables.conf
+.env.*

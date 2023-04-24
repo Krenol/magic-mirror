@@ -1,35 +1,21 @@
-import psutil
-import webbrowser
-import pyautogui
+from selenium import webdriver
 
 
 class BrowserHandler:
-    def __init__(self, url: str, chrome_path: str = "/usr/bin/chromium-browser"):
+    def __init__(self, url: str):
         self._url = url
-        webbrowser.register(
-            'chrome', None, webbrowser.BackgroundBrowser(chrome_path))
-        self._browser = webbrowser.get('chrome')
+        self._browser = webdriver.Chrome()
+
+    def __del__(self):
+        self._browser.quit()
 
     def openUrl(self):
         self.closeUrl()
-        self._browser.open(self._url)
+        self._browser.get(self._url)
         self.toggleBrowserFullscreen()
 
     def closeUrl(self) -> bool:
-        for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
-            if self._isBrowserProcessWithUrl(proc):
-                self._terminateProcess(proc.info['pid'])
-                return True
-        return False
-
-    def _isBrowserProcessWithUrl(self, proc) -> bool:
-        return 'chromium' in proc.info['name'].lower() and self._url in ' '.join(proc.info['cmdline'])
-
-    def _terminateProcess(self, pid: int):
-        proc = psutil.Process(proc.info['pid'])
-        proc.terminate()
+        self._browser.quit()
 
     def toggleBrowserFullscreen(self):
-        pyautogui.sleep(5)
-        # Send F11 key to enter fullscreen mode
-        pyautogui.hotkey('F11')
+        self._browser.maximize_window()

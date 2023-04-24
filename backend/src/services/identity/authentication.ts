@@ -1,7 +1,7 @@
 import passport from "passport";
 import { GOOGLE_AUTH_STRATEGY_OPTIONS, LOGIN_STRATEGY_NAME } from "config";
-import { DtoUser, IDtoUser } from "models/mongo/users";
-import { DtoAllowedUserEmail } from "models/mongo/allowed_user_emails";
+import { DtoUser, IDtoUser } from "models/mongodb/users";
+import { DtoAllowedUserEmail } from "models/mongodb/allowed_user_emails";
 import { LOGGER } from "services/loggers";
 import AuthTokenRefresh from "passport-oauth2-refresh"
 import { Strategy, VerifyCallback } from "passport-google-oauth20";

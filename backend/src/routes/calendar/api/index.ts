@@ -5,7 +5,7 @@ import { ApiError } from "models/api/api_error";
 import { EventList, EventRequestParams } from "models/api/calendar";
 import { getISODayEndString, getISODayStartString, isSameDate, isToday } from "services/dateParser";
 import { LOGGER } from "services/loggers";
-import { IDtoUser } from "models/mongo/users";
+import { IDtoUser } from "models/mongodb/users";
 
 export const allCalendarEvents = async (req: Request, res: Response, next: NextFunction) => {
     const count = await parseCountQueryParameter(req);

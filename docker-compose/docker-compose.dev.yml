@@ -42,7 +42,7 @@ services:
         NODE_ENV: development
     depends_on:
       - nginx
-      - mongo
+      - mongodb
     volumes:
       - ../backend/src:/opt/src
       - ../backend/ssl:/etc/express
@@ -56,16 +56,21 @@ services:
     environment:
       MONGO_USERNAME: ${MONGO_ROOT_USER}
       MONGO_PASSWORD: ${MONGO_ROOT_PW}
-  mongo:
+  mongodb:
     image: mongo
     restart: always
     volumes:
-      - ../mongo:/data/db
+      - ../mongodb/data:/data/db
+      - ../mongodb/ssl:/etc/ssl
     ports:
       - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PW}
+      MONGO_SSL_MODE: requireSSL
+      MONGO_SSL_CA_FILE: /etc/ssl/rootCa.pem
+      MONGO_SSL_CERT_FILE: /etc/ssl/mongodb.pem
+      MONGO_SSL_KEY_FILE: /etc/ssl/mongodb.key
     networks:
       - db
   loki:

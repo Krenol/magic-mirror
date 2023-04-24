@@ -14,7 +14,7 @@ export const SSL_PRIVATE_KEY = process.env.SSL_PRIVATE_KEY || "/etc/express/expr
 export const SSL_CERTIFICATE = process.env.SSL_PRIVATE_KEY || "/etc/express/express.pem"
 
 export const mongoDbData: IDatabaseConenction = {
-    hostname: process.env.MONGO_HOSTNAME || "mongo",
+    hostname: process.env.MONGO_HOSTNAME || "mongodb",
     port: parseInt(process.env.MONGO_PORT || "27017"),
     username: process.env.MONGO_USERNAME,
     password: process.env.MONGO_PASSWORD,
@@ -26,7 +26,7 @@ export const mongoDbData: IDatabaseConenction = {
         },
         {
             name: 'ssl',
-            value: process.env.MONGO_SSL || "false"
+            value: 'false' //process.env.MONGO_SSL || "true"
         }
     ]
 }

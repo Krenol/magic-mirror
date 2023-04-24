@@ -1,7 +1,7 @@
 import { ALLOWED_URLS } from "config";
 import { TResponse } from "models/api/fetch";
 import { LOGGER } from "services/loggers";
-import { IDtoUser } from "models/mongo/users";
+import { IDtoUser } from "models/mongodb/users";
 import { userTokenRefresh } from "./identity/user";
 import { ApiError } from "models/api/api_error";
 

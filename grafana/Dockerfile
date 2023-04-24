@@ -4,7 +4,7 @@ FROM grafana/grafana:${GRAFANA_VERSION}
 
 USER root
 
-COPY rootCa.pem /usr/local/share/ca-certificates/rootCa.crt
+COPY rootCa.crt /usr/local/share/ca-certificates/rootCa.crt
 
 RUN update-ca-certificates
 

@@ -14,7 +14,11 @@ export class MongoDb extends Database {
     }
 
     protected initDatabaseConnection(): void {
-        connect(this._connectionString)
+        connect(this._connectionString, {
+            sslKey: '/etc/express/mongodb.pem',
+            sslCert: '/etc/express/mongodb.pem',
+            sslCA: '/opt/rootCa.crt'
+        })
             .then(con => this._connection = con);
     }
 }

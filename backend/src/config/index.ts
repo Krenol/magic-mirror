@@ -11,7 +11,7 @@ export const PROXY_SERVER_CONTEXT = process.env.PROXY_SERVER_CONTEXT || "/api";
 export const PROXY_SERVER_PROTOCOL = process.env.PROXY_SERVER_PROTOCOL || "https";
 export const ENABLE_HTTPS = (process.env.ENABLE_HTTPS?.toLowerCase() || "false") === "true"
 export const SSL_PRIVATE_KEY = process.env.SSL_PRIVATE_KEY || "/etc/express/express.key"
-export const SSL_CERTIFICATE = process.env.SSL_PRIVATE_KEY || "/etc/express/express.pem"
+export const SSL_CERTIFICATE = process.env.SSL_PRIVATE_KEY || "/etc/express/express.crt"
 
 export const mongoDbData: IDatabaseConenction = {
     hostname: process.env.MONGO_HOSTNAME || "mongodb",
@@ -26,7 +26,7 @@ export const mongoDbData: IDatabaseConenction = {
         },
         {
             name: 'ssl',
-            value: 'false' //process.env.MONGO_SSL || "true"
+            value: 'true' //process.env.MONGO_SSL || "true"
         }
     ]
 }

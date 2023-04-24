@@ -113,8 +113,9 @@ token.json
 
 .scannerwork
 
-*.pem
+*.crt
 *.key
+*.pem
 *.csr
 
 # Mongo data

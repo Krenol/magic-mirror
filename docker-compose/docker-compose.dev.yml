@@ -61,16 +61,17 @@ services:
     restart: always
     volumes:
       - ../mongodb/data:/data/db
-      - ../mongodb/ssl:/etc/ssl
+      - ../mongodb/ssl:/etc/ssl:ro
     ports:
       - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PW}
       MONGO_SSL_MODE: requireSSL
-      MONGO_SSL_CA_FILE: /etc/ssl/rootCa.pem
-      MONGO_SSL_CERT_FILE: /etc/ssl/mongodb.pem
+      MONGO_SSL_CA_FILE: /etc/ssl/rootCa.crt
+      MONGO_SSL_CERT_FILE: /etc/ssl/mongodb.crt
       MONGO_SSL_KEY_FILE: /etc/ssl/mongodb.key
+    command: mongod --bind_ip_all --sslMode requireSSL --sslPEMKeyFile /etc/ssl/mongodb.pem --sslCAFile /etc/ssl/rootCa.crt
     networks:
       - db
   loki:

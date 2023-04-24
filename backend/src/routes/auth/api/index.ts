@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { ApiError } from "models/api/api_error";
 import { LOGGER } from "services/loggers";
 import { getUserInfo } from "routes/auth/services";
-import { IDtoUser } from "models/mongodb/users";
+import { IDtoUser } from "models/mongo/users";
 
 export const logout = async (req: Request, res: Response, next: NextFunction) => {
     LOGGER.info(`User ${(JSON.stringify(req.user as IDtoUser)) || 'unknown'} signed out`);

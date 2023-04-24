@@ -123,7 +123,7 @@ token.json
 *.bson
 *.turtle
 WiredTiger*
-mongodb/*/**
+mongo/*/**
 frontend/build/
 10-variables.conf
 .env.*

@@ -1,6 +1,6 @@
 import { GOOGLE_CALENDAR_ENDPOINT } from "config";
 import { EventList, EventItem, GcalApiEventList, GcalApiEventResource, EventRequestParams } from "models/api/calendar";
-import { IDtoUser } from "models/mongodb/users";
+import { IDtoUser } from "models/mongo/users";
 import { getTimeDiff, TimeUnit } from "services/dateParser";
 import { fetchJson } from "services/fetch";
 import { getAuthenticationHeader, getEmail } from "services/identity/user";

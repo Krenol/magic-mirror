@@ -3,7 +3,7 @@ import { ApiError } from "models/api/api_error";
 import { AccessTokenInfo } from "models/api/tokeninfo";
 import { getAccessToken, getAuthenticationHeader } from "services/identity/user";
 import { fetchJsonGoogleAuthRefresh } from "services/fetch";
-import { IDtoUser } from "models/mongodb/users";
+import { IDtoUser } from "models/mongo/users";
 import { TResponse } from "models/api/fetch";
 
 export const postTokenInfo = async (user: IDtoUser): Promise<boolean> => {

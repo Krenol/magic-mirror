@@ -2,7 +2,7 @@ import { CALENDAR_CONFIG } from "config";
 import { NextFunction, Request, Response } from "express";
 import { ApiError } from "models/api/api_error";
 import { EventRequestParams } from "models/api/calendar";
-import { IDtoUser } from "models/mongodb/users";
+import { IDtoUser } from "models/mongo/users";
 import { getBirthdayEvents } from "routes/birthdays/services";
 
 export const allBirthdays = async (req: Request, res: Response, next: NextFunction) => {

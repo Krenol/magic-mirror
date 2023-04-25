@@ -1,0 +1,7 @@
+net:
+  tls:
+    mode: requireTLS
+    certificateKeyFile: /etc/ssl/mongodb.pem
+    CAFile: /etc/ssl/rootCa.crt
+    allowConnectionsWithoutCertificates: true
+    disabledProtocols: TLS1_0,TLS1_1

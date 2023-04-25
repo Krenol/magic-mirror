@@ -128,3 +128,4 @@ mongodb/*/**
 frontend/build/
 10-variables.conf
 .env.*
+!mongodb/config/*

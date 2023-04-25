@@ -21,8 +21,7 @@ echo "$(cat $(mkcert -CAROOT)/rootCA.pem)" > $PARENT_DIRECTORY/grafana/rootCa.cr
 echo "$(cat $(mkcert -CAROOT)/rootCA.pem)" > $PARENT_DIRECTORY/backend/rootCa.crt
 echo "$(cat $(mkcert -CAROOT)/rootCA.pem)" > $PARENT_DIRECTORY/certs/rootCa.crt
 echo "$(cat $(mkcert -CAROOT)/rootCA.pem)" > $PARENT_DIRECTORY/mongodb/ssl/rootCa.crt
-cat $PARENT_DIRECTORY/mongodb/ssl/mongodb.key $PARENT_DIRECTORY/mongodb/ssl/mongodb.crt > $PARENT_DIRECTORY/mongodb/ssl/mongodb.pem
-cp $PARENT_DIRECTORY/mongodb/ssl/mongodb.pem $PARENT_DIRECTORY/backend/ssl/mongodb.pem
+cat $PARENT_DIRECTORY/mongodb/ssl/mongodb.key $PARENT_DIRECTORY/mongodb/ssl/mongodb.crt $PARENT_DIRECTORY/mongodb/ssl/rootCa.crt > $PARENT_DIRECTORY/mongodb/ssl/mongodb.pem
 
 echo "REACT_APP_API_BACKEND_HOST=$hostname" > $PARENT_DIRECTORY/docker-compose/host.env
 echo "FRONTEND_URL=https://$hostname" >> $PARENT_DIRECTORY/docker-compose/host.env

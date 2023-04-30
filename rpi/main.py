@@ -1,9 +1,8 @@
 import time
 import RPi.GPIO as GPIO
-from rpi.browser_handler import BrowserHandler
-from rpi.movement_detector import DisplayState, MotionSensor, ScreenToggle
+from movement_detector import DisplayState, MotionSensor, ScreenToggle
 
-SENDSOR_PIN = 11  # define the sensorPin
+SENDSOR_PIN = 4  # define the sensorPin
 MIRROR_URL = "https://nuc.fritz.box"
 CHROME_PATH = "/usr/bin/chromium-browser"
 
@@ -23,12 +22,9 @@ def loop():
 
 
 if __name__ == '__main__':  # Program start from here
-    GPIO.setmode(GPIO.BOARD)
-    browserHandler = BrowserHandler(MIRROR_URL, CHROME_PATH)
+    GPIO.setmode(GPIO.BCM)
     try:
-        browserHandler.openUrl()
         loop()
     # When 'Ctrl+C' is pressed, the child program destroy() will be executed.
     except KeyboardInterrupt:
         GPIO.cleanup()
-        browserHandler.closeUrl()

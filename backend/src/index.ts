@@ -4,6 +4,7 @@ import { HttpsServer } from 'services/server/https_server';
 import { default as WeatherRoute } from 'routes/weather'
 import { default as CalendarRoute } from 'routes/calendar'
 import { default as BirthdaysRoute } from 'routes/birthdays'
+import { default as UsersRoute } from 'routes/users'
 import { default as AuthRoute } from 'routes/auth';
 import { NextFunction, Request, Response } from 'express';
 import { ApiError } from 'models/api/api_error';
@@ -17,6 +18,7 @@ server.app.use('/weather', WeatherRoute)
 server.app.use('/calendar', CalendarRoute)
 server.app.use('/birthdays', BirthdaysRoute)
 server.app.use('/', AuthRoute)
+server.app.use('/users', UsersRoute)
 
 // ERROR HANDLING
 server.app.use(EXPRESS_ERROR_LOGGER)

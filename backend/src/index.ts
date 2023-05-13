@@ -21,7 +21,7 @@ server.app.use('/', AuthRoute)
 // ERROR HANDLING
 server.app.use(EXPRESS_ERROR_LOGGER)
 
-server.app.use((err: ApiError, req: Request, res: Response, _next: NextFunction) => {
+server.app.use((err: ApiError, _req: Request, res: Response, _next: NextFunction) => {
     return res.status(err.status).json({ error: err.message }).end();
 })
 

@@ -1,10 +1,9 @@
 import express from "express";
 import { default as session } from "express-session";
 import bodyParser from "body-parser";
-import { ENABLE_HTTPS, SESSION_SECRET, RATE_LIMIT } from "config";
+import { ENABLE_HTTPS, SESSION_SECRET, RATE_LIMIT, FRONTEND_URL } from "config";
 import { setupPassport } from "services/identity";
 import { default as cors } from "cors";
-import { FRONTEND_URL } from "config";
 
 import { EXPRESS_LOGGER } from "services/loggers";
 import { Database } from "services/database/database";
@@ -34,7 +33,7 @@ export abstract class Server<T extends http2.Http2Server> {
     constructor(database: Database, port = 3001) {
         this._port = port
         this._database = database;
-        this._app = http2Express(express);;
+        this._app = http2Express(express);
         this._app.set("port", port);
         this.configureExpress();
     }

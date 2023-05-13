@@ -31,8 +31,6 @@ export const Settings = () => {
                 city: city.current!.value,
                 zip: zip.current!.value
             });
-            console.log(userData);
-            //back();
         }
     }
 

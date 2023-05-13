@@ -1,5 +1,3 @@
-import { LOGGER } from "./loggers"
-
 export const isToday = async (date: Date): Promise<boolean> => {
     return isSameDate(date, new Date())
 }

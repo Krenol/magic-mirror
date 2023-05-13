@@ -1,4 +1,4 @@
-import { ENABLE_HTTPS, SERVER_PORT } from 'config';
+import { ENABLE_HTTPS, SERVER_PORT, mongoDbData } from 'config';
 import { HttpServer } from 'services/server/http_server';
 import { HttpsServer } from 'services/server/https_server';
 import { default as WeatherRoute } from 'routes/weather'
@@ -9,7 +9,6 @@ import { NextFunction, Request, Response } from 'express';
 import { ApiError } from 'models/api/api_error';
 import { EXPRESS_ERROR_LOGGER } from 'services/loggers';
 import { MongoDb } from 'services/database/mongodb';
-import { mongoDbData } from 'config';
 
 const mongoDb: MongoDb = new MongoDb(mongoDbData);
 const server = ENABLE_HTTPS ? new HttpsServer(mongoDb, SERVER_PORT) : new HttpServer(mongoDb, SERVER_PORT);
@@ -22,11 +21,11 @@ server.app.use('/', AuthRoute)
 // ERROR HANDLING
 server.app.use(EXPRESS_ERROR_LOGGER)
 
-server.app.use((err: ApiError, req: Request, res: Response, next: NextFunction) => {
+server.app.use((err: ApiError, req: Request, res: Response, _next: NextFunction) => {
     return res.status(err.status).json({ error: err.message }).end();
 })
 
-server.app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+server.app.use((_err: Error, _req: Request, res: Response, _next: NextFunction) => {
     return res.status(500).json({ error: "Oops... something unexpected happened!" }).end();
 })
 

@@ -2,8 +2,9 @@ import Box from "@mui/material/Box/Box"
 import Card from "@mui/material/Card/Card"
 import { Theme } from "@mui/material/styles/createTheme"
 import { SxProps } from "@mui/system/styleFunctionSx"
+import { ReactElement } from "react";
 
-export const CardFrame = (props: CardFrameProps): JSX.Element => {
+export const CardFrame = (props: CardFrameProps): ReactElement => {
     return (
         <Card sx={props.cardStyle}>
             <Box sx={props.parentBoxStyle}>

@@ -4,7 +4,7 @@ import { LOGGER } from "services/loggers";
 import { getUserInfo } from "routes/auth/services";
 import { IDtoUser } from "models/mongo/users";
 
-export const logout = async (req: Request, res: Response, next: NextFunction) => {
+export const logout = async (req: Request, res: Response) => {
     LOGGER.info(`User ${(JSON.stringify(req.user as IDtoUser)) || 'unknown'} signed out`);
     return _logout(req, res)
         .catch(err => LOGGER.error(err.message))

@@ -36,7 +36,7 @@ export const fetchJsonGoogleAuthRefresh = async (url: string, user: IDtoUser, op
     return _fetchJsonGoogleAuthRefresh(url, user, options, 1, logUrl);
 };
 
-const _fetchJsonGoogleAuthRefresh = async (url: string, user: IDtoUser, options: any = {}, refreshRetries: number, logUrl: string | undefined = undefined): Promise<TResponse> => {
+const _fetchJsonGoogleAuthRefresh = async (url: string, user: IDtoUser, options: any = {}, refreshRetries = 2, logUrl: string | undefined = undefined): Promise<TResponse> => {
     const rsp = await fetchJson(url, options, logUrl);
     if (rsp.status === 401 && refreshRetries > 0) {
         LOGGER.info(`Unauthenticated Google Request. Retry with refresh token of user`);
@@ -48,7 +48,7 @@ const _fetchJsonGoogleAuthRefresh = async (url: string, user: IDtoUser, options:
     return rsp;
 };
 
-const handleTokenRefresh = async (url: string, user: IDtoUser, options: any = {}, refreshRetries: number, logUrl: string | undefined = undefined) => {
+const handleTokenRefresh = async (url: string, user: IDtoUser, options: any = {}, refreshRetries = 2, logUrl: string | undefined = undefined) => {
     userTokenRefresh(user)
         .then(checkTokenRefreshResponse)
         .then(u => _fetchJsonGoogleAuthRefresh(url, { ...options, headers: { Authorization: `Bearer ${u.access_token}` } }, u, --refreshRetries, logUrl))

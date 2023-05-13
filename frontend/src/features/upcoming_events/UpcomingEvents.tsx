@@ -5,7 +5,7 @@ import { CardFrame } from '../CardFrame';
 import { EventList, EventItem } from '../../models/calendar';
 import { Event } from "./event/Event"
 import { boldText, xSmallFontSize } from '../../assets/styles/theme';
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { GetUpcomingEvents } from './helpers';
 import { EventTextEnum } from './types';
 
@@ -62,10 +62,10 @@ const UpcomingEvents = () => {
     );
 }
 
-const GetTodaysEventItems = (events: EventList | undefined, date: Date): JSX.Element | JSX.Element[] | undefined => {
+const GetTodaysEventItems = (events: EventList | undefined, date: Date): ReactElement | ReactElement[] => {
     const eventCount = (events?.count || 0);
     if (eventCount === 0) return NoEventsItem(EventTextEnum.noEventsToday);
-    if (eventCount <= 2) return events?.list.map((ev) => <Event item={ev} date={date} key={ev.start} />);
+    if (eventCount <= 2) return events!.list.map((ev) => <Event item={ev} date={date} key={ev.start} />);
     const summary = EventTextEnum.manyToday.replace("{{X}}", `${eventCount - 1}`);
     const eventItem: EventItem = {
         summary,
@@ -83,7 +83,7 @@ const GetTodaysEventItems = (events: EventList | undefined, date: Date): JSX.Ele
     )
 }
 
-const GetFutureEventItems = (events: EventList | undefined, date: Date): JSX.Element | undefined => {
+const GetFutureEventItems = (events: EventList | undefined, date: Date): ReactElement => {
     const eventCount = (events?.count || 0);
     if (eventCount === 0) return NoEventsItem(EventTextEnum.noEvents);
     if (eventCount === 1) return <Event item={events!.list[0]} date={date} key={events!.list[0].start} />;
@@ -104,7 +104,7 @@ const getMaxDateEndDate = (events: EventList): Date => {
     return new Date(Math.max(...endDates));
 }
 
-const NoEventsItem = (timeFrame: EventTextEnum): JSX.Element => {
+const NoEventsItem = (timeFrame: EventTextEnum): ReactElement => {
     return <Typography color="text.secondary" sx={xSmallFontSize}>{timeFrame}</Typography>;
 }
 

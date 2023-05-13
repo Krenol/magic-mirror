@@ -27,7 +27,7 @@ pip3 install -r $SCRIPT_DIR/requirements.txt
 
 # see https://github.com/elalemanyo/raspberry-pi-kiosk-screen#epiphany-browser
 sudo apt update && sudo apt upgrade -y
-sudo apt install -y epiphany-browser x11-xserver-utils xautomation unclutter
+sudo apt install -y chromium-browser x11-xserver-utils unclutter
 
 sudo rm -rf $BIN_DIR
 
@@ -38,6 +38,7 @@ sudo cp -r $SCRIPT_DIR/* $BIN_DIR
 sudo chmod -R 0755 $BIN_DIR
 
 # see https://github.com/elalemanyo/raspberry-pi-kiosk-screen#epiphany-browser
-mv $BIN_DIR/autostart /home/$USER/.config/lxsession/LXDE-pi/autostart
+mkdir -p /home/$USER/.config/lxsession/LXDE-pi
+cp  $BIN_DIR/autostart /home/$USER/.config/lxsession/LXDE-pi/autostart
 
 sudo sed -i "s|URL|$SERVER_URL|" $BIN_DIR/run.sh

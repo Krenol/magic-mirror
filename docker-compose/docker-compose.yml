@@ -7,6 +7,7 @@ services:
       dockerfile: docker/Dockerfile
       args:
         NODE_IMG_VERSION: ${NODE_IMG_VERSION}
+    restart: always
     depends_on:
       - backend
       - nginx
@@ -33,6 +34,7 @@ services:
       args:
         NODE_IMG_VERSION: ${NODE_IMG_VERSION}
         NODE_ENV: production
+    restart: always
     depends_on:
       - nginx
       - mongo
@@ -58,6 +60,7 @@ services:
       - db
   loki:
     image: grafana/loki:2.7.3
+    restart: always
     command: -config.file=/etc/loki/local-config.yaml
     networks:
       - loki
@@ -67,6 +70,7 @@ services:
       GF_PATHS_PROVISIONING: /etc/grafana/provisioning
       GF_AUTH_ANONYMOUS_ENABLED: true
       GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+    restart: always
     depends_on:
       - loki
     ports:

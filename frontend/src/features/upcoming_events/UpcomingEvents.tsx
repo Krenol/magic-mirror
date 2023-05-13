@@ -92,11 +92,16 @@ const GetFutureEventItems = (events: EventList | undefined, date: Date): JSX.Ele
         summary,
         description: "",
         start: events!.list[0].start,
-        end: events!.list[eventCount - 1].end,
+        end: getMaxDateEndDate(events!).toISOString(),
         location: "",
-        allDay: false
+        allDay: events!.list.some(ev => ev.allDay)
     }
     return <Event item={eventItem} date={date} key={eventItem.start} />;
+}
+
+const getMaxDateEndDate = (events: EventList): Date => {
+    const endDates = events.list.map(item => new Date(item.end).getTime());
+    return new Date(Math.max(...endDates));
 }
 
 const NoEventsItem = (timeFrame: EventTextEnum): JSX.Element => {

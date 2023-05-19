@@ -1,11 +1,11 @@
 import passport from "passport";
 import { GOOGLE_AUTH_STRATEGY_OPTIONS, LOGIN_STRATEGY_NAME } from "config";
 import { DtoUser, IDtoUser } from "models/mongo/users";
-import { DtoAllowedUserEmail } from "models/mongo/allowed_user_emails";
 import { LOGGER } from "services/loggers";
 import AuthTokenRefresh from "passport-oauth2-refresh"
 import { Strategy, VerifyCallback } from "passport-google-oauth20";
-
+import { checkIfAuthorizedNewUser } from "services/identity/authorization";
+import { serializeUser, deserializeUser } from "services/identity";
 
 export const setupPassportAuthentication = () => {
     LOGGER.info("Setup passport strategy");
@@ -16,47 +16,22 @@ export const setupPassportAuthentication = () => {
     AuthTokenRefresh.use(LOGIN_STRATEGY_NAME, strategy);
 }
 
-const authenticateUser = (request: any, accessToken: any, refreshToken: any, profile: any, done: VerifyCallback) => {
+const authenticateUser = (_request: any, accessToken: any, refreshToken: any, profile: any, done: VerifyCallback) => {
     DtoUser.findOne({ sub: profile._json.sub })
-        .then(user => {
-            if (!user) {
-                handleNewUser(profile, accessToken, refreshToken, done)
-            } else {
-                handleFoundUser(user, accessToken, refreshToken, done);
-            }
-        })
+        .then(user => handleFindUserInDbResponse(user, accessToken, refreshToken, done))
         .catch(err => {
             LOGGER.error(err.message);
             done(err, undefined);
         })
 }
 
-const handleNewUser = (profile: any, accessToken: any, refreshToken: any, done: VerifyCallback) => {
-    checkIfAuthorizedNewUser(profile._json.email)
-        .then(() => createNewUserDto(profile, accessToken, refreshToken))
-        .then(user => user.save())
-        .then(u => {
-            LOGGER.info(`New User ${profile._json.sub} registered with email ${profile._json.email}`);
-            return u;
-        })
-        .then(u => done(null, u))
-        .catch(err => done(err, undefined));
-}
-
-const checkIfAuthorizedNewUser = async (email: string) => {
-    const count = await DtoAllowedUserEmail.count({ email }).exec();
-    if (count > 0) return;
-    throw new Error(`Unauthorized User with email ${email}`);
-}
-
-const createNewUserDto = async (profile: any, accessToken: any, refreshToken: any): Promise<IDtoUser> => {
-    return new DtoUser({
-        email: profile._json.email,
-        sub: profile._json.sub,
-        displayName: profile._json.displayName,
-        refresh_token: refreshToken,
-        access_token: accessToken
-    });
+const handleFindUserInDbResponse = (user: IDtoUser | null, accessToken: any, refreshToken: any, done: VerifyCallback) => {
+    if (!user) {
+        LOGGER.error(`Unregistered user tried to log in.`);
+        done("Unregistered log in attempt", undefined);
+    } else {
+        handleFoundUser(user, accessToken, refreshToken, done);
+    }
 }
 
 const handleFoundUser = (user: IDtoUser, accessToken: any, refreshToken: any, done: VerifyCallback) => {
@@ -68,16 +43,4 @@ const handleFoundUser = (user: IDtoUser, accessToken: any, refreshToken: any, do
             return u;
         })
         .then(u => done(null, u));
-}
-
-const serializeUser = (user: Express.User, done: (err: any, id?: unknown) => void) => {
-    LOGGER.info(`Serialize user with id ${(user as IDtoUser).sub}`);
-    done(null, (user as IDtoUser).sub)
-}
-
-const deserializeUser = (id: string, done: (err: any, user?: false | Express.User | null | undefined) => void) => {
-    LOGGER.info(`Deserialize User with id ${id}`);
-    DtoUser.findOne({ sub: id })
-        .then(user => done(null, user))
-        .catch(err => done(err, null))
 }

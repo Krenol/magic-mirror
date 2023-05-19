@@ -67,18 +67,20 @@ export const MAX_HOURLY_FORECAST_HOURS = 24;
 
 export const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost"
 export const REDIRECT_URI = process.env.REDIRECT_URI || `${FRONTEND_URL}/`
+export const REGISTER_REDIRECT_URI = process.env.REGISTER_REDIRECT_URI || `${FRONTEND_URL}/register`
 export const FAILURE_REDIRECT_URI = process.env.FAILURE_REDIRECT_URI || `${FRONTEND_URL}/login`
-export const GOOGLE_CALLBACK_CONTEXT = process.env.GOOGLE_CALLBACK_CONTEXT || "/auth/google/callback"
+export const GOOGLE_LOGIN_CALLBACK_CONTEXT = process.env.GOOGLE_LOGIN_CALLBACK_CONTEXT || "/auth/login/callback"
+export const GOOGLE_REGISTER_CALLBACK_CONTEXT = process.env.GOOGLE_REGISTER_CALLBACK_CONTEXT || "/auth/register/callback"
 export const GOOGLE_AUTH_STRATEGY_OPTIONS: StrategyOptionsWithRequest = {
     clientID: OAUTH2_CLIENT.CLIENT_ID,
     clientSecret: OAUTH2_CLIENT.CLIENT_SECRET,
-    callbackURL: `${PROXY_SERVER_PROTOCOL}://${PROXY_SERVER_HOSTNAME}:${PROXY_SERVER_PORT}${PROXY_SERVER_CONTEXT}/${GOOGLE_CALLBACK_CONTEXT.replace(/^\/(.*)$/, '$1')}`,
+    callbackURL: `${PROXY_SERVER_PROTOCOL}://${PROXY_SERVER_HOSTNAME}:${PROXY_SERVER_PORT}${PROXY_SERVER_CONTEXT}/${GOOGLE_LOGIN_CALLBACK_CONTEXT.replace(/^\/(.*)$/, '$1')}`,
     passReqToCallback: true
 }
 export const ALLOWED_USERS: Array<string> = JSON.parse(process.env.ALLOWED_USER_EMAILS || "[]")
 
 export const LOGIN_STRATEGY_NAME = 'google-login';
-
+export const REGISTER_STRATEGY_NAME = 'google-register';
 
 export const ALLOWED_URLS = [
     GOOGLE_API_HOST,

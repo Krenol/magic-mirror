@@ -1,7 +1,7 @@
+import { Theme } from "@emotion/react";
+import { SxProps } from "@mui/material";
 import Box from "@mui/material/Box/Box"
 import Card from "@mui/material/Card/Card"
-import { Theme } from "@mui/material/styles/createTheme"
-import { SxProps } from "@mui/system/styleFunctionSx"
 import { ReactElement } from "react";
 
 export const CardFrame = (props: CardFrameProps): ReactElement => {

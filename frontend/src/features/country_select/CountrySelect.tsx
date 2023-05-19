@@ -6,10 +6,10 @@ import { SyntheticEvent } from 'react';
 
 type Props = {
     inputCallback?: (val: string) => void,
-    defaultCityCode?: string
+    defaultCountryCode?: string
 }
 
-export default function CountrySelect({ inputCallback, defaultCityCode }: Props) {
+export default function CountrySelect({ inputCallback, defaultCountryCode }: Props) {
     const onChange = (event: SyntheticEvent<Element, Event>, value: CountryType | null) => {
         if (inputCallback) inputCallback(value?.code || "");
     }
@@ -19,7 +19,7 @@ export default function CountrySelect({ inputCallback, defaultCityCode }: Props)
             id="country-select"
             sx={{ width: '50ch' }}
             options={countries}
-            value={countries.find(x => x.code === defaultCityCode)}
+            value={countries.find(x => x.code === defaultCountryCode)}
             autoHighlight
             onChange={onChange}
             getOptionLabel={(option) => option.label}

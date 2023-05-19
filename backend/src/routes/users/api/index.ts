@@ -15,8 +15,20 @@ const handleGetUserSettings = async (userSettings: IDtoUserSettings | null, res:
     return next(new ApiError("User Settings not found", undefined, 404));
 }
 
-export const updatetUserSettings = async (req: Request, res: Response, next: NextFunction) => {
+export const patchUserSettings = async (req: Request, res: Response, next: NextFunction) => {
     const sub = (req.user as IDtoUser).sub;
     return getUserSettingsFromDb(sub)
-        .then(userSettings => userSettings ? updateExistingUserSettings(req, res, next, userSettings) : createNewUserSettings(req, res, next))
+        .then(userSettings => userSettings ?
+            updateExistingUserSettings(req, res, next, userSettings) :
+            next(new ApiError("Settings for user don't exist", undefined, 404))
+        )
+}
+
+export const postUserSettings = async (req: Request, res: Response, next: NextFunction) => {
+    const sub = (req.user as IDtoUser).sub;
+    return getUserSettingsFromDb(sub)
+        .then(userSettings => userSettings ?
+            next(new ApiError("Settings for user already exist", undefined, 419)) :
+            createNewUserSettings(req, res, next)
+        )
 }

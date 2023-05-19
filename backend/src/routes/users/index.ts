@@ -1,10 +1,12 @@
 import { getRouter } from "services/router_factory";
-import { getUserSettings, updatetUserSettings } from "routes/users/api";
+import { getUserSettings, patchUserSettings, postUserSettings } from "routes/users/api";
 
 const router = getRouter(true);
 
 router.get('/settings', getUserSettings);
 
-router.put('/settings', updatetUserSettings);
+router.patch('/settings', patchUserSettings);
+
+router.post('/settings', postUserSettings);
 
 export default router;

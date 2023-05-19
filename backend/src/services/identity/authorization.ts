@@ -29,3 +29,9 @@ export const removeUnauthorizedUsers = () => {
     LOGGER.debug(`Remove unauthorized users from the DB`);
     DtoUser.deleteMany({ email: { $nin: ALLOWED_USERS } }).exec();
 }
+
+export const checkIfAuthorizedNewUser = async (email: string) => {
+    const count = await DtoAllowedUserEmail.count({ email }).exec();
+    if (count > 0) return;
+    throw new Error(`Unauthorized User with email ${email}`);
+}

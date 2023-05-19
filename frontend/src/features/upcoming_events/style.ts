@@ -1,4 +1,3 @@
-import { SxProps, Theme } from "@mui/material";
 import { card_medium } from "../../assets/styles/cards";
 
 export const colorBoxDimen = {
@@ -6,16 +5,16 @@ export const colorBoxDimen = {
     height: 50,
 }
 
-export const cardStyle: SxProps<Theme> = {
+export const cardStyle = {
     ...card_medium,
     ...{
         display: 'flex',
     }
 }
 
-export const parentBoxStyle: SxProps<Theme> = { display: 'flex' }
+export const parentBoxStyle = { display: 'flex' }
 
-export const columnBoxStyle: SxProps<Theme> = {
+export const columnBoxStyle = {
     display: 'flex',
     justifyContent: 'start',
     flexDirection: 'column',

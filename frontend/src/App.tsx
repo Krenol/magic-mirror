@@ -7,6 +7,7 @@ import MenuAppBar from './features/appbar/MenuAppBar';
 import { Box } from '@mui/material';
 import { PADDING } from './assets/styles/theme';
 import { Settings } from './routes/Settings';
+import { Registration } from './routes/Registration';
 
 const queryCache = new QueryClient({
   defaultOptions: {
@@ -29,6 +30,7 @@ export const App = () => {
             <Route path='/' element={<Dashboard />} />
             <Route path='/settings' element={<Settings />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/registration" element={<Registration />} />
           </Routes>
         </Box>
       </BrowserRouter>

@@ -1,13 +1,10 @@
-import { Theme } from "@emotion/react"
-import { SxProps } from "@mui/material"
-
-export const hideTextOverflow: SxProps<Theme> = {
+export const hideTextOverflow = {
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis'
 }
 
-export const boxStyle: SxProps<Theme> = {
+export const boxStyle = {
     ...{
         padding: 1,
         borderRadius: 1,

@@ -7,5 +7,6 @@ export enum ServerStateKeysEnum {
     birthdays,
     weather_icon,
     events,
-    events_day
+    events_day,
+    user_settings
 } 

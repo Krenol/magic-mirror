@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { ApiError } from "models/api/api_error";
-import { ApiDtoUserSettings } from "models/api/userSettings";
+import { ApiDtoUserSettings } from "models/api/user_settings";
 import { DtoUserSettings, IDtoUserSettings } from "models/mongo/user_settings";
 import { IDtoUser } from "models/mongo/users";
 import { LOGGER } from "services/loggers";
@@ -10,10 +10,10 @@ export const getUserSettingsFromDb = async (sub: string): Promise<IDtoUserSettin
 }
 
 export const updateExistingUserSettings = async (req: Request, res: Response, next: NextFunction, userSettings: IDtoUserSettings) => {
-    const payload = req.body as ApiDtoUserSettings;
+    const payload = req.body as Partial<ApiDtoUserSettings>;
     return updateUserSettingsinDb(userSettings, payload)
         .then(parseUserSettings)
-        .then(u => res.status(201).json(u))
+        .then(u => res.status(204).json(u))
         .catch((err) => next(new ApiError('Error while updating user settings', err, 500)));
 }
 
@@ -26,10 +26,10 @@ export const createNewUserSettings = async (req: Request, res: Response, next: N
         .catch((err) => next(new ApiError('Error while updating user settings', err, 500)));
 }
 
-export const updateUserSettingsinDb = async (userSettings: IDtoUserSettings, newUserSettings: ApiDtoUserSettings): Promise<IDtoUserSettings> => {
-    userSettings.zip_code = newUserSettings.zip_code;
-    userSettings.country = newUserSettings.country;
-    userSettings.city = newUserSettings.city;
+export const updateUserSettingsinDb = async (userSettings: IDtoUserSettings, newUserSettings: Partial<ApiDtoUserSettings>): Promise<IDtoUserSettings> => {
+    userSettings.zip_code = newUserSettings.zip_code || userSettings.zip_code;
+    userSettings.country = newUserSettings.country || userSettings.country;
+    userSettings.city = newUserSettings.city || userSettings.city;
     return userSettings.save()
         .then(logUserSettingsUpdate);
 }

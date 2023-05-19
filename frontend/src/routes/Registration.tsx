@@ -1,24 +1,29 @@
 import { Box } from '@mui/material';
-import SessionCheck from '../features/auth/AuthHelper';
-import { logout } from "../apis/logout"
 import { SettingsForm } from '../features/settings_form/SettingsForm';
 import { useNavigate } from 'react-router-dom';
-import { useGetUserSettings } from '../apis/user_settings';
 import { fetchJson } from '../app/fetch';
 import { USER_SETTINGS_API } from '../constants/api';
 import { UserSettings } from '../models/user_settings';
+import SessionCheck from '../features/auth/AuthHelper';
+import { logout } from '../apis/logout';
+import { useGetUserSettings } from '../apis/user_settings';
+import { useEffect } from 'react';
 
-export const Settings = () => {
+export const Registration = () => {
     const navigate = useNavigate();
-
     const {
         data: userSettings,
         isLoading,
         error,
-        refetch
     } = useGetUserSettings();
 
-    const updateSettings = (country?: string, city?: string, zipCode?: string) => {
+    useEffect(() => {
+        if (userSettings && userSettings.city) {
+            navigate('/settings');
+        }
+    }, [userSettings, navigate]);
+
+    const addUserSettings = (country?: string, city?: string, zipCode?: string) => {
         if (country === "") {
             alert("Country must not be empty!");
         } else if (city === "") {
@@ -26,23 +31,23 @@ export const Settings = () => {
         } else if (zipCode === "") {
             alert("Zip code must not be empty!");
         } else {
-            patchNewUserSettings(country!, city!, zipCode!)
-                .then(() => refetch)
+            postNewUserSettings(country!, city!, zipCode!)
+                .then(() => navigate('/login'))
                 .catch(alert);
         }
     }
 
-    const patchNewUserSettings = async (country: string, city: string, zipCode: string) => {
+    const postNewUserSettings = async (country: string, city: string, zipCode: string) => {
         return getNewUserSettingsBody(country, city, zipCode)
             .then(setts => JSON.stringify(setts))
             .then(setts =>
                 fetchJson(USER_SETTINGS_API, {
-                    method: 'PATCH',
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: setts
-                }, [204])
+                }, [201])
             );
     }
 
@@ -54,20 +59,17 @@ export const Settings = () => {
         }
     }
 
-    const back = () => navigate(-1);
-
     if (isLoading) return <Box>Loading...</Box>;
-    if (error) return <Box>Error</Box>;
+    if (error) {
+        navigate('/login');
+        return <Box>Error!</Box>;
+    }
     return (
         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <SessionCheck onUnauthenticated={logout} />
             <SettingsForm
-                defaultCity={userSettings?.city}
-                defaultCountry={userSettings?.country}
-                defaultZipCode={userSettings?.zip_code}
-                onBack={back}
-                showBackButton={true}
-                onSend={updateSettings}
+                showBackButton={false}
+                onSend={addUserSettings}
             />
         </Box>
     );

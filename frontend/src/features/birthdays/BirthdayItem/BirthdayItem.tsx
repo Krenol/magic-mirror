@@ -1,9 +1,8 @@
-import { Typography, SxProps, Box } from "@mui/material";
+import { Typography, Box } from "@mui/material";
 import { Birthday } from "../../../models/birthdays";
 import { boldText, xSmallFontSize } from '../../../assets/styles/theme';
 import { useEffect, useState } from "react";
 import { getDifferenceInDays } from "../../../app/dateParser";
-import { Theme } from "@emotion/react"
 import { boxStyle, hideTextOverflow } from "../../../assets/styles/coloredBox";
 
 interface IBirthdayItem {
@@ -12,7 +11,7 @@ interface IBirthdayItem {
 
 const BirthdayItem = ({ item }: IBirthdayItem) => {
     const [days, setDays] = useState(0)
-    const [sx, setSx] = useState<SxProps<Theme>>()
+    const [sx, setSx] = useState({})
     const [color, setColor] = useState('text.secondary')
     const [timeText, setTimeText] = useState("")
 
@@ -29,12 +28,12 @@ const BirthdayItem = ({ item }: IBirthdayItem) => {
             setColor('text.primary')
             setTimeText('today')
         } else if (days === 1) {
-            setSx(undefined)
+            setSx({})
             setColor('text.primary')
             setTimeText(`tomorrow`)
         }
         else {
-            setSx(undefined)
+            setSx({})
             setColor('text.secondary')
             setTimeText(`${days} days`)
         }

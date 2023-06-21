@@ -1,15 +1,14 @@
 import time
-import RPi.GPIO as GPIO
+import lgpio
 from movement_detector import DisplayState, MotionSensor, ScreenToggle
 
 SENDSOR_PIN = 4  # define the sensorPin
-MIRROR_URL = "https://nuc.fritz.box"
-CHROME_PATH = "/usr/bin/chromium-browser"
+LGIO_CHIP = lgpio.gpiochip_open(0)
 
 
 def loop():
     print("Start display state loop")
-    motionSensor = MotionSensor(SENDSOR_PIN)
+    motionSensor = MotionSensor(SENDSOR_PIN, LGIO_CHIP)
     screenToggle = ScreenToggle()
     while True:
         if motionSensor.multiMotionIsDetect(5):
@@ -22,9 +21,8 @@ def loop():
 
 
 if __name__ == '__main__':  # Program start from here
-    GPIO.setmode(GPIO.BCM)
     try:
         loop()
     # When 'Ctrl+C' is pressed, the child program destroy() will be executed.
     except KeyboardInterrupt:
-        GPIO.cleanup()
+        lgpio.gpiochip_close(LGIO_CHIP)

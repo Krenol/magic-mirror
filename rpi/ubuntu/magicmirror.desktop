@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Firefox
+Comment=Run Magic Mirror
+Exec=/opt/magic-mirror/run.sh
+Icon=
+Type=Application

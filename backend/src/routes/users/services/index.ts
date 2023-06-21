@@ -9,18 +9,22 @@ export const getUserSettingsFromDb = async (sub: string): Promise<IDtoUserSettin
     return DtoUserSettings.findOne({ sub });
 }
 
+export const deleteUserSettingsFromDb = async (sub: string) => {
+    return DtoUserSettings.deleteOne({ sub });
+}
+
 export const updateExistingUserSettings = async (req: Request, res: Response, next: NextFunction, userSettings: IDtoUserSettings) => {
     const payload = req.body as Partial<ApiDtoUserSettings>;
     return updateUserSettingsinDb(userSettings, payload)
         .then(parseUserSettings)
-        .then(u => res.status(204).json(u))
+        .then(u => res.status(200).json(u))
         .catch((err) => next(new ApiError('Error while updating user settings', err, 500)));
 }
 
 export const createNewUserSettings = async (req: Request, res: Response, next: NextFunction) => {
     const payload = req.body as ApiDtoUserSettings;
     const sub = (req.user as IDtoUser).sub;
-    createNewUserSettingsinDb(sub, payload)
+    return createNewUserSettingsinDb(sub, payload)
         .then(parseUserSettings)
         .then(u => res.status(201).json(u))
         .catch((err) => next(new ApiError('Error while updating user settings', err, 500)));

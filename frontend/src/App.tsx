@@ -1,13 +1,13 @@
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Dashboard } from './routes/Dashboard';
-import Login from './routes/Login';
+import { Dashboard } from './pages/Dashboard';
+import Login from './pages/Login';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import MenuAppBar from './features/appbar/MenuAppBar';
 import { Box } from '@mui/material';
 import { PADDING } from './assets/styles/theme';
-import { Settings } from './routes/Settings';
-import { Registration } from './routes/Registration';
+import { Settings } from './pages/Settings';
+import { Registration } from './pages/Registration';
 
 const queryCache = new QueryClient({
   defaultOptions: {

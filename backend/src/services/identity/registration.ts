@@ -1,5 +1,5 @@
 import passport from "passport";
-import { GOOGLE_AUTH_STRATEGY_OPTIONS, REGISTER_STRATEGY_NAME } from "config";
+import { GOOGLE_REGISTER_STRATEGY_OPTIONS, REGISTER_STRATEGY_NAME } from "config";
 import { DtoUser, IDtoUser } from "models/mongo/users";
 import { LOGGER } from "services/loggers";
 import { Strategy, VerifyCallback } from "passport-google-oauth20";
@@ -8,7 +8,7 @@ import { serializeUser, deserializeUser } from "services/identity";
 
 export const setupPassportRegistration = () => {
     LOGGER.info("Setup passport strategy");
-    const strategy = new Strategy(GOOGLE_AUTH_STRATEGY_OPTIONS, registerUser);
+    const strategy = new Strategy(GOOGLE_REGISTER_STRATEGY_OPTIONS, registerUser);
     passport.use(REGISTER_STRATEGY_NAME, strategy);
     passport.serializeUser(serializeUser);
     passport.deserializeUser(deserializeUser);

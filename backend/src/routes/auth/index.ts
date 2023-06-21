@@ -28,7 +28,7 @@ router.get('/auth/register', passport.authenticate(REGISTER_STRATEGY_NAME, <obje
 router.get(GOOGLE_REGISTER_CALLBACK_CONTEXT, passport.authenticate(REGISTER_STRATEGY_NAME,
     {
         successRedirect: REGISTER_REDIRECT_URI,
-        failureRedirect: FAILURE_REDIRECT_URI
+        failureRedirect: FAILURE_REDIRECT_URI,
     }
 ));
 

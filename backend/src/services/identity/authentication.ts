@@ -1,15 +1,14 @@
 import passport from "passport";
-import { GOOGLE_AUTH_STRATEGY_OPTIONS, LOGIN_STRATEGY_NAME } from "config";
+import { GOOGLE_LOGIN_STRATEGY_OPTIONS, LOGIN_STRATEGY_NAME } from "config";
 import { DtoUser, IDtoUser } from "models/mongo/users";
 import { LOGGER } from "services/loggers";
 import AuthTokenRefresh from "passport-oauth2-refresh"
 import { Strategy, VerifyCallback } from "passport-google-oauth20";
-import { checkIfAuthorizedNewUser } from "services/identity/authorization";
 import { serializeUser, deserializeUser } from "services/identity";
 
 export const setupPassportAuthentication = () => {
     LOGGER.info("Setup passport strategy");
-    const strategy = new Strategy(GOOGLE_AUTH_STRATEGY_OPTIONS, authenticateUser);
+    const strategy = new Strategy(GOOGLE_LOGIN_STRATEGY_OPTIONS, authenticateUser);
     passport.use(LOGIN_STRATEGY_NAME, strategy);
     passport.serializeUser(serializeUser);
     passport.deserializeUser(deserializeUser);

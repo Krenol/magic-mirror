@@ -27,22 +27,22 @@ export const Settings = () => {
             alert("Zip code must not be empty!");
         } else {
             patchNewUserSettings(country!, city!, zipCode!)
-                .then(() => refetch)
+                .then(() => refetch())
                 .catch(alert);
         }
     }
 
     const patchNewUserSettings = async (country: string, city: string, zipCode: string) => {
         return getNewUserSettingsBody(country, city, zipCode)
-            .then(setts => JSON.stringify(setts))
-            .then(setts =>
+            .then(settings => JSON.stringify(settings))
+            .then(settings =>
                 fetchJson(USER_SETTINGS_API, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: setts
-                }, [204])
+                    body: settings
+                }, [200])
             );
     }
 

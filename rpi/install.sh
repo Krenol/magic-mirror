@@ -43,6 +43,7 @@ if [[ -f "/etc/os-release" ]]; then
   source /etc/os-release
   if [[ "$ID" == "ubuntu" ]]; then
     echo "Current OS is Ubuntu."
+    # maybe https://askubuntu.com/a/1404401
     sudo apt install -y firefox python3-lgpio
     mv ubuntu/* $BIN_DIR
     pip3 install -r $BIN_DIR/requirements.txt

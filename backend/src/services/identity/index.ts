@@ -8,8 +8,8 @@ import { setupPassportRegistration } from "services/identity/registration";
 
 export const setupPassport = (app: express.Application) => {
     app.use(passport.session());
-    setupAuthentication();
     setupAuthorization();
+    setupAuthentication();
     setupRegistration();
 }
 

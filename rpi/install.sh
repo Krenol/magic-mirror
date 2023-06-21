@@ -51,6 +51,7 @@ if [[ -f "/etc/os-release" ]]; then
     chmod +x ~/.config/autostart/magicmirror.desktop
     sudo sed -i '/^\s*#*\s*WaylandEnable/ s/.*/WaylandEnable=false/' /etc/gdm3/custom.conf
     sudo systemctl restart gdm3
+    sudo adduser $USERNAME dialout
   elif [[ "$ID" == "raspbian" ]]; then
     echo "Current OS is Raspbian."
     # see https://github.com/elalemanyo/raspberry-pi-kiosk-screen#epiphany-browser

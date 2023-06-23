@@ -9,6 +9,8 @@ export const useGetAuthStatus = (cb?: (status: boolean) => void) =>
             .then((res) => handleResponse(res.status, cb))
             .catch(err => { throw err; }),
         refetchInterval: REFETCH_INTERVAL,
+        retry: 3,
+        retryDelay: 100
     });
 
 const handleResponse = async (status: number, cb?: (status: boolean) => void): Promise<boolean> => {

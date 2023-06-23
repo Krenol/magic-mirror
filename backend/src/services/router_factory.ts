@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { checkAuthenticated } from "middleware/authenticated";
+import { checkAuthenticated } from "services/middleware/authenticated";
 
 export const getRouter = (protectedRoute: boolean): Router => {
     const router = Router();

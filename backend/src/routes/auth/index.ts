@@ -1,6 +1,6 @@
 import passport from "passport";
 import { FAILURE_REDIRECT_URI, GOOGLE_LOGIN_CALLBACK_CONTEXT, GOOGLE_REGISTER_CALLBACK_CONTEXT, LOGIN_STRATEGY_NAME, REDIRECT_URI, REGISTER_REDIRECT_URI, REGISTER_STRATEGY_NAME, SCOPES } from "config";
-import { checkAuthenticated } from "middleware/authenticated";
+import { checkAuthenticated } from "services/middleware/authenticated";
 import { getRouter } from "services/router_factory";
 import { authCheck, logout } from "routes/auth/api";
 

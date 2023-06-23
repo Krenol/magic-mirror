@@ -1,6 +1,6 @@
 import { useQuery } from "react-query";
-import { getDayName } from "../app/dateParser";
-import { ServerStateKeysEnum } from "../app/statekeys";
+import { getDayName } from "../helpers/dateParser";
+import { ServerStateKeysEnum } from "../helpers/statekeys";
 import { DEFAULT_LOCALE } from "../constants/defaults";
 import { WeekdayFormat } from "../models/time";
 

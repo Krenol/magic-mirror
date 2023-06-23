@@ -8,10 +8,12 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import { getAuthStatus } from '../auth/authSlice';
-import { useAppSelector } from '../../app/hooks';
+import { useAppSelector } from '../../helpers/hooks';
 import { logout } from '../../apis/logout';
 import { useQueryClient } from 'react-query';
 import { useNavigate, useLocation } from "react-router-dom";
+import { fetchRetry } from '../../helpers/fetch';
+import { USERS_API } from '../../constants/api';
 
 type IMenuItem = {
     text: string,
@@ -42,9 +44,16 @@ const MenuAppBar = () => {
         handleClose();
     }
 
+    const deleteUserAccount = () => {
+        return fetchRetry(`${USERS_API}/me`, {
+            method: 'DELETE'
+        }, [204])
+            .then(() => logout());
+    }
+
     const settingMenuItemMap = new Map<string, Array<string>>([
-        ["/", ["refresh", "settings", "logout"]],
-        ["/settings", ["logout"]]
+        ["/", ["refresh", "settings", "logout", "delaccount"]],
+        ["/settings", ["logout", "delaccount"]]
     ])
 
     const menuItemArray = new Map<string, IMenuItem>([
@@ -64,6 +73,13 @@ const MenuAppBar = () => {
             {
                 text: "Logout",
                 onClick: logout
+            },
+        ]
+        ,
+        ["delaccount",
+            {
+                text: "Delete Account",
+                onClick: deleteUserAccount
             },
         ]
     ]);

@@ -1,7 +1,7 @@
 import Typography from '@mui/material/Typography';
 import { useCallback } from 'react';
 import { smallFontSize } from '../../assets/styles/theme';
-import { useAppDispatch } from '../../app/hooks';
+import { useAppDispatch } from '../../helpers/hooks';
 import { setNewDay } from './timeSlice';
 import { useGetTime } from '../../apis/current_time';
 import { CardFrame } from '../CardFrame';

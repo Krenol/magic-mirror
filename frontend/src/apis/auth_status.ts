@@ -1,5 +1,5 @@
 import { useQuery } from "react-query";
-import { ServerStateKeysEnum } from "../app/statekeys";
+import { ServerStateKeysEnum } from "../helpers/statekeys";
 import { DEFAULT_FETCH_CONFIG, REFETCH_INTERVAL, SESSION_STATUS_API } from "../constants/api";
 
 export const useGetAuthStatus = (cb?: (status: boolean) => void) =>

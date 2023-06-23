@@ -1,6 +1,6 @@
 import { useQuery } from "react-query";
-import { fetchBlob } from "../app/fetch";
-import { ServerStateKeysEnum } from "../app/statekeys";
+import { fetchBlob } from "../helpers/fetch";
+import { ServerStateKeysEnum } from "../helpers/statekeys";
 import { WEATHER_API } from "../constants/api";
 import { WEATHER_ICON_ZOOM } from "../constants/weather";
 

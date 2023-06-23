@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
-import { getDay, getDayName, getMonth, getTimezoneOffset, getYear } from "../app/dateParser";
-import { ServerStateKeysEnum } from "../app/statekeys";
-import { parseTime } from "../app/timeParser";
+import { getDay, getDayName, getMonth, getTimezoneOffset, getYear } from "../helpers/dateParser";
+import { ServerStateKeysEnum } from "../helpers/statekeys";
+import { parseTime } from "../helpers/timeParser";
 import { DEFAULT_LOCALE } from "../constants/defaults";
 import { TimeObject } from "../models/time";
 

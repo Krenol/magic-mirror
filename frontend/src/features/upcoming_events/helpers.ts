@@ -1,5 +1,5 @@
 import { useGetEvents, useGetDateEvents } from "../../apis/events";
-import { getDateInXDays, getISODayEndString, getIsoDate } from "../../app/dateParser";
+import { getDateInXDays, getISODayEndString, getIsoDate } from "../../helpers/dateParser";
 import { UpcomingEventObject, Dates } from "./types";
 
 export const GetUpcomingEvents = (): UpcomingEventObject => {

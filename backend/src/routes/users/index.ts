@@ -1,14 +1,17 @@
 import { getRouter } from "services/router_factory";
-import { getUserSettings, patchUserSettings, postUserSettings, deleteUserSettings } from "routes/users/api";
+import { getMeUserSettings, patchMeUserSettings, postUserSettings, deleteMeUserSettings } from "routes/users/api/settings";
+import { deleteMeUser } from "routes/users/api/users";
 
 const router = getRouter(true);
 
-router.get('/settings', getUserSettings);
+router.get('/settings/me', getMeUserSettings);
 
-router.patch('/settings', patchUserSettings);
+router.patch('/settings/me', patchMeUserSettings);
 
 router.post('/settings', postUserSettings);
 
-router.delete('/settings', deleteUserSettings);
+router.delete('/settings/me', deleteMeUserSettings);
+
+router.delete('/me', deleteMeUser);
 
 export default router;

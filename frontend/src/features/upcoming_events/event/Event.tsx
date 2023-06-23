@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import React, { useEffect, useState } from "react";
-import { getLocaleDateString, getTimeDifferenceInHours, getTimeFromDate, isSameDate } from "../../../app/dateParser";
+import { getLocaleDateString, getTimeDifferenceInHours, getTimeFromDate, isSameDate } from "../../../helpers/dateParser";
 import { xSmallFontSize } from "../../../assets/styles/theme";
 import { EventItem } from "../../../models/calendar";
 import { DEFAULT_LOCALE } from "../../../constants/defaults";

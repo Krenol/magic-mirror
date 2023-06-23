@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useGetAuthStatus } from '../../apis/auth_status';
-import { useAppDispatch } from '../../app/hooks';
+import { useAppDispatch } from '../../helpers/hooks';
 import { setAuthenticated } from './authSlice'
 
 interface ISessionCheck {

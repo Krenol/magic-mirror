@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
-import { buildQuery } from "../app/apis";
-import { fetchJson } from "../app/fetch";
-import { ServerStateKeysEnum } from "../app/statekeys";
+import { buildQuery } from "../helpers/apis";
+import { fetchJson } from "../helpers/fetch";
+import { ServerStateKeysEnum } from "../helpers/statekeys";
 import { EVENTS_API, REFETCH_INTERVAL } from "../constants/api";
 import { QUERY_PARAMS } from "../models/apis";
 import { EventList } from "../models/calendar";

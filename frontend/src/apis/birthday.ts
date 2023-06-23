@@ -1,6 +1,6 @@
 import { useQuery } from "react-query";
-import { fetchJson } from "../app/fetch";
-import { ServerStateKeysEnum } from "../app/statekeys";
+import { fetchJson } from "../helpers/fetch";
+import { ServerStateKeysEnum } from "../helpers/statekeys";
 import { BIRHTDAY_API, REFETCH_INTERVAL } from "../constants/api";
 import { BIRTHDAY_COUNT } from "../constants/events";
 import { BirthdayList } from "../models/birthdays";

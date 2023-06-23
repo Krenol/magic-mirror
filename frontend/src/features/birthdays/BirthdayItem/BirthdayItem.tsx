@@ -2,7 +2,7 @@ import { Typography, Box } from "@mui/material";
 import { Birthday } from "../../../models/birthdays";
 import { boldText, xSmallFontSize } from '../../../assets/styles/theme';
 import { useEffect, useState } from "react";
-import { getDifferenceInDays } from "../../../app/dateParser";
+import { getDifferenceInDays } from "../../../helpers/dateParser";
 import { boxStyle, hideTextOverflow } from "../../../assets/styles/coloredBox";
 
 interface IBirthdayItem {

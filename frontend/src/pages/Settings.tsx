@@ -4,9 +4,7 @@ import { logout } from "../apis/logout"
 import { SettingsForm } from '../features/settings_form/SettingsForm';
 import { useNavigate } from 'react-router-dom';
 import { useGetUserSettings } from '../apis/user_settings';
-import { fetchJson } from '../app/fetch';
-import { USER_SETTINGS_API } from '../constants/api';
-import { UserSettings } from '../models/user_settings';
+import { patchUserSettings } from '../apis/users';
 
 export const Settings = () => {
     const navigate = useNavigate();
@@ -16,45 +14,21 @@ export const Settings = () => {
         isLoading,
         error,
         refetch
-    } = useGetUserSettings();
+    } = useGetUserSettings(false);
 
-    const updateSettings = (country?: string, city?: string, zipCode?: string) => {
-        if (country === "") {
-            alert("Country must not be empty!");
-        } else if (city === "") {
-            alert("City must not be empty!");
-        } else if (zipCode === "") {
-            alert("Zip code must not be empty!");
-        } else {
-            patchNewUserSettings(country!, city!, zipCode!)
+    const updateSettings = (country: string, city: string, zipCode: string) => {
+        if (inputHasChanged(country!, city!, zipCode!)) {
+            patchUserSettings(country!, city!, zipCode!)
                 .then(() => refetch())
                 .catch(alert);
         }
     }
 
-    const patchNewUserSettings = async (country: string, city: string, zipCode: string) => {
-        return getNewUserSettingsBody(country, city, zipCode)
-            .then(settings => JSON.stringify(settings))
-            .then(settings =>
-                fetchJson(USER_SETTINGS_API, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: settings
-                }, [200])
-            );
+    const inputHasChanged = (country: string, city: string, zipCode: string): boolean => {
+        return country !== userSettings?.country || city !== userSettings?.city || zipCode !== userSettings?.zip_code;
     }
 
-    const getNewUserSettingsBody = async (country: string, city: string, zipCode: string): Promise<UserSettings> => {
-        return {
-            zip_code: zipCode,
-            country: country,
-            city: city
-        }
-    }
-
-    const back = () => navigate(-1);
+    const back = () => navigate('/');
 
     if (isLoading) return <Box>Loading...</Box>;
     if (error) return <Box>Error</Box>;

@@ -2,9 +2,9 @@ import { NextFunction, Request, Response } from "express";
 import { ApiError } from "models/api/api_error";
 import { IDtoUserSettings } from "models/mongo/user_settings";
 import { IDtoUser } from "models/mongo/users";
-import { createNewUserSettings, deleteUserSettingsFromDb, getUserSettingsFromDb, parseUserSettings, updateExistingUserSettings } from "routes/users/services";
+import { createNewUserSettings, deleteUserSettingsFromDb, getUserSettingsFromDb, parseUserSettings, updateExistingUserSettings } from "routes/users/services/settings";
 
-export const getUserSettings = async (req: Request, res: Response, next: NextFunction) => {
+export const getMeUserSettings = async (req: Request, res: Response, next: NextFunction) => {
     return getUserSettingsFromDb((req.user as IDtoUser).sub)
         .then(userSettings => handleGetUserSettings(userSettings, res, next))
         .catch((err) => next(new ApiError('Error while getting user settings', err, 500)));
@@ -15,7 +15,7 @@ const handleGetUserSettings = async (userSettings: IDtoUserSettings | null, res:
     return next(new ApiError("User Settings not found", undefined, 404));
 }
 
-export const patchUserSettings = async (req: Request, res: Response, next: NextFunction) => {
+export const patchMeUserSettings = async (req: Request, res: Response, next: NextFunction) => {
     const sub = (req.user as IDtoUser).sub;
     return getUserSettingsFromDb(sub)
         .then(userSettings => userSettings ?
@@ -33,7 +33,7 @@ export const postUserSettings = async (req: Request, res: Response, next: NextFu
         )
 }
 
-export const deleteUserSettings = async (req: Request, res: Response, next: NextFunction) => {
+export const deleteMeUserSettings = async (req: Request, res: Response, next: NextFunction) => {
     return deleteUserSettingsFromDb((req.user as IDtoUser).sub)
         .then(result => handleDeleteUserSettings(result.deletedCount, res, next))
         .catch((err) => next(new ApiError('Error while getting user settings', err, 500)));

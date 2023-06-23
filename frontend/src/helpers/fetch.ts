@@ -16,7 +16,7 @@ export const fetchBlob = async (url: string, options: RequestInit = {}, allowed_
 };
 
 //https://dev.to/ycmjason/javascript-fetch-retry-upon-failure-3p6g
-const fetchRetry = async (url: string, options: RequestInit = {}, allowed_status_codes: Array<number> = [200], retries: number = 1): Promise<Response> => {
+export const fetchRetry = async (url: string, options: RequestInit = {}, allowed_status_codes: Array<number> = [200], retries: number = 1): Promise<Response> => {
     try {
         return await fetch(url, { ...options, ...DEFAULT_FETCH_CONFIG })
             .then(response => checkHttpStatusCode(response, allowed_status_codes, url))

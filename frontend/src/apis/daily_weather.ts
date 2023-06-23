@@ -1,6 +1,6 @@
 import { useQuery } from "react-query";
-import { fetchJson } from "../app/fetch";
-import { ServerStateKeysEnum } from "../app/statekeys";
+import { fetchJson } from "../helpers/fetch";
+import { ServerStateKeysEnum } from "../helpers/statekeys";
 import { REFETCH_INTERVAL, WEATHER_API } from "../constants/api";
 import { LATITUDE, LONGITUDE, DAILY_FORECAST_DAYS } from "../constants/weather";
 import { DailyWeatherObject } from "../models/daily_forecast";

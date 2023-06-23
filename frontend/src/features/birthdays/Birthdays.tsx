@@ -4,7 +4,7 @@ import { Box } from '@mui/material';
 import { cardStyle, headingBoxStyle, itemBoxStyle, mainBoxStyle } from './style';
 import CakeIcon from '@mui/icons-material/Cake';
 import BirthdayItem from './BirthdayItem/BirthdayItem';
-import { useAppSelector } from '../../app/hooks';
+import { useAppSelector } from '../../helpers/hooks';
 import { isNewDay } from '../time/timeSlice';
 import { useGetBirthdays } from '../../apis/birthday';
 import { CardFrame } from '../CardFrame';

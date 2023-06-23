@@ -8,17 +8,26 @@ type Props = {
     defaultCountry?: string,
     defaultZipCode?: string,
     showBackButton?: boolean,
-    onSend?: (country?: string, city?: string, zipCode?: string) => void,
+    onSend?: (country: string, city: string, zipCode: string) => void,
     onBack?: () => void
 }
 
 export const SettingsForm = ({ defaultCity = "Stuttgart", defaultCountry = "DE", defaultZipCode = "70176", showBackButton = true, onSend, onBack }: Props) => {
     const city = useRef<HTMLInputElement>();
     const zip = useRef<HTMLInputElement>();
-    const [country, setCountry] = useState("");
+    const [country, setCountry] = useState(defaultCountry);
 
     const onSendButton = () => {
-        if (onSend) onSend(country, city.current?.value, zip.current?.value);
+        if (country === "") {
+            alert("Country must not be empty!");
+        } else if (city.current?.value === "") {
+            alert("City must not be empty!");
+        } else if (zip.current?.value === "") {
+            alert("Zip code must not be empty!");
+        }
+        if (onSend) {
+            onSend(country, city.current!.value, zip.current!.value);
+        }
     };
 
     return (

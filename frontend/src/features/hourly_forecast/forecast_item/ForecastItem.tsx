@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { PRECIPITATION_UNIT, TEMP_UNIT } from '../../../constants/weather';
 import unknownWeatherIcon from '../../../assets/unknown-weather.svg'
 import { HourlyWeatherResource } from '../../../models/hourly_forecast';
-import { parseTime } from '../../../app/timeParser';
+import { parseTime } from '../../../helpers/timeParser';
 import { forecastImg, hourStyle } from '../style';
 import { smallFontSize } from '../../../assets/styles/theme';
 import { useGetWeatherIcon } from '../../../apis/weather_icon';

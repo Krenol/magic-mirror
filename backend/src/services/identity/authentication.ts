@@ -17,14 +17,14 @@ export const setupPassportAuthentication = () => {
 
 const authenticateUser = (_request: any, accessToken: any, refreshToken: any, profile: any, done: VerifyCallback) => {
     DtoUser.findOne({ sub: profile._json.sub })
-        .then(user => handleFindUserInDbResponse(user, accessToken, refreshToken, done))
+        .then(user => handleFoundUserInDbResponse(user, accessToken, refreshToken, done))
         .catch(err => {
             LOGGER.error(err.message);
             done(err, undefined);
         })
 }
 
-const handleFindUserInDbResponse = (user: IDtoUser | null, accessToken: any, refreshToken: any, done: VerifyCallback) => {
+const handleFoundUserInDbResponse = (user: IDtoUser | null, accessToken: any, refreshToken: any, done: VerifyCallback) => {
     if (!user) {
         LOGGER.error(`Unregistered user tried to log in.`);
         done("Unregistered log in attempt", undefined);

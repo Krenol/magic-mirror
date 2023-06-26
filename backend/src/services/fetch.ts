@@ -1,9 +1,10 @@
-import { ALLOWED_URLS } from "config";
+import { ALLOWED_URLS, LOGIN_STRATEGY_NAME } from "config";
 import { TResponse } from "models/api/fetch";
 import { LOGGER } from "services/loggers";
 import { IDtoUser } from "models/mongo/users";
-import { userTokenRefresh } from "./identity/user";
+import { getAuthenticationHeader, userTokenRefresh } from "services/identity/user";
 import { ApiError } from "models/api/api_error";
+import AuthTokenRefresh from "passport-oauth2-refresh";
 
 export const fetchJson = async (url: string, options: RequestInit = {}, logUrl: string | undefined = undefined): Promise<TResponse> => {
     LOGGER.info(`Calling API ${logUrl || url} to get JSON`);
@@ -32,33 +33,35 @@ const parseJsonResponse = async (res: Response): Promise<TResponse> => {
     }
 }
 
-export const fetchJsonGoogleAuthRefresh = async (url: string, user: IDtoUser, options: any = {}, logUrl: string | undefined = undefined): Promise<TResponse> => {
-    return _fetchJsonGoogleAuthRefresh(url, user, options, 1, logUrl);
+export const fetchJsonGoogleAuthRefresh = async (url: string, user: IDtoUser, logUrl: string | undefined = undefined): Promise<TResponse | undefined> => {
+    var refreshRetries = 1;
+    const _fetchJsonGoogleAuthRefresh = async () => {
+        return getAuthenticationHeader(user)
+            .then(authHeader => fetchJson(url, authHeader, logUrl))
+            .then(rsp => {
+                if (rsp.status === 401 && refreshRetries > 0) {
+                    LOGGER.info(`Start refresh of access token for user ${user.sub}`);
+                    --refreshRetries;
+                    AuthTokenRefresh.requestNewAccessToken(LOGIN_STRATEGY_NAME, user.refresh_token, (err: { statusCode: number; data?: any; }, access_token: string) => {
+                        if (err || !access_token) {
+                            LOGGER.error(`Refresh request failed with error ${err.data}`);
+                            throw new ApiError("Token refresh failed", undefined, 500);
+                        }
+                        LOGGER.info(`Refreshed access token for user ${user.sub}`);
+                        user.access_token = access_token;
+                        return user.save()
+                            .then(() => _fetchJsonGoogleAuthRefresh());
+                    });
+                } else if (rsp.status === 401 && refreshRetries === 0) {
+                    LOGGER.error(`Unauthenticated Google Request. No more retries left!`);
+                    return return401Response();
+                } else {
+                    return rsp;
+                }
+            })
+    };
+    return _fetchJsonGoogleAuthRefresh();
 };
-
-const _fetchJsonGoogleAuthRefresh = async (url: string, user: IDtoUser, options: any = {}, refreshRetries = 2, logUrl: string | undefined = undefined): Promise<TResponse> => {
-    const rsp = await fetchJson(url, options, logUrl);
-    if (rsp.status === 401 && refreshRetries > 0) {
-        LOGGER.info(`Unauthenticated Google Request. Retry with refreshed token for user ${user.sub}`);
-        return handleTokenRefresh(url, user, options, refreshRetries, logUrl);
-    } else if (rsp.status === 401 && refreshRetries === 0) {
-        LOGGER.error(`Unauthenticated Google Request. No more retries left!`);
-        return return401Response();
-    }
-    return rsp;
-};
-
-const handleTokenRefresh = async (url: string, user: IDtoUser, options: any = {}, refreshRetries = 2, logUrl: string | undefined = undefined) => {
-    return userTokenRefresh(user)
-        .then(checkTokenRefreshResponse)
-        .then(u => _fetchJsonGoogleAuthRefresh(url, { ...options, headers: { Authorization: `Bearer ${u.access_token}` } }, u, --refreshRetries, logUrl))
-        .catch(return401Response);
-}
-
-const checkTokenRefreshResponse = async (user?: IDtoUser): Promise<IDtoUser> => {
-    if (user) return user;
-    throw new ApiError("Error during token refresh", undefined, 500);
-}
 
 const return401Response = async (): Promise<TResponse> => {
     return {

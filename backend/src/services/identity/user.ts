@@ -35,7 +35,7 @@ export const getAuthenticationHeader = async (user?: IDtoUser): Promise<RequestI
     return { headers: { Authorization: `Bearer ${access_token}` } }
 }
 
-export const userTokenRefresh = async (user: IDtoUser): Promise<IDtoUser> => {
+export const userTokenRefresh = async (user: IDtoUser): Promise<IDtoUser | undefined> => {
     LOGGER.info(`Start refresh of access token for user ${user.sub}`);
     return AuthTokenRefresh.requestNewAccessToken(LOGIN_STRATEGY_NAME, user.refresh_token, (err: { statusCode: number; data?: any; }, accessToken: string) => {
         if (err || !accessToken) {

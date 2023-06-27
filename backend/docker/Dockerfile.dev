@@ -1,5 +1,5 @@
 ARG NODE_IMG_VERSION=18.9-alpine3.15
-ARG NODE_ENV=production
+ARG NODE_ENV=development
 
 FROM node:${NODE_IMG_VERSION}
 
@@ -21,4 +21,4 @@ RUN mv ssl /etc/express
 
 RUN yarn install 
 
-CMD [ "yarn", "prod" ]
+CMD [ "yarn", "dev" ]

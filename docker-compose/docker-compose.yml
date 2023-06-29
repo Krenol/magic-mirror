@@ -59,9 +59,11 @@ services:
     networks:
       - db
   loki:
-    image: grafana/loki:2.7.3
-    restart: unless-stopped
+    build:
+      context: ../loki
+      dockerfile: Dockerfile
     command: -config.file=/etc/loki/local-config.yaml
+    restart: unless-stopped
     networks:
       - loki
   grafana:

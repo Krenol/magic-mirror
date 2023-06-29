@@ -71,7 +71,9 @@ services:
     networks:
       - db
   loki:
-    image: grafana/loki:2.7.3
+    build:
+      context: ../loki
+      dockerfile: Dockerfile
     command: -config.file=/etc/loki/local-config.yaml
     networks:
       - loki

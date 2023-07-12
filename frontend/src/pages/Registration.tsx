@@ -36,7 +36,7 @@ export const Registration = () => {
 
     return (
         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <SessionCheck onUnauthenticated={logout} />
+            <SessionCheck onUnauthenticated={logout} refetchInterval={0} />
             <SettingsForm
                 showBackButton={false}
                 onSend={addUserSettings}

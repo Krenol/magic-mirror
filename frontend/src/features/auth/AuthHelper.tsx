@@ -2,13 +2,15 @@ import { useCallback } from 'react';
 import { useGetAuthStatus } from '../../apis/auth_status';
 import { useAppDispatch } from '../../helpers/hooks';
 import { setAuthenticated } from './authSlice'
+import { REFETCH_INTERVAL } from "../../constants/api";
 
 interface ISessionCheck {
     onUnauthenticated?: () => void,
     onAuthenticated?: () => void,
+    refetchInterval?: number
 }
 
-const SessionCheck = ({ onUnauthenticated, onAuthenticated }: ISessionCheck) => {
+const SessionCheck = ({ onUnauthenticated, onAuthenticated, refetchInterval = REFETCH_INTERVAL }: ISessionCheck) => {
     const dispatch = useAppDispatch();
 
     const handleSessionCheckResponse = useCallback(async (authenticated: boolean) => {
@@ -20,7 +22,7 @@ const SessionCheck = ({ onUnauthenticated, onAuthenticated }: ISessionCheck) => 
         }
     }, [dispatch, onUnauthenticated, onAuthenticated]);
 
-    useGetAuthStatus(handleSessionCheckResponse);
+    useGetAuthStatus(handleSessionCheckResponse, refetchInterval);
     return (null)
 }
 

@@ -34,7 +34,7 @@ export const Settings = () => {
     if (error) return <Box>Error</Box>;
     return (
         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <SessionCheck onUnauthenticated={logout} />
+            <SessionCheck onUnauthenticated={logout} refetchInterval={0} />
             <SettingsForm
                 defaultCity={userSettings?.city}
                 defaultCountry={userSettings?.country}

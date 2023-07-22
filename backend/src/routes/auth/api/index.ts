@@ -12,8 +12,9 @@ export const logout = async (req: Request, res: Response) => {
 
 const _logout = async (req: Request, res: Response) => {
     return req.session.destroy((err: any) => {
-        if(err) {
-            LOGGER.warn(err);
+        if (err) {
+            LOGGER.warn(`Error while signing out user ${(req.user as IDtoUser).sub || 'unknown'}: <${err}>`);
+            return res.status(500).json({ success: false });
         }
         LOGGER.info(`User ${(req.user as IDtoUser).sub || 'unknown'} signed out`);
         return res.status(200).json({ success: true });

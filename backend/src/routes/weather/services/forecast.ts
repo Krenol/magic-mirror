@@ -24,7 +24,7 @@ const getDateInDays = async (days: number): Promise<Date> => {
 }
 
 export const getForecastDays = async (req: Request): Promise<number> => {
-    const day_query_param = parseInt((req.query.days ?? MAX_FORECAST_DAYS).toString());
+    const day_query_param = parseInt((req.query.days as string ?? MAX_FORECAST_DAYS).toString());
     return day_query_param
 }
 

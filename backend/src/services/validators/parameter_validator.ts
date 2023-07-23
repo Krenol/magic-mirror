@@ -17,7 +17,7 @@ export abstract class ParameterValidator {
         [EParamType.request, requestContainsParam]
     ]);
     protected readonly _paramRetrieveMap = new Map<EParamType, (req: Request) => string>([
-        [EParamType.query, (req: Request) => (req.query[this._paramName] ?? "").toString()],
+        [EParamType.query, (req: Request) => (req.query[this._paramName] as string ?? "").toString()],
         [EParamType.request, (req: Request) => (req.params[this._paramName] ?? "").toString()]
     ]);
 

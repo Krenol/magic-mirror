@@ -26,7 +26,7 @@ export const handleHourlyWeatherResponse = async (res: Response, response: TResp
 }
 
 export const getForecastHours = async (req: Request): Promise<number> => {
-    const hour_query_param = parseInt((req.query.hours ?? MAX_HOURLY_FORECAST_HOURS).toString());
+    const hour_query_param = parseInt((req.query.hours as string ?? MAX_HOURLY_FORECAST_HOURS).toString());
     return hour_query_param
 }
 

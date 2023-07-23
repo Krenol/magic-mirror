@@ -31,7 +31,7 @@ export const eventsAtDate = async (req: Request, res: Response, next: NextFuncti
 }
 
 const parseCountQueryParameter = async (req: Request): Promise<string> => {
-    return (req.query.count ?? CALENDAR_CONFIG.DEFAULT_EVENT_COUNT).toString();
+    return (req.query.count as string ?? CALENDAR_CONFIG.DEFAULT_EVENT_COUNT).toString();
 }
 
 const parseMinTimeParam = async (req: Request): Promise<string> => {

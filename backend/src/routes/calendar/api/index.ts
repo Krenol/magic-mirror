@@ -35,12 +35,12 @@ const parseCountQueryParameter = async (req: Request): Promise<string> => {
 }
 
 const parseMinTimeParam = async (req: Request): Promise<string> => {
-    if (req.query.minTime) return req.query.minTime.toString();
+    if (req.query.minTime) return (req.query.minTime as string).toString();
     return (new Date()).toISOString();
 }
 
 const parseMaxTimeQueryParam = async (req: Request): Promise<string | undefined> => {
-    if (req.query.maxTime) return req.query.maxTime.toString();
+    if (req.query.maxTime) return (req.query.maxTime as string).toString();
 }
 
 const getRequestParams = async (count: string, minTime: string, maxTime?: string): Promise<EventRequestParams> => {

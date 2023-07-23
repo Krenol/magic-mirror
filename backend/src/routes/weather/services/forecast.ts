@@ -24,7 +24,7 @@ const getDateInDays = async (days: number): Promise<Date> => {
 }
 
 export const getForecastDays = async (req: Request): Promise<number> => {
-    const day_query_param = parseInt((req.query.days || MAX_FORECAST_DAYS).toString());
+    const day_query_param = parseInt((req.query.days ?? MAX_FORECAST_DAYS).toString());
     return day_query_param
 }
 
@@ -32,7 +32,7 @@ export const handleWeatherForecastResponse = async (res: Response, response: TRe
     if (response.status === 200) {
         return createResponse(res, response.body);
     } else if (response.status === 400) {
-        throw new ApiError(response.body.reason || 'Error while calling weather forecast API', new Error(), 400);
+        throw new ApiError(response.body.reason ?? 'Error while calling weather forecast API', new Error(), 400);
     } else {
         throw new ApiError("Error while retrieving the weather forecast", new Error(), 500);
     }

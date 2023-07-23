@@ -17,7 +17,7 @@ export const getWeatherDescription = async (weathercode: number): Promise<string
 
 const getWeatherCodeEntry = async (weathercode: number): Promise<WeatherCodeEntry> => {
     const WeatherCodeEntry = weather_code_list.find(item => item.weathercode == weathercode);
-    return WeatherCodeEntry || unknown_weathercode_entry;
+    return WeatherCodeEntry ?? unknown_weathercode_entry;
 }
 
 const unknown_weathercode_entry: WeatherCodeEntry = {

@@ -7,7 +7,7 @@ import { LOGGER } from "services/loggers";
 
 export const deleteMeUser = async (req: Request, res: Response, next: NextFunction) => {
     const user = (req.user as IDtoUser);
-    LOGGER.info(`Deleting user ${user}`)
+    LOGGER.info(`Deleting user ${user.sub}`)
     return deleteUserSettingsFromDb(user.sub)
         .then(() => deleteUserFromDb(user.sub))
         .then(result => handleDeleteUser(result.deletedCount, res, next))

@@ -31,9 +31,9 @@ export const createNewUserSettings = async (req: Request, res: Response, next: N
 }
 
 export const updateUserSettingsinDb = async (userSettings: IDtoUserSettings, newUserSettings: Partial<ApiDtoUserSettings>): Promise<IDtoUserSettings> => {
-    userSettings.zip_code = newUserSettings.zip_code || userSettings.zip_code;
-    userSettings.country = newUserSettings.country || userSettings.country;
-    userSettings.city = newUserSettings.city || userSettings.city;
+    userSettings.zip_code = newUserSettings.zip_code ?? userSettings.zip_code;
+    userSettings.country = newUserSettings.country ?? userSettings.country;
+    userSettings.city = newUserSettings.city ?? userSettings.city;
     return userSettings.save()
         .then(logUserSettingsUpdate);
 }

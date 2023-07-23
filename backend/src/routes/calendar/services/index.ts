@@ -45,8 +45,8 @@ export const parseNextEvent = async (events: GcalApiEventList): Promise<EventIte
 }
 
 const parseEvent = async (gcalEvent: GcalApiEventResource): Promise<EventItem> => {
-    const start = new Date(gcalEvent.start.dateTime || gcalEvent.start.date);
-    const end = new Date(gcalEvent.end.dateTime || gcalEvent.end.date);
+    const start = new Date(gcalEvent.start.dateTime ?? gcalEvent.start.date);
+    const end = new Date(gcalEvent.end.dateTime ?? gcalEvent.end.date);
     return {
         summary: gcalEvent.summary,
         description: gcalEvent.description,

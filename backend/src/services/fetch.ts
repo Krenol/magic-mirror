@@ -5,12 +5,12 @@ import { IDtoUser } from "models/mongo/users";
 import { getAuthenticationHeader, userTokenRefresh } from "./identity/user";
 
 export const fetchJson = async (url: string, options: RequestInit = {}, logUrl: string | undefined = undefined): Promise<TResponse> => {
-    LOGGER.info(`Calling API ${logUrl || url} to get JSON`);
+    LOGGER.info(`Calling API ${logUrl ?? url} to get JSON`);
     return checkInputURL(url)
         .then(() => fetch(url, options))
-        .then(response => logFetch(response, logUrl || url))
+        .then(response => logFetch(response, logUrl ?? url))
         .then(response => parseJsonResponse(response))
-        .catch(err => logFetchErr(err, logUrl || url));
+        .catch(err => logFetchErr(err, logUrl ?? url));
 };
 
 const logFetch = async (res: Response, url: string): Promise<Response> => {
@@ -68,12 +68,12 @@ const return401Response = async (): Promise<TResponse> => {
 }
 
 export const fetchBuffer = async (url: string, options: any = {}, logUrl: string | undefined = undefined): Promise<TResponse> => {
-    LOGGER.info(`Calling API ${logUrl || url} to get BLOB`);
+    LOGGER.info(`Calling API ${logUrl ?? url} to get BLOB`);
     return checkInputURL(url)
         .then(() => fetch(url, options))
-        .then(response => logFetch(response, logUrl || url))
+        .then(response => logFetch(response, logUrl ?? url))
         .then(response => parseBufferResponse(response))
-        .catch(err => logFetchErr(err, logUrl || url));
+        .catch(err => logFetchErr(err, logUrl ?? url));
 };
 
 const parseBufferResponse = async (res: Response): Promise<TResponse> => {

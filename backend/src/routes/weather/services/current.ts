@@ -15,7 +15,7 @@ export const handleCurrentWeatherResponse = async (res: Response, response: TRes
     if (response.status === 200) {
         return createResponse(res, response.body);
     } else if (response.status === 400) {
-        throw new ApiError(response.body.reason || 'Error while calling weather API', new Error(), 400);
+        throw new ApiError(response.body.reason ?? 'Error while calling weather API', new Error(), 400);
     } else {
         throw new ApiError("Error while retrieving the current weather", new Error(), 500);
     }

@@ -19,14 +19,14 @@ export const handleHourlyWeatherResponse = async (res: Response, response: TResp
     if (response.status === 200) {
         return createResponse(res, response.body, forecast_hours);
     } else if (response.status === 400) {
-        throw new ApiError(response.body.reason || 'Error while calling weather API', new Error(), 400);
+        throw new ApiError(response.body.reason ?? 'Error while calling weather API', new Error(), 400);
     } else {
         throw new ApiError("Error while retrieving the current weather", new Error(), 400);
     }
 }
 
 export const getForecastHours = async (req: Request): Promise<number> => {
-    const hour_query_param = parseInt((req.query.hours || MAX_HOURLY_FORECAST_HOURS).toString());
+    const hour_query_param = parseInt((req.query.hours ?? MAX_HOURLY_FORECAST_HOURS).toString());
     return hour_query_param
 }
 

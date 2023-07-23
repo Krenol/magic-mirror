@@ -23,8 +23,8 @@ export const Event = ({ item, date }: IEventItem) => {
     const localeStrOpts: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
 
     useEffect(() => {
-        setSummary(item.summary || "");
-        setLocation(item.location || "");
+        setSummary(item.summary ?? "");
+        setLocation(item.location ?? "");
         isSameDate(date, startDate)
             .then(setSameStartDate)
     }, [item.summary, item.location, startDate, endDate, date]);

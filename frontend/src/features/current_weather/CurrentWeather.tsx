@@ -22,29 +22,29 @@ const CurrentWeather = () => {
         data: icon,
         isLoading: iconLoading,
         error: iconError
-    } = useGetWeatherIcon(weather?.weather_icon || "")
+    } = useGetWeatherIcon(weather?.weather_icon ?? "")
 
     const weatherIcon = iconError || iconLoading ? unknownWeatherIcon : icon
 
     const boxContent = <Box sx={mainBoxStyle}>
         <Typography variant="h3">
-            {weather?.temperature.current.toFixed() || "-"}{TEMP_UNIT}
+            {weather?.temperature.current.toFixed() ?? "-"}{TEMP_UNIT}
         </Typography>
         <Box sx={minMaxBoxStyle}>
             <ArrowDropUpIcon />
             <Typography variant="subtitle2" color="text.primary">
-                {weather?.temperature.max.toFixed() || "-"}{TEMP_UNIT}
+                {weather?.temperature.max.toFixed() ?? "-"}{TEMP_UNIT}
             </Typography>
             <ArrowDropDownIcon />
             <Typography variant="subtitle2" color="text.primary">
-                {weather?.temperature.min.toFixed() || "-"}{TEMP_UNIT}
+                {weather?.temperature.min.toFixed() ?? "-"}{TEMP_UNIT}
             </Typography>
         </Box>
         <Typography variant="subtitle2" color="text.secondary" sx={smallFontSize}>
-            Feels like {weather?.temperature.feels_like.toFixed() || "-"}{TEMP_UNIT}
+            Feels like {weather?.temperature.feels_like.toFixed() ?? "-"}{TEMP_UNIT}
         </Typography>
         <Typography variant="subtitle2" color="text.secondary" sx={smallFontSize}>
-            Precipitaiton: {weather?.precipitation_sum.toFixed(1) || weather?.precipitation_sum === 0 ? weather?.precipitation_sum : "-"} {PRECIPITATION_UNIT}
+            Precipitaiton: {weather?.precipitation_sum.toFixed(1) ?? weather?.precipitation_sum === 0 ? weather?.precipitation_sum : "-"} {PRECIPITATION_UNIT}
         </Typography>
     </Box>
 

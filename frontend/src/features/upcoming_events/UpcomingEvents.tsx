@@ -63,7 +63,7 @@ const UpcomingEvents = () => {
 }
 
 const GetTodaysEventItems = (events: EventList | undefined, date: Date): ReactElement | ReactElement[] => {
-    const eventCount = (events?.count || 0);
+    const eventCount = (events?.count ?? 0);
     if (eventCount === 0) return NoEventsItem(EventTextEnum.noEventsToday);
     if (eventCount <= 2) return events!.list.map((ev) => <Event item={ev} date={date} key={ev.start} />);
     const summary = EventTextEnum.manyToday.replace("{{X}}", `${eventCount - 1}`);
@@ -84,7 +84,7 @@ const GetTodaysEventItems = (events: EventList | undefined, date: Date): ReactEl
 }
 
 const GetFutureEventItems = (events: EventList | undefined, date: Date): ReactElement => {
-    const eventCount = (events?.count || 0);
+    const eventCount = (events?.count ?? 0);
     if (eventCount === 0) return NoEventsItem(EventTextEnum.noEvents);
     if (eventCount === 1) return <Event item={events!.list[0]} date={date} key={events!.list[0].start} />;
     const summary = EventTextEnum.many.replace("{{X}}", `${eventCount}`);

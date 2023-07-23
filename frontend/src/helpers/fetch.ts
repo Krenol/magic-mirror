@@ -31,7 +31,7 @@ const checkHttpStatusCode = async (response: Response, allowed_status_codes: Arr
         return response;
     } else {
         throw Object.assign(
-            new Error(`Request to ${url || "URL"} failed with status code ${response.status}`),
+            new Error(`Request to ${url ?? "URL"} failed with status code ${response.status}`),
             { code: response.status }
         );
     }

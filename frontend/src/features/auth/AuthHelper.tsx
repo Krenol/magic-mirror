@@ -13,7 +13,7 @@ interface ISessionCheck {
 const SessionCheck = ({ onUnauthenticated, onAuthenticated, refetchInterval = REFETCH_INTERVAL }: ISessionCheck) => {
     const dispatch = useAppDispatch();
 
-    const handleSessionCheckResponse = useCallback(async (authenticated: boolean) => {
+    const handleSessionCheckResponse = useCallback((authenticated: boolean) => {
         dispatch(setAuthenticated(authenticated));
         if (!authenticated && onUnauthenticated) {
             onUnauthenticated();

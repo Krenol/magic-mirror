@@ -38,11 +38,11 @@ const ForecastItem = ({ item }: IForecastItem) => {
             />
             <Box sx={minMaxBoxStyle}>
                 <Typography variant="subtitle2" color="text.primary" sx={{ ...smallFontSize, ...boldText }}>
-                    {Math.round(item.temperature.max).toString() || "-"}{TEMP_UNIT}
+                    {Math.round(item.temperature.max).toString() ?? "-"}{TEMP_UNIT}
                 </Typography>
                 &nbsp;
                 <Typography variant="subtitle2" color="text.secondary" sx={smallFontSize}>
-                    {Math.round(item.temperature.min).toString() || "-"}{TEMP_UNIT}
+                    {Math.round(item.temperature.min).toString() ?? "-"}{TEMP_UNIT}
                 </Typography>
             </Box>
             <Typography variant="subtitle2" color="text.primary" align='center' sx={smallFontSize}>

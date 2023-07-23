@@ -17,7 +17,7 @@ import { USERS_API } from '../../constants/api';
 
 type IMenuItem = {
     text: string,
-    onClick?: () => void
+    onClick?: () => Promise<void> | void
 }
 
 const MenuAppBar = () => {

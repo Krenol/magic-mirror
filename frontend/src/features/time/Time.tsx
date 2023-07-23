@@ -11,7 +11,7 @@ import { cardStyle, timeStyle } from './style';
 export const Time = () => {
     const dispatch = useAppDispatch();
 
-    const newDayCb = useCallback(async (isNewDay: boolean) => {
+    const newDayCb = useCallback((isNewDay: boolean) => {
         dispatch(setNewDay(isNewDay));
     }, [dispatch]);
 

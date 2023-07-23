@@ -11,7 +11,7 @@ type Props = {
 
 export default function CountrySelect({ inputCallback, defaultCountryCode }: Props) {
     const onChange = (event: SyntheticEvent<Element, Event>, value: CountryType | null) => {
-        if (inputCallback) inputCallback(value?.code || "");
+        if (inputCallback) inputCallback(value?.code ?? "");
     }
 
     return (

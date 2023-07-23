@@ -17,8 +17,8 @@ export const Settings = () => {
     } = useGetUserSettings(false);
 
     const updateSettings = (country: string, city: string, zipCode: string) => {
-        if (inputHasChanged(country!, city!, zipCode!)) {
-            patchUserSettings(country!, city!, zipCode!)
+        if (inputHasChanged(country, city, zipCode)) {
+            patchUserSettings(country, city, zipCode)
                 .then(() => refetch())
                 .catch(alert);
         }

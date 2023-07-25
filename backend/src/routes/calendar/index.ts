@@ -4,8 +4,8 @@ import { allEventsMw, dateEventsMw } from "routes/calendar/middleware";
 
 const router = getRouter(true);
 
-router.get('/', allEventsMw, allCalendarEvents);
+router.get("/", allEventsMw, allCalendarEvents);
 
-router.get('/:date', dateEventsMw, eventsAtDate)
+router.get("/:date", dateEventsMw, eventsAtDate);
 
 export default router;

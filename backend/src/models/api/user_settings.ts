@@ -1,5 +1,5 @@
 export type ApiDtoUserSettings = {
-    country: string,
-    city: string,
-    zip_code: string,
-}
+  country: string;
+  city: string;
+  zip_code: string;
+};

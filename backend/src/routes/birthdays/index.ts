@@ -4,6 +4,6 @@ import { eventCountMiddleware } from "routes/birthdays/middleware";
 
 const router = getRouter(true);
 
-router.get('/', [eventCountMiddleware.validate], allBirthdays);
+router.get("/", [eventCountMiddleware.validate], allBirthdays);
 
 export default router;

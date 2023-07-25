@@ -14,77 +14,78 @@ import compression from "compression";
 import helmet from "helmet";
 import RateLimit from "express-rate-limit";
 
-
 export abstract class Server<T extends http2.Http2Server> {
-    protected readonly _app: express.Application;
-    protected readonly _port: number;
-    private readonly _database: Database;
+  protected readonly _app: express.Application;
+  protected readonly _port: number;
+  private readonly _database: Database;
 
-    get app(): express.Application {
-        return this._app;
-    }
+  get app(): express.Application {
+    return this._app;
+  }
 
-    protected _server!: T;
+  protected _server!: T;
 
-    get server(): T {
-        return this._server;
-    }
+  get server(): T {
+    return this._server;
+  }
 
-    constructor(database: Database, port = 3001) {
-        this._port = port
-        this._database = database;
-        this._app = http2Express(express);
-        this._app.set("port", port);
-        this.configureExpress();
-    }
+  constructor(database: Database, port = 3001) {
+    this._port = port;
+    this._database = database;
+    this._app = http2Express(express);
+    this._app.set("port", port);
+    this.configureExpress();
+  }
 
-    private configureExpress() {
-        this.setupLogging();
-        this.setupSession();
-        this.setupBodyParsers();
-        this.setupCors();
-        this.setupOIDC();
-        this.setupDefaultMiddlewares();
-    }
+  private configureExpress() {
+    this.setupLogging();
+    this.setupSession();
+    this.setupBodyParsers();
+    this.setupCors();
+    this.setupOIDC();
+    this.setupDefaultMiddlewares();
+  }
 
-    private setupLogging() {
-        this._app.use(EXPRESS_LOGGER);
-    }
+  private setupLogging() {
+    this._app.use(EXPRESS_LOGGER);
+  }
 
-    private setupSession() {
-        this._app.use(session({
-            secret: SESSION_SECRET,
-            resave: true,
-            saveUninitialized: false,
-            rolling: true,
-            cookie: {
-                secure: ENABLE_HTTPS,
-                httpOnly: true,
-                sameSite: true,
-                maxAge: 2.592e+9 //30d
-            },
-            store: getSessionStore(this._database)
-        }))
-    }
+  private setupSession() {
+    this._app.use(
+      session({
+        secret: SESSION_SECRET,
+        resave: true,
+        saveUninitialized: false,
+        rolling: true,
+        cookie: {
+          secure: ENABLE_HTTPS,
+          httpOnly: true,
+          sameSite: true,
+          maxAge: 2.592e9, //30d
+        },
+        store: getSessionStore(this._database),
+      }),
+    );
+  }
 
-    private setupBodyParsers() {
-        this._app.use(bodyParser.json());
-        this._app.use(bodyParser.urlencoded({ extended: true }));
-    }
+  private setupBodyParsers() {
+    this._app.use(bodyParser.json());
+    this._app.use(bodyParser.urlencoded({ extended: true }));
+  }
 
-    private setupCors() {
-        this._app.use(cors({ origin: FRONTEND_URL, credentials: true }));
-    }
+  private setupCors() {
+    this._app.use(cors({ origin: FRONTEND_URL, credentials: true }));
+  }
 
-    private async setupOIDC() {
-        setupPassport(this._app);
-    }
+  private async setupOIDC() {
+    setupPassport(this._app);
+  }
 
-    private async setupDefaultMiddlewares() {
-        this._app.use(compression());
-        this._app.use(helmet());
-        this._app.use(RateLimit(RATE_LIMIT));
-    }
+  private async setupDefaultMiddlewares() {
+    this._app.use(compression());
+    this._app.use(helmet());
+    this._app.use(RateLimit(RATE_LIMIT));
+  }
 
-    public abstract start(): void;
+  public abstract start(): void;
 }

@@ -17,7 +17,11 @@ export const Registration = () => {
     }
   }, [userSettings, navigate]);
 
-  const addUserSettings = (country: string, city: string, zipCode: string) => {
+  const addUserSettings = (
+    country: string,
+    city?: string,
+    zipCode?: string
+  ) => {
     postUserSettings(country, city, zipCode)
       .then(() => navigate("/"))
       .catch(alert);

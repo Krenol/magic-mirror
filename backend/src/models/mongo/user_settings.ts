@@ -21,14 +21,14 @@ const UserSettingsSchema = new Schema(
     },
     city: {
       type: String,
-      required: true,
+      required: false,
     },
     zip_code: {
       type: String,
-      required: true,
+      required: false,
     },
   },
-  { strict: false },
+  { strict: false }
 );
 
 export const DtoUserSettings = model("userSettings", UserSettingsSchema);

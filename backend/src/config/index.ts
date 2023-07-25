@@ -59,7 +59,7 @@ export const CALENDAR_CONFIG = {
 };
 
 export const OPENWEATHER_URL = "https://openweathermap.org";
-
+export const GEOCODE_URL = "https://geocode.maps.co";
 export const WEATHER_API_URL = "https://api.open-meteo.com/v1";
 export const WEATHER_UNITS = {
   timezone: "GMT%2B0",
@@ -92,7 +92,7 @@ export const GOOGLE_LOGIN_STRATEGY_OPTIONS: StrategyOptionsWithRequest = {
   clientSecret: OAUTH2_CLIENT.CLIENT_SECRET,
   callbackURL: `${PROXY_SERVER_PROTOCOL}://${PROXY_SERVER_HOSTNAME}:${PROXY_SERVER_PORT}${PROXY_SERVER_CONTEXT}/${GOOGLE_LOGIN_CALLBACK_CONTEXT.replace(
     /^\/(.*)$/,
-    "$1",
+    "$1"
   )}`,
   passReqToCallback: true,
 };
@@ -101,12 +101,12 @@ export const GOOGLE_REGISTER_STRATEGY_OPTIONS: StrategyOptionsWithRequest = {
   clientSecret: OAUTH2_CLIENT.CLIENT_SECRET,
   callbackURL: `${PROXY_SERVER_PROTOCOL}://${PROXY_SERVER_HOSTNAME}:${PROXY_SERVER_PORT}${PROXY_SERVER_CONTEXT}/${GOOGLE_REGISTER_CALLBACK_CONTEXT.replace(
     /^\/(.*)$/,
-    "$1",
+    "$1"
   )}`,
   passReqToCallback: true,
 };
 export const ALLOWED_USERS: Array<string> = JSON.parse(
-  process.env.ALLOWED_USER_EMAILS ?? "[]",
+  process.env.ALLOWED_USER_EMAILS ?? "[]"
 );
 
 export const LOGIN_STRATEGY_NAME = "google-login";
@@ -117,6 +117,7 @@ export const ALLOWED_URLS = [
   GOOGLE_OAUTH_API_HOST,
   WEATHER_API_URL,
   OPENWEATHER_URL,
+  GEOCODE_URL,
 ];
 
 export const RATE_LIMIT = {

@@ -15,9 +15,16 @@ import { smallFontSize } from "../../assets/styles/theme";
 import { useGetCurrentWeather } from "../../apis/current_weather";
 import { CardFrame } from "../CardFrame";
 import { useGetWeatherIcon } from "../../apis/weather_icon";
+import { useAppSelector } from "../../helpers/hooks";
+import { getLocation } from "../location_service/locationSlice";
 
 const CurrentWeather = () => {
-  const { data: weather, isLoading, error } = useGetCurrentWeather();
+  const loc = useAppSelector(getLocation);
+  const {
+    data: weather,
+    isLoading,
+    error,
+  } = useGetCurrentWeather(loc.longitude, loc.latitude);
 
   const {
     data: icon,

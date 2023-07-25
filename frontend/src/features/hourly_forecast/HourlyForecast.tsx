@@ -3,9 +3,16 @@ import ForecastItem from "./forecast_item/ForecastItem";
 import { useGetHourlyWeather } from "../../apis/hourly_weather";
 import { CardFrame } from "../CardFrame";
 import { Box } from "@mui/material";
+import { useAppSelector } from "../../helpers/hooks";
+import { getLocation } from "../location_service/locationSlice";
 
 const HourlyWeather = () => {
-  const { data: weather, isLoading, error } = useGetHourlyWeather();
+  const loc = useAppSelector(getLocation);
+  const {
+    data: weather,
+    isLoading,
+    error,
+  } = useGetHourlyWeather(loc.longitude, loc.latitude);
 
   const content = (
     <Box sx={hourBoxStyle}>

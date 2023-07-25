@@ -7,7 +7,7 @@ export const API_BACKEND_PROTOCOL =
   process.env.REACT_APP_API_BACKEND_PROTOCOL ?? "https";
 export const BACKEND_BASE_URL = `${API_BACKEND_PROTOCOL}://${API_BACKEND_HOST}:${API_BACKEND_PORT}/${API_BACKEND_CONTEXT.replace(
   /^\/(.*)$/,
-  "$1",
+  "$1"
 )}`;
 const WEATHER_ENDPOINT_CONTEXT = "weather";
 const AUTH_CONTEXT = "auth";
@@ -24,7 +24,8 @@ export const SESSION_STATUS_API = `${BACKEND_BASE_URL}/${AUTH_CONTEXT}/check`;
 export const LOGIN_URL = `${BACKEND_BASE_URL}/${AUTH_CONTEXT}/login`;
 export const REGISTER_URL = `${BACKEND_BASE_URL}/${AUTH_CONTEXT}/register`;
 export const LOGOUT_URL = `${BACKEND_BASE_URL}/logout`;
+export const LOCATION_API = `${BACKEND_BASE_URL}/location`;
 export const DEFAULT_FETCH_CONFIG: RequestInit = { credentials: "include" };
 export const REFETCH_INTERVAL = parseInt(
-  process.env.REACT_APP_REFRESH_MILLIS ?? "120000",
+  process.env.REACT_APP_REFRESH_MILLIS ?? "120000"
 );

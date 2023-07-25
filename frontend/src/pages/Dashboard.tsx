@@ -10,6 +10,7 @@ import HourlyWeather from "../features/hourly_forecast/HourlyForecast";
 import UpcomingEvents from "../features/upcoming_events/UpcomingEvents";
 import { logout } from "../apis/logout";
 import { REFETCH_INTERVAL } from "../constants/api";
+import { LocationService } from "../features/location_service/LocationService";
 
 export const Dashboard = () => {
   return (
@@ -18,6 +19,7 @@ export const Dashboard = () => {
         onUnauthenticated={logout}
         refetchInterval={REFETCH_INTERVAL}
       />
+      <LocationService />
       <Box sx={dashboardStyle}>
         <Time />
         <Birthdays />

@@ -4,8 +4,8 @@ import { UserSettings } from "../models/user_settings";
 
 export const postUserSettings = async (
   country: string,
-  city: string,
-  zipCode: string,
+  city = "",
+  zipCode = ""
 ) => {
   return getUserSettingsBody(country, city, zipCode)
     .then((settings) => JSON.stringify(settings))
@@ -19,15 +19,15 @@ export const postUserSettings = async (
           },
           body: settings,
         },
-        [201],
-      ),
+        [201]
+      )
     );
 };
 
 export const patchUserSettings = async (
   country?: string,
   city?: string,
-  zipCode?: string,
+  zipCode?: string
 ) => {
   return getUserSettingsBody(country, city, zipCode)
     .then((settings) => JSON.stringify(settings))
@@ -41,15 +41,15 @@ export const patchUserSettings = async (
           },
           body: settings,
         },
-        [200],
-      ),
+        [200]
+      )
     );
 };
 
 const getUserSettingsBody = async (
   country?: string,
   city?: string,
-  zipCode?: string,
+  zipCode?: string
 ): Promise<Partial<UserSettings>> => {
   return {
     zip_code: zipCode,

@@ -6,6 +6,7 @@ import { default as CalendarRoute } from "routes/calendar";
 import { default as BirthdaysRoute } from "routes/birthdays";
 import { default as UsersRoute } from "routes/users";
 import { default as AuthRoute } from "routes/auth";
+import { default as LocationRoute } from "routes/location";
 import { NextFunction, Request, Response } from "express";
 import { ApiError } from "models/api/api_error";
 import { EXPRESS_ERROR_LOGGER } from "services/loggers";
@@ -21,6 +22,7 @@ server.app.use("/calendar", CalendarRoute);
 server.app.use("/birthdays", BirthdaysRoute);
 server.app.use("/", AuthRoute);
 server.app.use("/users", UsersRoute);
+server.app.use("/location", LocationRoute);
 
 // ERROR HANDLING
 server.app.use(EXPRESS_ERROR_LOGGER);
@@ -28,7 +30,7 @@ server.app.use(EXPRESS_ERROR_LOGGER);
 server.app.use(
   (err: ApiError, _req: Request, res: Response, _next: NextFunction) => {
     return res.status(err.status).json({ error: err.message }).end();
-  },
+  }
 );
 
 server.app.use(
@@ -37,7 +39,7 @@ server.app.use(
       .status(500)
       .json({ error: "Oops... something unexpected happened!" })
       .end();
-  },
+  }
 );
 
 server.start();

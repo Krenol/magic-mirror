@@ -3,9 +3,16 @@ import ForecastItem from "./forecast_item/ForecastItem";
 import { useGetDailyWeather } from "../../apis/daily_weather";
 import { CardFrame } from "../CardFrame";
 import { Box } from "@mui/material";
+import { getLocation } from "../location_service/locationSlice";
+import { useAppSelector } from "../../helpers/hooks";
 
 const DailyForecast = () => {
-  const { data: weather, isLoading, error } = useGetDailyWeather();
+  const loc = useAppSelector(getLocation);
+  const {
+    data: weather,
+    isLoading,
+    error,
+  } = useGetDailyWeather(loc.longitude, loc.latitude);
 
   const content = (
     <Box sx={dayBoxStyle}>

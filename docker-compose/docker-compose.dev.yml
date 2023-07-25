@@ -42,6 +42,8 @@ services:
         NODE_IMG_VERSION: ${NODE_IMG_VERSION}
         NODE_ENV: development
     hostname: backend
+    ports:
+      - 9229:9229
     depends_on:
       - nginx
       - mongo

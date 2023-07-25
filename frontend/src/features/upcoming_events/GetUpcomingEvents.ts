@@ -1,8 +1,8 @@
-import { useGetEvents, useGetDateEvents } from "../../apis/events";
+import { useGetEvents } from "../../apis/events";
 import {
   getDateInXDays,
   getISODayEndString,
-  getIsoDate,
+  getISODayStartString,
 } from "../../helpers/dateParser";
 import { UpcomingEventObject, Dates } from "./types";
 
@@ -19,7 +19,7 @@ export const GetUpcomingEvents = (): UpcomingEventObject => {
   } = useGetEvents([
     {
       name: "maxTime",
-      value: encodeURIComponent(getISODayEndString(new Date(), true)),
+      value: encodeURIComponent(getISODayEndString(dates.today, true)),
     },
   ]);
 
@@ -27,14 +27,31 @@ export const GetUpcomingEvents = (): UpcomingEventObject => {
     data: tmrwEvents,
     isLoading: tmrwLoading,
     error: tmrwError,
-  } = useGetDateEvents(getIsoDate(dates.tmrw));
+  } = useGetEvents([
+    {
+      name: "minTime",
+      value: encodeURIComponent(getISODayStartString(dates.tmrw, true)),
+    },
+    {
+      name: "maxTime",
+      value: encodeURIComponent(getISODayEndString(dates.tmrw, true)),
+    },
+  ]);
 
   const {
     data: overmrwEvents,
     isLoading: overmrwLoading,
     error: overmrwError,
-  } = useGetDateEvents(getIsoDate(dates.overmrw));
-
+  } = useGetEvents([
+    {
+      name: "minTime",
+      value: encodeURIComponent(getISODayStartString(dates.overmrw, true)),
+    },
+    {
+      name: "maxTime",
+      value: encodeURIComponent(getISODayEndString(dates.overmrw, true)),
+    },
+  ]);
   return {
     todayEvents,
     tmrwEvents,

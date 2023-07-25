@@ -18,7 +18,7 @@ const BirthdayItem = ({ item }: IBirthdayItem) => {
   useEffect(() => {
     const bday = new Date(item.date);
     const today = new Date(new Date().toDateString());
-    getDifferenceInDays(today, bday).then(setDays);
+    setDays(getDifferenceInDays(today, bday));
   }, [item.date]);
 
   useEffect(() => {

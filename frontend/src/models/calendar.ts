@@ -10,4 +10,6 @@ export type EventItem = {
   start: string;
   end: string;
   allDay: boolean;
+  multiDays: boolean;
+  merged?: boolean;
 };

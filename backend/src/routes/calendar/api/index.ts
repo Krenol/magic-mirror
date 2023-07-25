@@ -18,7 +18,7 @@ import { IDtoUser } from "models/mongo/users";
 export const allCalendarEvents = async (
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
   const count = await parseCountQueryParameter(req);
   const minTime = await parseMinTimeParam(req);
@@ -28,19 +28,19 @@ export const allCalendarEvents = async (
     .then(parseRetrievedEvents)
     .then((events) => res.status(200).json(events))
     .catch((err) =>
-      next(new ApiError("Error while retrieving calendar events", err, 500)),
+      next(new ApiError("Error while retrieving calendar events", err, 500))
     );
 };
 
 export const eventsAtDate = async (
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
   const count = await parseCountQueryParameter(req);
   const date = await parseDateQueryParam(new Date(req.params.date.toString()));
   const maxTime = await getISODayEndString(
-    new Date(req.params.date.toString()),
+    new Date(req.params.date.toString())
   );
   return getRequestParams(count, date, maxTime)
     .then((params) => getCalendarEvents(req.user as IDtoUser, params))
@@ -48,7 +48,7 @@ export const eventsAtDate = async (
     .then((ev) => applyDateFilter(ev, date))
     .then((events) => res.status(200).json(events))
     .catch((err) =>
-      next(new ApiError("Error while retrieving calendar events", err, 500)),
+      next(new ApiError("Error while retrieving calendar events", err, 500))
     );
 };
 
@@ -64,7 +64,7 @@ const parseMinTimeParam = async (req: Request): Promise<string> => {
 };
 
 const parseMaxTimeQueryParam = async (
-  req: Request,
+  req: Request
 ): Promise<string | undefined> => {
   if (req.query.maxTime) return (req.query.maxTime as string).toString();
 };
@@ -72,7 +72,7 @@ const parseMaxTimeQueryParam = async (
 const getRequestParams = async (
   count: string,
   minTime: string,
-  maxTime?: string,
+  maxTime?: string
 ): Promise<EventRequestParams> => {
   return {
     maxResults: parseInt(count),
@@ -89,7 +89,7 @@ const parseDateQueryParam = async (date: Date): Promise<string> => {
 const applyDateFilter = async (events: EventList, date: string) => {
   LOGGER.info(`Filter for events with startDate ${date}`);
   const ev = events.list.filter((x) =>
-    isSameDate(new Date(date), new Date(x.start)),
+    isSameDate(new Date(date), new Date(x.start))
   );
   return {
     count: ev.length,

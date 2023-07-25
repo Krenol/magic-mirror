@@ -21,7 +21,7 @@ export const getTimezoneOffset = (useIsoFormat = false): string => {
 export const getLocaleDateString = (
   date: Date,
   locale: string,
-  opts: Intl.DateTimeFormatOptions,
+  opts: Intl.DateTimeFormatOptions
 ) => {
   return date.toLocaleDateString(locale, opts);
 };
@@ -29,7 +29,7 @@ export const getLocaleDateString = (
 export const getDayName = (
   date: Date,
   locale: string,
-  weekdayFormat: WeekdayFormat = "short",
+  weekdayFormat: WeekdayFormat = "short"
 ): string => {
   return getLocaleDateString(date, locale, { weekday: weekdayFormat });
 };
@@ -54,30 +54,27 @@ export const getDate = (date: Date): string => {
   return `${getDay(date)}.${getMonth(date)}.${getYear(date)}`;
 };
 
-export const getTimeDifferenceInHours = async (
+export const getTimeDifferenceInHours = (
   startDate: Date,
-  endDate: Date,
-): Promise<number> => {
+  endDate: Date
+): number => {
   const diffTime = endDate.getTime() - startDate.getTime();
   return diffTime * 2.7777777777778e-7;
 };
 
-export const getDifferenceInDays = async (
+export const getDifferenceInDays =  (
   startDate: Date,
-  endDate: Date,
-): Promise<number> => {
+  endDate: Date
+): number => {
   const diffTime = endDate.getTime() - startDate.getTime();
   return Math.round(diffTime / (1000 * 60 * 60 * 24));
 };
 
-export const isToday = async (date: Date): Promise<boolean> => {
+export const isToday =  (date: Date): boolean => {
   return isSameDate(date, new Date());
 };
 
-export const isSameDate = async (
-  date1: Date,
-  date2: Date,
-): Promise<boolean> => {
+export const isSameDate = (date1: Date, date2: Date): boolean => {
   return (
     date1.getDate() === date2.getDate() &&
     date1.getMonth() === date2.getMonth() &&
@@ -93,7 +90,7 @@ export const getDateInXDays = (daysInFuture: number = 0): Date => {
 
 export const getISODayStartString = (
   date: Date,
-  useUserTimeZone = false,
+  useUserTimeZone = false
 ): string => {
   let timeZone = "Z";
   if (useUserTimeZone) timeZone = getTimezoneOffset(true);
@@ -102,7 +99,7 @@ export const getISODayStartString = (
 
 export const getISODayEndString = (
   date: Date,
-  useUserTimeZone = false,
+  useUserTimeZone = false
 ): string => {
   let timeZone = "Z";
   if (useUserTimeZone) timeZone = getTimezoneOffset(true);

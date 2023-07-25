@@ -8,5 +8,8 @@
      "[typescriptreact]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
-    "python.formatting.provider": "none"
+    "python.formatting.provider": "none",
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "editor.formatOnType": false
 }

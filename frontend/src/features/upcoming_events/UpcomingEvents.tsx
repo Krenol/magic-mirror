@@ -6,7 +6,7 @@ import { EventList, EventItem } from "../../models/calendar";
 import { Event } from "./event/Event";
 import { boldText, xSmallFontSize } from "../../assets/styles/theme";
 import React, { ReactElement } from "react";
-import { GetUpcomingEvents } from "./helpers";
+import { GetUpcomingEvents } from "./GetUpcomingEvents";
 import { EventTextEnum } from "./types";
 
 const UpcomingEvents = () => {
@@ -14,17 +14,17 @@ const UpcomingEvents = () => {
 
   const todaysEventItems = GetTodaysEventItems(
     upcomingEvents.todayEvents,
-    upcomingEvents.dates.today,
+    upcomingEvents.dates.today
   );
 
   const tmrwsEventItems = GetFutureEventItems(
     upcomingEvents.tmrwEvents,
-    upcomingEvents.dates.tmrw,
+    upcomingEvents.dates.tmrw
   );
 
   const overmrwsEventItems = GetFutureEventItems(
     upcomingEvents.overmrwEvents,
-    upcomingEvents.dates.overmrw,
+    upcomingEvents.dates.overmrw
   );
 
   const boxContent = (
@@ -91,7 +91,7 @@ const UpcomingEvents = () => {
 
 const GetTodaysEventItems = (
   events: EventList | undefined,
-  date: Date,
+  date: Date
 ): ReactElement | ReactElement[] => {
   const eventCount = events?.count ?? 0;
   if (eventCount === 0) return NoEventsItem(EventTextEnum.noEventsToday);
@@ -107,6 +107,8 @@ const GetTodaysEventItems = (
     end: events!.list[eventCount - 1].end,
     location: "",
     allDay: false,
+    multiDays: false,
+    merged: true,
   };
   return (
     <React.Fragment>
@@ -118,7 +120,7 @@ const GetTodaysEventItems = (
 
 const GetFutureEventItems = (
   events: EventList | undefined,
-  date: Date,
+  date: Date
 ): ReactElement => {
   const eventCount = events?.count ?? 0;
   if (eventCount === 0) return NoEventsItem(EventTextEnum.noEvents);
@@ -134,6 +136,8 @@ const GetFutureEventItems = (
     end: getMaxDateEndDate(events!).toISOString(),
     location: "",
     allDay: events!.list.some((ev) => ev.allDay),
+    multiDays: events!.list.some((ev) => ev.multiDays),
+    merged: true,
   };
   return <Event item={eventItem} date={date} key={eventItem.start} />;
 };

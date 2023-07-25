@@ -14,7 +14,7 @@ import { getAuthenticationHeader, getEmail } from "services/identity/user";
 export const getCalendarEvents = async (
   user: IDtoUser,
   params: EventRequestParams,
-  orderBy = "startTime",
+  orderBy = "startTime"
 ): Promise<GcalApiEventList> => {
   const email = await getEmail(user);
   const events = await getEvents(email, user, params, orderBy);
@@ -25,7 +25,7 @@ export const getEvents = async (
   calendarId: string,
   user: IDtoUser,
   params: EventRequestParams,
-  orderBy = "startTime",
+  orderBy = "startTime"
 ): Promise<GcalApiEventList> => {
   const url = await buildApiUrl(calendarId, params, orderBy);
   const authHeader = await getAuthenticationHeader(user);
@@ -39,7 +39,7 @@ export const getEvents = async (
 const buildApiUrl = async (
   calendarId: string,
   params: EventRequestParams,
-  orderBy = "startTime",
+  orderBy = "startTime"
 ): Promise<string> => {
   let query = `timeMin=${encodeURIComponent(params.minTime)}&maxResults=${
     params.maxResults
@@ -52,7 +52,7 @@ const buildApiUrl = async (
 };
 
 export const parseRetrievedEvents = async (
-  events: GcalApiEventList,
+  events: GcalApiEventList
 ): Promise<EventList> => {
   return {
     count: events.items.length,
@@ -61,7 +61,7 @@ export const parseRetrievedEvents = async (
 };
 
 const parseEvents = async (
-  gcalEventList: Array<GcalApiEventResource>,
+  gcalEventList: Array<GcalApiEventResource>
 ): Promise<Array<EventItem>> => {
   const allEvents: Array<Promise<EventItem>> = [];
   gcalEventList.forEach((e) => allEvents.push(parseEvent(e)));
@@ -69,22 +69,24 @@ const parseEvents = async (
 };
 
 export const parseNextEvent = async (
-  events: GcalApiEventList,
+  events: GcalApiEventList
 ): Promise<EventItem> => {
   return parseEvent(events.items[0]);
 };
 
 const parseEvent = async (
-  gcalEvent: GcalApiEventResource,
+  gcalEvent: GcalApiEventResource
 ): Promise<EventItem> => {
   const start = new Date(gcalEvent.start.dateTime ?? gcalEvent.start.date);
   const end = new Date(gcalEvent.end.dateTime ?? gcalEvent.end.date);
+  const timeDiff = await getTimeDiff(start, end, TimeUnit.hours);
   return {
     summary: gcalEvent.summary,
     description: gcalEvent.description,
     location: gcalEvent.location,
     start: start.toISOString(),
     end: end.toISOString(),
-    allDay: (await getTimeDiff(start, end, TimeUnit.hours)) === 24,
+    allDay: timeDiff % 24 === 0,
+    multiDays: timeDiff > 24,
   };
 };

@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   getLocaleDateString,
   getTimeDifferenceInHours,
@@ -19,42 +19,11 @@ interface IEventItem {
 }
 
 export const Event = ({ item, date }: IEventItem) => {
-  const [startDate] = useState(new Date(item.start));
-  const [endDate] = useState(new Date(item.end));
-  const [summary, setSummary] = useState(item.summary);
-  const [location, setLocation] = useState(item.location);
-  const [endsAnotherDay, setEndsAnotherDay] = useState<boolean>();
-  const [sameStartDate, setSameStartDate] = useState<boolean>();
   const localeStrOpts: Intl.DateTimeFormatOptions = {
     month: "short",
     day: "numeric",
   };
-
-  useEffect(() => {
-    setSummary(item.summary ?? "");
-    setLocation(item.location ?? "");
-    isSameDate(date, startDate).then(setSameStartDate);
-  }, [item.summary, item.location, startDate, endDate, date]);
-
-  useEffect(() => {
-    const thisDate = sameStartDate ? startDate : new Date();
-    getTimeDifferenceInHours(thisDate, endDate)
-      .then((x) => x >= 24)
-      .then(setEndsAnotherDay);
-  }, [sameStartDate, startDate, endDate]);
-
-  const eventStartString = sameStartDate
-    ? ""
-    : `${getLocaleDateString(startDate, DEFAULT_LOCALE, localeStrOpts)} `;
-  const eventEndString = endsAnotherDay
-    ? `${getLocaleDateString(endDate, DEFAULT_LOCALE, localeStrOpts)} `
-    : "";
-  const eventTime = item.allDay
-    ? "All day"
-    : `${eventStartString}${getTimeFromDate(
-        startDate,
-      )}-${eventEndString}${getTimeFromDate(endDate)}`;
-
+  const eventTime = getEventTime({ item, date }, localeStrOpts);
   const details = (
     <React.Fragment>
       <Typography
@@ -71,7 +40,7 @@ export const Event = ({ item, date }: IEventItem) => {
         align="left"
         sx={{ ...xSmallFontSize, ...hideTextOverflow }}
       >
-        {location}
+        {item.location ?? ""}
       </Typography>
     </React.Fragment>
   );
@@ -84,9 +53,79 @@ export const Event = ({ item, date }: IEventItem) => {
         align="left"
         sx={{ ...xSmallFontSize, ...hideTextOverflow }}
       >
-        {summary}
+        {item.summary ?? ""}
       </Typography>
       {details}
     </Box>
   );
+};
+
+const getEventTime = (
+  { item, date }: IEventItem,
+  localeStrOpts: Intl.DateTimeFormatOptions
+) => {
+  if (item.allDay && !item.multiDays) {
+    return "All day";
+  } else if (item.allDay && item.multiDays) {
+    return handleMultiFullDayEvent({ item, date }, localeStrOpts);
+  } else {
+    return handleNormalEvent({ item, date }, localeStrOpts);
+  }
+};
+
+const handleMultiFullDayEvent = (
+  { item, date }: IEventItem,
+  localeStrOpts: Intl.DateTimeFormatOptions
+) => {
+  const startDate = new Date(item.start);
+  const endDate = new Date(item.end);
+  endDate.setSeconds(endDate.getSeconds() - 1);
+  localeStrOpts = { ...localeStrOpts, ...{ timeZone: "UTC" } };
+  const startLocaleDateStr = getLocaleDateString(
+    startDate,
+    DEFAULT_LOCALE,
+    localeStrOpts
+  );
+  const endLocaleDateStr = getLocaleDateString(
+    endDate,
+    DEFAULT_LOCALE,
+    localeStrOpts
+  );
+  let eventTime = `${startLocaleDateStr}-${endLocaleDateStr}`;
+
+  if (!item.merged) {
+    const days = Math.ceil(getTimeDifferenceInHours(startDate, endDate) / 24);
+    const hoursSinceStart = getTimeDifferenceInHours(startDate, date);
+    const daysSinceStart = Math.ceil(hoursSinceStart / 24);
+    eventTime = `${eventTime} (${daysSinceStart}/${days})`;
+  }
+  return eventTime;
+};
+
+const handleNormalEvent = (
+  { item, date }: IEventItem,
+  localeStrOpts: Intl.DateTimeFormatOptions
+) => {
+  const startDate = new Date(item.start);
+  const endDate = new Date(item.end);
+  const sameStartDate = isSameDate(date, startDate);
+  const thisDate = sameStartDate ? startDate : new Date();
+  const eventTimeDiff = getTimeDifferenceInHours(thisDate, endDate);
+  const endsAnotherDay = eventTimeDiff >= 24;
+
+  const startLocaleDateStr = getLocaleDateString(
+    startDate,
+    DEFAULT_LOCALE,
+    localeStrOpts
+  );
+  const endLocaleDateStr = getLocaleDateString(
+    endDate,
+    DEFAULT_LOCALE,
+    localeStrOpts
+  );
+  const eventStartString = sameStartDate ? "" : `${startLocaleDateStr} `;
+  const eventEndString = endsAnotherDay ? `${endLocaleDateStr} ` : "";
+  return `${eventStartString}${getTimeFromDate(
+    startDate
+  )}-${eventEndString}${getTimeFromDate(endDate)}`;
 };

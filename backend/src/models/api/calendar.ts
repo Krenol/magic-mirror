@@ -16,6 +16,7 @@ export type EventItem = {
   start: string;
   end: string;
   allDay: boolean;
+  multiDays: boolean;
 };
 
 export type GcalApiEventList = {

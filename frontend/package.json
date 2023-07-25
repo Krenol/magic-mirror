@@ -28,6 +28,7 @@
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.6",
     "@types/react-router-dom": "^5.3.3",
+    "prettier": "^3.0.0",
     "sonarqube-scanner": "^3.0.1",
     "yarn-upgrade-all": "^0.7.2"
   },
@@ -35,6 +36,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "format": "prettier --log-level warn --write \"src/**/*.{tsx,ts}\"",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

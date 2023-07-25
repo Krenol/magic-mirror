@@ -1,30 +1,30 @@
 export type DailyWeatherObject = {
-    latitude: number,
-    longitude: number,
-    timezone: string,
-    days: number,
-    forecast: Array<WeatherForecastResource>
-}
+  latitude: number;
+  longitude: number;
+  timezone: string;
+  days: number;
+  forecast: Array<WeatherForecastResource>;
+};
 
 export type WeatherForecastResource = {
-    date: string,
-    temperature: Temperature,
-    precipitation: Precipitation,
-    weather_icon: string,
-    sunrise: string,
-    sunset: string,
-    weathercode: number,
-    description: string
-}
+  date: string;
+  temperature: Temperature;
+  precipitation: Precipitation;
+  weather_icon: string;
+  sunrise: string;
+  sunset: string;
+  weathercode: number;
+  description: string;
+};
 
 export type Precipitation = {
-    amount: number
-    hours: number
-    amount_unit: string
-}
+  amount: number;
+  hours: number;
+  amount_unit: string;
+};
 
 export type Temperature = {
-    min: number,
-    max: number,
-    unit: string
-}
+  min: number;
+  max: number;
+  unit: string;
+};

@@ -5,9 +5,23 @@ import { buildQuery } from "../../common/apis";
 import { store } from "../../common/store";
 import { setUserSettings } from "../../common/slices/userSettingsSlice";
 
+const getUserSettings = async () => {
+  return fetch(`${USER_SETTINGS_API}/me`)
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      } else if (res.status === 404) {
+        window.location.href = "/registration";
+      } else {
+        window.location.href = "/login";
+      }
+    })
+    .catch(() => (window.location.href = "/login"));
+};
+
 export const locationLoader = async () => {
   try {
-    const userSettings = await fetchJson(`${USER_SETTINGS_API}/me`);
+    const userSettings = await getUserSettings();
 
     const queryParams = [
       {

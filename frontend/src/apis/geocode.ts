@@ -1,8 +1,8 @@
 import { useQuery } from "react-query";
 import { QUERY_PARAMS } from "../models/apis";
-import { ServerStateKeysEnum } from "../helpers/statekeys";
-import { buildQuery } from "../helpers/apis";
-import { fetchJson } from "../helpers/fetch";
+import { ServerStateKeysEnum } from "../common/statekeys";
+import { buildQuery } from "../common/apis";
+import { fetchJson } from "../common/fetch";
 import { GeoLocation } from "../models/location";
 import { LOCATION_API } from "../constants/api";
 

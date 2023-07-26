@@ -3,7 +3,7 @@ import {
   getDateInXDays,
   getISODayEndString,
   getISODayStartString,
-} from "../../helpers/dateParser";
+} from "../../common/dateParser";
 import { UpcomingEventObject, Dates } from "./types";
 
 export const GetUpcomingEvents = (): UpcomingEventObject => {

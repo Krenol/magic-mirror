@@ -7,7 +7,7 @@ import {
   inputBoxStyle,
   parentBoxStyle,
 } from "./style";
-import { buildQuery } from "../../helpers/apis";
+import { buildQuery } from "../../common/apis";
 import { LOCATION_API } from "../../constants/api";
 
 type Props = {

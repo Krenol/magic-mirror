@@ -1,5 +1,5 @@
 import { useQuery } from "react-query";
-import { ServerStateKeysEnum } from "../helpers/statekeys";
+import { ServerStateKeysEnum } from "../common/statekeys";
 import {
   DEFAULT_FETCH_CONFIG,
   REFETCH_INTERVAL,
@@ -8,7 +8,7 @@ import {
 
 export const useGetAuthStatus = (
   cb?: (status: boolean) => void,
-  refetchInterval: number = REFETCH_INTERVAL,
+  refetchInterval: number = REFETCH_INTERVAL
 ) =>
   useQuery<boolean, Error>({
     queryKey: [ServerStateKeysEnum.auth_status, cb, refetchInterval],
@@ -25,7 +25,7 @@ export const useGetAuthStatus = (
 
 const handleResponse = async (
   status: number,
-  cb?: (status: boolean) => void,
+  cb?: (status: boolean) => void
 ): Promise<boolean> => {
   const is_authenticated = status === 200;
   if (cb) {

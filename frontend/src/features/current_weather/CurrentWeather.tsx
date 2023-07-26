@@ -15,8 +15,8 @@ import { smallFontSize } from "../../assets/styles/theme";
 import { useGetCurrentWeather } from "../../apis/current_weather";
 import { CardFrame } from "../CardFrame";
 import { useGetWeatherIcon } from "../../apis/weather_icon";
-import { useAppSelector } from "../../helpers/hooks";
-import { getLocation } from "../location_loader/locationSlice";
+import { useAppSelector } from "../../common/hooks";
+import { getLocation } from "../../common/slices/locationSlice";
 
 const CurrentWeather = () => {
   const loc = useAppSelector(getLocation);

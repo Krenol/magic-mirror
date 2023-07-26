@@ -3,9 +3,9 @@ import ForecastItem from "./forecast_item/ForecastItem";
 import { useGetDailyWeather } from "../../apis/daily_weather";
 import { CardFrame } from "../CardFrame";
 import { Box } from "@mui/material";
-import { getLocation } from "../location_loader/locationSlice";
-import { useAppSelector } from "../../helpers/hooks";
-import { isNewDay } from "../time_notifications/timeNotificationsSlice";
+import { getLocation } from "../../common/slices/locationSlice";
+import { useAppSelector } from "../../common/hooks";
+import { isNewDay } from "../../common/slices/timeNotificationsSlice";
 import { useEffect } from "react";
 
 const DailyForecast = () => {

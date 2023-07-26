@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useGetAuthStatus } from "../../apis/auth_status";
-import { useAppDispatch } from "../../helpers/hooks";
-import { setAuthenticated } from "./authSlice";
+import { useAppDispatch } from "../../common/hooks";
+import { setAuthenticated } from "../../common/slices/authSlice";
 import { REFETCH_INTERVAL } from "../../constants/api";
 
 interface ISessionCheck {
@@ -26,7 +26,7 @@ const SessionCheck = ({
         onAuthenticated();
       }
     },
-    [dispatch, onUnauthenticated, onAuthenticated],
+    [dispatch, onUnauthenticated, onAuthenticated]
   );
 
   useGetAuthStatus(handleSessionCheckResponse, refetchInterval);

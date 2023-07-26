@@ -7,12 +7,12 @@ import IconButton from "@mui/material/IconButton";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
-import { getAuthStatus } from "../auth/authSlice";
-import { useAppSelector } from "../../helpers/hooks";
+import { getAuthStatus } from "../../common/slices/authSlice";
+import { useAppSelector } from "../../common/hooks";
 import { logout } from "../../apis/logout";
 import { useQueryClient } from "react-query";
 import { useNavigate, useLocation } from "react-router-dom";
-import { fetchRetry } from "../../helpers/fetch";
+import { fetchRetry } from "../../common/fetch";
 import { USERS_API } from "../../constants/api";
 
 type IMenuItem = {
@@ -50,7 +50,7 @@ const MenuAppBar = () => {
       {
         method: "DELETE",
       },
-      [204],
+      [204]
     ).then(() => logout());
   };
 
@@ -93,7 +93,7 @@ const MenuAppBar = () => {
   const menuItems = getMenuItems(
     location.pathname,
     settingMenuItemMap,
-    menuItemArray,
+    menuItemArray
   );
 
   return (
@@ -147,7 +147,7 @@ const MenuAppBar = () => {
 const getMenuItems = (
   path: string,
   settingMenuItemMap: Map<string, Array<string>>,
-  menuItemArray: Map<string, IMenuItem>,
+  menuItemArray: Map<string, IMenuItem>
 ): Array<IMenuItem> => {
   const menuItems: Array<IMenuItem> = [];
   const items = settingMenuItemMap.get(path);

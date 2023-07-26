@@ -6,7 +6,7 @@ import {
   getTimeDifferenceInHours,
   getTimeFromDate,
   isSameDate,
-} from "../../../helpers/dateParser";
+} from "../../../common/dateParser";
 import { xSmallFontSize } from "../../../assets/styles/theme";
 import { EventItem } from "../../../models/calendar";
 import { DEFAULT_LOCALE } from "../../../constants/defaults";

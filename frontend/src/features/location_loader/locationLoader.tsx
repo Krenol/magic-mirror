@@ -1,11 +1,13 @@
-import { setLocation } from "./locationSlice";
-import { fetchJson } from "../../helpers/fetch";
+import { setLocation } from "../../common/slices/locationSlice";
+import { fetchJson } from "../../common/fetch";
 import { LOCATION_API, USER_SETTINGS_API } from "../../constants/api";
-import { buildQuery } from "../../helpers/apis";
-import { store } from "../../helpers/store";
+import { buildQuery } from "../../common/apis";
+import { store } from "../../common/store";
+import { setUserSettings } from "../../common/slices/userSettingsSlice";
 
 export const locationLoader = async () => {
   const userSettings = await fetchJson(`${USER_SETTINGS_API}/me`);
+
   const queryParams = [
     {
       name: "city",
@@ -28,6 +30,7 @@ export const locationLoader = async () => {
         latitude: 0,
       };
     });
+  store.dispatch(setUserSettings(userSettings));
   store.dispatch(setLocation(geoLocation));
   return null;
 };

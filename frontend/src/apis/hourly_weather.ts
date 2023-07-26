@@ -1,6 +1,6 @@
 import { useQuery } from "react-query";
-import { fetchJson } from "../helpers/fetch";
-import { ServerStateKeysEnum } from "../helpers/statekeys";
+import { fetchJson } from "../common/fetch";
+import { ServerStateKeysEnum } from "../common/statekeys";
 import { REFETCH_INTERVAL, WEATHER_API } from "../constants/api";
 import {
   LATITUDE,
@@ -12,7 +12,7 @@ import { HourlyWeatherObject } from "../models/hourly_forecast";
 export const useGetHourlyWeather = (
   longitude: number = LONGITUDE,
   latitude: number = LATITUDE,
-  forecast_hours: number = HOURLY_FORECAST_HOURS,
+  forecast_hours: number = HOURLY_FORECAST_HOURS
 ) =>
   useQuery<HourlyWeatherObject, Error>({
     queryKey: [
@@ -23,7 +23,7 @@ export const useGetHourlyWeather = (
     ],
     queryFn: async () =>
       fetchJson(
-        `${WEATHER_API}/hourly?latitude=${latitude}&longitude=${longitude}&hours=${forecast_hours}`,
+        `${WEATHER_API}/hourly?latitude=${latitude}&longitude=${longitude}&hours=${forecast_hours}`
       ).catch((err) => {
         throw err;
       }),

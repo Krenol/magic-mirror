@@ -9,8 +9,8 @@ import {
 } from "./style";
 import CakeIcon from "@mui/icons-material/Cake";
 import BirthdayItem from "./BirthdayItem/BirthdayItem";
-import { useAppSelector } from "../../helpers/hooks";
-import { isNewDay } from "../time_notifications/timeNotificationsSlice";
+import { useAppSelector } from "../../common/hooks";
+import { isNewDay } from "../../common/slices/timeNotificationsSlice";
 import { useGetBirthdays } from "../../apis/birthday";
 import { CardFrame } from "../CardFrame";
 

@@ -1,5 +1,5 @@
 import { USER_SETTINGS_API } from "../constants/api";
-import { fetchJson } from "../helpers/fetch";
+import { fetchJson } from "../common/fetch";
 import { UserSettings } from "../models/user_settings";
 
 export const postUserSettings = async (

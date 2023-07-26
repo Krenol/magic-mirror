@@ -1,12 +1,12 @@
 import { useQuery } from "react-query";
-import { fetchBlob } from "../helpers/fetch";
-import { ServerStateKeysEnum } from "../helpers/statekeys";
+import { fetchBlob } from "../common/fetch";
+import { ServerStateKeysEnum } from "../common/statekeys";
 import { WEATHER_API } from "../constants/api";
 import { WEATHER_ICON_ZOOM } from "../constants/weather";
 
 export const useGetWeatherIcon = (
   weather_icon: string,
-  icon_zoom: string = WEATHER_ICON_ZOOM,
+  icon_zoom: string = WEATHER_ICON_ZOOM
 ) =>
   useQuery<string, Error>({
     queryKey: [ServerStateKeysEnum.weather_icon, weather_icon, icon_zoom],

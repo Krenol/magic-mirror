@@ -1,6 +1,6 @@
 import { useQuery } from "react-query";
-import { fetchJson } from "../helpers/fetch";
-import { ServerStateKeysEnum } from "../helpers/statekeys";
+import { fetchJson } from "../common/fetch";
+import { ServerStateKeysEnum } from "../common/statekeys";
 import { USER_SETTINGS_API } from "../constants/api";
 import { UserSettings } from "../models/user_settings";
 
@@ -11,7 +11,7 @@ export const useGetUserSettings = (allowNotFound = false) =>
       fetchJson(
         `${USER_SETTINGS_API}/me`,
         undefined,
-        allowNotFound ? [200, 404] : [200],
+        allowNotFound ? [200, 404] : [200]
       ).catch((err) => {
         throw err;
       }),

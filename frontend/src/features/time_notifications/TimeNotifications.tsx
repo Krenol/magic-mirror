@@ -5,8 +5,8 @@ import {
   isNewHour,
   setIsNewDay,
   setIsNewHour,
-} from "./timeNotificationsSlice";
-import { useAppSelector } from "../../helpers/hooks";
+} from "../../common/slices/timeNotificationsSlice";
+import { useAppSelector } from "../../common/hooks";
 
 export const TimeNotifications = () => {
   const dispatch = useDispatch();

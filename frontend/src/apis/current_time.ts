@@ -5,9 +5,9 @@ import {
   getMonth,
   getTimezoneOffset,
   getYear,
-} from "../helpers/dateParser";
-import { ServerStateKeysEnum } from "../helpers/statekeys";
-import { parseTime } from "../helpers/timeParser";
+} from "../common/dateParser";
+import { ServerStateKeysEnum } from "../common/statekeys";
+import { parseTime } from "../common/timeParser";
 import { DEFAULT_LOCALE } from "../constants/defaults";
 import { TimeObject } from "../models/time";
 

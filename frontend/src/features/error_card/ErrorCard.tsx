@@ -10,20 +10,26 @@ import {
   AccordionDetails,
   Accordion,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { To, useNavigate } from "react-router-dom";
 import errorImage from "../../assets/error.png";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { cardStyle } from "./style";
 
 type Props = {
-  message: string;
-  details: string;
+  title?: string;
+  details?: string;
+  navigateBackTo?: To | number;
 };
 
-export const ErrorCard = ({ message, details }: Props) => {
+export const ErrorCard = ({ title, details, navigateBackTo = -1 }: Props) => {
   const navigate = useNavigate();
-
-  const back = () => navigate(-1);
+  const back = () => {
+    if (typeof navigateBackTo === "number") {
+      navigate(navigateBackTo);
+    } else {
+      navigate(navigateBackTo);
+    }
+  };
 
   return (
     <Box
@@ -43,7 +49,7 @@ export const ErrorCard = ({ message, details }: Props) => {
         />
         <CardContent>
           <Typography variant="h5" gutterBottom>
-            {message}
+            {title}
           </Typography>
           <Accordion>
             <AccordionSummary

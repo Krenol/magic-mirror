@@ -8,8 +8,9 @@ import { PADDING } from "./assets/styles/theme";
 import { Settings } from "./pages/Settings";
 import { Registration } from "./pages/Registration";
 import React from "react";
-import ErrorPage from "./pages/ErrorPage";
+import RouteErrorPage from "./pages/RouteErrorPage";
 import { locationLoader } from "./features/location_loader/locationLoader";
+import ErrorPage from "./pages/ErrorPage";
 
 const queryCache = new QueryClient({
   defaultOptions: {
@@ -45,7 +46,7 @@ const router = createBrowserRouter([
     element: <AppFrame />,
     errorElement: (
       <BaseFrame>
-        <ErrorPage />
+        <RouteErrorPage />
       </BaseFrame>
     ),
     children: [
@@ -65,6 +66,10 @@ const router = createBrowserRouter([
       {
         path: "registration",
         element: <Registration />,
+      },
+      {
+        path: "error",
+        element: <ErrorPage />,
       },
     ],
   },

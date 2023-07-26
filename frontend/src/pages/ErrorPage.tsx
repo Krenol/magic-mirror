@@ -1,39 +1,47 @@
-import { useRouteError } from "react-router-dom";
 import { ErrorCard } from "../features/error_card/ErrorCard";
 
-const getErrorText = (status: number) => {
-  switch (status) {
-    case 404: {
-      return "Page not found!";
-    }
-    case 500: {
-      return "Server error!";
-    }
-    default: {
-      return "Unknown error!";
-    }
-  }
+type ErrorType = {
+  title?: string;
+  details?: string;
+  navigateTo?: string;
 };
 
-const getErrorDetails = (status: number) => {
-  switch (status) {
-    case 404: {
-      return "The page you are looking for does not exist!";
+const getErrorDetails = (type: string): ErrorType => {
+  switch (type) {
+    case "already_registered": {
+      return {
+        title: "User already registered!",
+        details:
+          "Seems like you are already registered! Please log in normally...",
+        navigateTo: "/login",
+      };
     }
-    case 500: {
-      return "Issue on the server side... Please try again soon!";
+    case "not_registered": {
+      return {
+        title: "User not registered!",
+        details: "User is not regsitered. Please register first...",
+        navigateTo: "/login",
+      };
     }
     default: {
-      return "We have no idea what happened... Please try again!";
+      return {
+        title: "Unknown error!",
+        details: "We have no idea what happened... Please try again!",
+      };
     }
   }
 };
 
 export default function ErrorPage() {
-  const error = useRouteError();
-  const status = (error as any).status;
-  const statusText = getErrorText(status);
-  const details = getErrorDetails(status);
+  const params = new URLSearchParams(window.location.search);
+  const type = params.get("type") ?? "";
+  const details = getErrorDetails(type);
 
-  return <ErrorCard message={statusText} details={details} />;
+  return (
+    <ErrorCard
+      title={details.title}
+      details={details.details}
+      navigateBackTo={details.navigateTo ?? "/"}
+    />
+  );
 }

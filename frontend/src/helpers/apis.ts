@@ -8,7 +8,7 @@ export const buildQuery = async (
     .map((p) => buildQueryParam(p))
     .filter(isQueryParam)
     .join("&");
-  return `?${queryParams}`;
+  return queryParams.length > 0 ? `?${queryParams}` : "";
 };
 
 const buildQueryParam = (query_param: QUERY_PARAM) => {

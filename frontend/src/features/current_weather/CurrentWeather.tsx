@@ -16,7 +16,7 @@ import { useGetCurrentWeather } from "../../apis/current_weather";
 import { CardFrame } from "../CardFrame";
 import { useGetWeatherIcon } from "../../apis/weather_icon";
 import { useAppSelector } from "../../helpers/hooks";
-import { getLocation } from "../location_service/locationSlice";
+import { getLocation } from "../location_loader/locationSlice";
 
 const CurrentWeather = () => {
   const loc = useAppSelector(getLocation);

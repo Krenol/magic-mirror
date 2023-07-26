@@ -1,12 +1,12 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import authReducer from "../features/auth/authSlice";
-import timeReducer from "../features/time/timeSlice";
-import locationReducer from "../features/location_service/locationSlice";
+import timeReducer from "../features/time_notifications/timeNotificationsSlice";
+import locationReducer from "../features/location_loader/locationSlice";
 
 export const store = configureStore({
   reducer: {
     auth_status: authReducer,
-    time_status: timeReducer,
+    time_notifications: timeReducer,
     location: locationReducer,
   },
 });

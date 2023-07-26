@@ -4,15 +4,23 @@ import { useGetHourlyWeather } from "../../apis/hourly_weather";
 import { CardFrame } from "../CardFrame";
 import { Box } from "@mui/material";
 import { useAppSelector } from "../../helpers/hooks";
-import { getLocation } from "../location_service/locationSlice";
+import { getLocation } from "../location_loader/locationSlice";
+import { isNewHour } from "../time_notifications/timeNotificationsSlice";
+import { useEffect } from "react";
 
 const HourlyWeather = () => {
   const loc = useAppSelector(getLocation);
+  const newHourBegun = useAppSelector(isNewHour);
   const {
     data: weather,
     isLoading,
     error,
+    refetch,
   } = useGetHourlyWeather(loc.longitude, loc.latitude);
+
+  useEffect(() => {
+    if (newHourBegun) refetch();
+  }, [newHourBegun, refetch]);
 
   const content = (
     <Box sx={hourBoxStyle}>

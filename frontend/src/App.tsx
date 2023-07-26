@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Outlet, createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Dashboard } from "./pages/Dashboard";
 import Login from "./pages/Login";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -7,6 +7,9 @@ import { Box } from "@mui/material";
 import { PADDING } from "./assets/styles/theme";
 import { Settings } from "./pages/Settings";
 import { Registration } from "./pages/Registration";
+import React from "react";
+import ErrorPage from "./pages/ErrorPage";
+import { locationLoader } from "./features/location_loader/locationLoader";
 
 const queryCache = new QueryClient({
   defaultOptions: {
@@ -19,20 +22,58 @@ const queryCache = new QueryClient({
   },
 });
 
+const BaseFrame = (props: any) => {
+  return (
+    <React.Fragment>
+      <MenuAppBar />
+      <Box sx={{ padding: PADDING }}>{props.children}</Box>
+    </React.Fragment>
+  );
+};
+
+const AppFrame = () => {
+  return (
+    <BaseFrame>
+      <Outlet />
+    </BaseFrame>
+  );
+};
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <AppFrame />,
+    errorElement: (
+      <BaseFrame>
+        <ErrorPage />
+      </BaseFrame>
+    ),
+    children: [
+      {
+        index: true,
+        element: <Dashboard />,
+        loader: async () => await locationLoader(),
+      },
+      {
+        path: "settings",
+        element: <Settings />,
+      },
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "registration",
+        element: <Registration />,
+      },
+    ],
+  },
+]);
+
 export const App = () => {
   return (
     <QueryClientProvider client={queryCache}>
-      <BrowserRouter>
-        <MenuAppBar />
-        <Box sx={{ padding: PADDING }}>
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/registration" element={<Registration />} />
-          </Routes>
-        </Box>
-      </BrowserRouter>
+      <RouterProvider router={router} />
     </QueryClientProvider>
   );
 };

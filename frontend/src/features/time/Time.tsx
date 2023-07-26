@@ -1,24 +1,12 @@
 import Typography from "@mui/material/Typography";
-import { useCallback } from "react";
 import { smallFontSize } from "../../assets/styles/theme";
-import { useAppDispatch } from "../../helpers/hooks";
-import { setNewDay } from "./timeSlice";
 import { useGetTime } from "../../apis/current_time";
 import { CardFrame } from "../CardFrame";
 import { Box } from "@mui/material";
 import { cardStyle, timeStyle } from "./style";
 
 export const Time = () => {
-  const dispatch = useAppDispatch();
-
-  const newDayCb = useCallback(
-    (isNewDay: boolean) => {
-      dispatch(setNewDay(isNewDay));
-    },
-    [dispatch],
-  );
-
-  const { data: time, isLoading, error } = useGetTime(newDayCb);
+  const { data: time, isLoading, error } = useGetTime();
 
   const content = (
     <Box sx={timeStyle}>

@@ -10,7 +10,7 @@ import {
 import CakeIcon from "@mui/icons-material/Cake";
 import BirthdayItem from "./BirthdayItem/BirthdayItem";
 import { useAppSelector } from "../../helpers/hooks";
-import { isNewDay } from "../time/timeSlice";
+import { isNewDay } from "../time_notifications/timeNotificationsSlice";
 import { useGetBirthdays } from "../../apis/birthday";
 import { CardFrame } from "../CardFrame";
 
@@ -20,7 +20,7 @@ export const Birthdays = () => {
   const { data: birthdays, isLoading, error, refetch } = useGetBirthdays();
 
   useEffect(() => {
-    refetch();
+    if (newDayBegun) refetch();
   }, [newDayBegun, refetch]);
 
   const content = (

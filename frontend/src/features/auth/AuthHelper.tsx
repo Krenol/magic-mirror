@@ -30,11 +30,8 @@ const SessionCheck = ({
     },
     [dispatch, onUnauthenticated, onAuthenticated]
   );
-
-  if (disabled) {
-    return null;
-  }
-  useGetAuthStatus(handleSessionCheckResponse, refetchInterval);
+  const authCb = disabled ? undefined : handleSessionCheckResponse;
+  useGetAuthStatus(authCb, refetchInterval);
   return null;
 };
 

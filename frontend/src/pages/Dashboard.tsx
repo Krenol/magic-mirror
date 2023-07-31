@@ -8,16 +8,18 @@ import DailyForecast from "../features/daily_forecast/DailyForecast";
 import Birthdays from "../features/birthdays/Birthdays";
 import HourlyWeather from "../features/hourly_forecast/HourlyForecast";
 import UpcomingEvents from "../features/upcoming_events/UpcomingEvents";
-import { logout } from "../apis/logout";
 import { REFETCH_INTERVAL } from "../constants/api";
 import { TimeNotifications } from "../features/time_notifications/TimeNotifications";
+import { AuthenticationHandler } from "../common/AuthenticationHandler";
 
 export const Dashboard = () => {
+  const authHandler = new AuthenticationHandler(3);
   return (
     <React.Fragment>
       <SessionCheck
-        onUnauthenticated={logout}
+        onUnauthenticated={authHandler.noAuth}
         refetchInterval={REFETCH_INTERVAL}
+        onAuthenticated={authHandler.authSuccess}
       />
       <TimeNotifications />
       <Box sx={dashboardStyle}>

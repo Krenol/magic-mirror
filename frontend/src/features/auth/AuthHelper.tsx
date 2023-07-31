@@ -8,12 +8,14 @@ interface ISessionCheck {
   onUnauthenticated?: () => void;
   onAuthenticated?: () => void;
   refetchInterval?: number;
+  disabled?: boolean;
 }
 
 const SessionCheck = ({
   onUnauthenticated,
   onAuthenticated,
   refetchInterval = REFETCH_INTERVAL,
+  disabled = false,
 }: ISessionCheck) => {
   const dispatch = useAppDispatch();
 
@@ -29,6 +31,9 @@ const SessionCheck = ({
     [dispatch, onUnauthenticated, onAuthenticated]
   );
 
+  if (disabled) {
+    return null;
+  }
   useGetAuthStatus(handleSessionCheckResponse, refetchInterval);
   return null;
 };

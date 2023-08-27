@@ -12,6 +12,9 @@ import {
 import { checkAuthenticated } from "services/middleware/authenticated";
 import { getRouter } from "services/router_factory";
 import { authCheck, logout } from "routes/auth/api";
+import { NextFunction, Request, Response } from "express";
+import { USER_ALREADY_REGISTERED } from "services/identity/errors";
+import { authErrorHandler } from "./services";
 
 const router = getRouter(false);
 
@@ -22,6 +25,7 @@ router.get(
     accessType: "offline",
     prompt: "consent",
   }),
+  authErrorHandler
 );
 
 router.get(
@@ -29,7 +33,9 @@ router.get(
   passport.authenticate(LOGIN_STRATEGY_NAME, {
     successRedirect: REDIRECT_URI,
     failureRedirect: FAILURE_REDIRECT_URI,
+    failWithError: true,
   }),
+  authErrorHandler
 );
 
 router.get(
@@ -39,6 +45,7 @@ router.get(
     accessType: "offline",
     prompt: "consent",
   }),
+  authErrorHandler
 );
 
 router.get(
@@ -46,7 +53,9 @@ router.get(
   passport.authenticate(REGISTER_STRATEGY_NAME, {
     successRedirect: REGISTER_REDIRECT_URI,
     failureRedirect: FAILURE_REDIRECT_URI,
+    failWithError: true,
   }),
+  authErrorHandler
 );
 
 router.post("/logout", checkAuthenticated, logout);

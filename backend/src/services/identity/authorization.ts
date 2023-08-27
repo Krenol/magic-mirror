@@ -21,7 +21,7 @@ export const setupAllowedUsers = () => {
 
 const handleResponse = (
   foundEntry: IAllowedUserEmail | null,
-  email: string,
+  email: string
 ) => {
   if (foundEntry) return;
   LOGGER.debug(`Adding allowed user email ${email}`);
@@ -38,6 +38,5 @@ export const removeUnauthorizedUsers = () => {
 
 export const checkIfAuthorizedNewUser = async (email: string) => {
   const count = await DtoAllowedUserEmail.count({ email }).exec();
-  if (count > 0) return;
-  throw new Error(`Unauthorized User with email ${email}`);
+  return count === 1;
 };

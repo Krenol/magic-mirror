@@ -8,6 +8,7 @@ import { LOGGER } from "services/loggers";
 import { Strategy, VerifyCallback } from "passport-google-oauth20";
 import { checkIfAuthorizedNewUser } from "services/identity/authorization";
 import { serializeUser, deserializeUser } from "services/identity";
+import { UNAUTHORIZED, USER_ALREADY_REGISTERED } from "./errors";
 
 export const setupPassportRegistration = () => {
   LOGGER.info("Setup passport strategy");
@@ -22,17 +23,11 @@ const registerUser = (
   accessToken: any,
   refreshToken: any,
   profile: any,
-  done: VerifyCallback,
+  done: VerifyCallback
 ) => {
   DtoUser.findOne({ sub: profile._json.sub })
     .then((user) =>
-      handleFindUserInDbResponse(
-        profile,
-        user,
-        accessToken,
-        refreshToken,
-        done,
-      ),
+      handleFindUserInDbResponse(profile, user, accessToken, refreshToken, done)
     )
     .catch((err) => {
       LOGGER.error(err.message);
@@ -45,13 +40,13 @@ const handleFindUserInDbResponse = (
   user: IDtoUser | null,
   accessToken: any,
   refreshToken: any,
-  done: VerifyCallback,
+  done: VerifyCallback
 ) => {
   if (!user) {
     handleNewUser(profile, accessToken, refreshToken, done);
   } else {
     LOGGER.error(`Registered user ${user.sub} tried to register.`);
-    done("User already registered", undefined);
+    done(USER_ALREADY_REGISTERED, undefined);
   }
 };
 
@@ -59,14 +54,45 @@ const handleNewUser = (
   profile: any,
   accessToken: any,
   refreshToken: any,
-  done: VerifyCallback,
+  done: VerifyCallback
 ) => {
   checkIfAuthorizedNewUser(profile._json.email)
-    .then(() => createNewUserDto(profile, accessToken, refreshToken))
+    .then((authorized) =>
+      handleAuthorizationResponse(
+        authorized,
+        profile,
+        accessToken,
+        refreshToken,
+        done
+      )
+    )
+    .catch((err) => done(err, undefined));
+};
+
+const handleAuthorizationResponse = async (
+  authorized: boolean,
+  profile: any,
+  accessToken: any,
+  refreshToken: any,
+  done: VerifyCallback
+) => {
+  if (authorized) {
+    return handleAuthorizedUser(profile, accessToken, refreshToken, done);
+  }
+  return done(UNAUTHORIZED, undefined);
+};
+
+const handleAuthorizedUser = async (
+  profile: any,
+  accessToken: any,
+  refreshToken: any,
+  done: VerifyCallback
+) => {
+  return createNewUserDto(profile, accessToken, refreshToken)
     .then((user) => user.save())
     .then((u) => {
       LOGGER.info(
-        `New User ${profile._json.sub} registered with email ${profile._json.email}`,
+        `New User ${profile._json.sub} registered with email ${profile._json.email}`
       );
       return u;
     })
@@ -77,7 +103,7 @@ const handleNewUser = (
 const createNewUserDto = async (
   profile: any,
   accessToken: any,
-  refreshToken: any,
+  refreshToken: any
 ): Promise<IDtoUser> => {
   return new DtoUser({
     email: profile._json.email,

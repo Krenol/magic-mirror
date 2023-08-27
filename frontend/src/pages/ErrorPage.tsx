@@ -23,6 +23,13 @@ const getErrorDetails = (type: string): ErrorType => {
         navigateTo: "/login",
       };
     }
+    case "unauthorized": {
+      return {
+        title: "Unauthorized!",
+        details: "You are not authorized to regsiter :(",
+        navigateTo: "/login",
+      };
+    }
     default: {
       return {
         title: "Unknown error!",

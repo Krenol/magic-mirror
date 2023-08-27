@@ -82,7 +82,7 @@ export const REDIRECT_URI = process.env.REDIRECT_URI ?? `${FRONTEND_URL}/`;
 export const REGISTER_REDIRECT_URI =
   process.env.REGISTER_REDIRECT_URI ?? `${FRONTEND_URL}/registration`;
 export const FAILURE_REDIRECT_URI =
-  process.env.FAILURE_REDIRECT_URI ?? `${FRONTEND_URL}/login`;
+  process.env.FAILURE_REDIRECT_URI ?? `${FRONTEND_URL}/error`;
 export const GOOGLE_LOGIN_CALLBACK_CONTEXT =
   process.env.GOOGLE_LOGIN_CALLBACK_CONTEXT ?? "/auth/login/callback";
 export const GOOGLE_REGISTER_CALLBACK_CONTEXT =

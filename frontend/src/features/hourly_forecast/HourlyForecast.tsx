@@ -1,8 +1,7 @@
-import { cardStyle, hourBoxStyle, parentBoxStyle } from "./style";
 import ForecastItem from "./forecast_item/ForecastItem";
 import { useGetHourlyWeather } from "../../apis/hourly_weather";
-import { CardFrame } from "../CardFrame";
-import { Box } from "@mui/material";
+import { MediumCard } from "../CardFrame";
+import { Grid } from "@mui/material";
 import { useAppSelector } from "../../common/hooks";
 import { getLocation } from "../../common/slices/locationSlice";
 import { isNewHour } from "../../common/slices/timeNotificationsSlice";
@@ -22,38 +21,28 @@ const HourlyWeather = () => {
     if (newHourBegun) refetch();
   }, [newHourBegun, refetch]);
 
-  const content = (
-    <Box sx={hourBoxStyle}>
-      {weather?.forecast.map((val) => (
-        <ForecastItem item={val} timezone={weather?.timezone} key={val.time} />
-      ))}
-    </Box>
-  );
+  if (isLoading) {
+    return <MediumCard>Loading...</MediumCard>;
+  }
 
-  if (isLoading)
-    return (
-      <CardFrame
-        boxContent={"Loading..."}
-        cardStyle={cardStyle}
-        parentBoxStyle={parentBoxStyle}
-      />
-    );
-
-  if (error)
-    return (
-      <CardFrame
-        boxContent={"Error!"}
-        cardStyle={cardStyle}
-        parentBoxStyle={parentBoxStyle}
-      />
-    );
+  if (error) {
+    return <MediumCard>Error!</MediumCard>;
+  }
 
   return (
-    <CardFrame
-      boxContent={content}
-      cardStyle={cardStyle}
-      parentBoxStyle={parentBoxStyle}
-    />
+    <MediumCard>
+      <Grid container spacing={1} columns={10}>
+        {weather?.forecast.map((val) => (
+          <Grid item xs={2}>
+            <ForecastItem
+              item={val}
+              timezone={weather?.timezone}
+              key={val.time}
+            />
+          </Grid>
+        ))}
+      </Grid>
+    </MediumCard>
   );
 };
 

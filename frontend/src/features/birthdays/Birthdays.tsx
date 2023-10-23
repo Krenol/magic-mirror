@@ -1,18 +1,12 @@
 import Typography from "@mui/material/Typography";
 import { useEffect } from "react";
-import { Box } from "@mui/material";
-import {
-  cardStyle,
-  headingBoxStyle,
-  itemBoxStyle,
-  mainBoxStyle,
-} from "./style";
+import { Stack } from "@mui/material";
 import CakeIcon from "@mui/icons-material/Cake";
 import BirthdayItem from "./BirthdayItem/BirthdayItem";
 import { useAppSelector } from "../../common/hooks";
 import { isNewDay } from "../../common/slices/timeNotificationsSlice";
 import { useGetBirthdays } from "../../apis/birthday";
-import { CardFrame } from "../CardFrame";
+import { SmallCard } from "../CardFrame";
 
 export const Birthdays = () => {
   const newDayBegun = useAppSelector(isNewDay);
@@ -23,28 +17,25 @@ export const Birthdays = () => {
     if (newDayBegun) refetch();
   }, [newDayBegun, refetch]);
 
-  const content = (
-    <Box sx={mainBoxStyle}>
-      <Box sx={headingBoxStyle}>
+  if (isLoading) return <SmallCard>Loading...</SmallCard>;
+
+  if (error) return <SmallCard>Error!</SmallCard>;
+
+  return (
+    <SmallCard>
+      <Stack direction={"row"} justifyContent={"space-between"}>
         <Typography color="text.primary" variant="body1" gutterBottom>
           Birthdays
         </Typography>
         <CakeIcon fontSize="small" />
-      </Box>
-      <Box sx={itemBoxStyle}>
+      </Stack>
+      <Stack direction={"column"} spacing={2}>
         {birthdays?.list
-          .slice(0, 3)
+          .slice(0, 4)
           .map((data) => <BirthdayItem item={data} key={data.name} />)}
-      </Box>
-    </Box>
+      </Stack>
+    </SmallCard>
   );
-
-  if (isLoading)
-    return <CardFrame cardContent={"Loading..."} cardStyle={cardStyle} />;
-
-  if (error) return <CardFrame cardContent={"Error!"} cardStyle={cardStyle} />;
-
-  return <CardFrame cardContent={content} cardStyle={cardStyle} />;
 };
 
 export default Birthdays;

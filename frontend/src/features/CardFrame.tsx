@@ -1,21 +1,30 @@
 import { Theme } from "@emotion/react";
 import { SxProps } from "@mui/material";
-import Box from "@mui/material/Box/Box";
 import Card from "@mui/material/Card/Card";
-import { ReactElement } from "react";
+import { ReactNode } from "react";
+import { card_small, card_medium, card_large } from "../assets/styles/cards";
 
-export const CardFrame = (props: CardFrameProps): ReactElement => {
-  return (
-    <Card sx={props.cardStyle}>
-      <Box sx={props.parentBoxStyle}>{props.boxContent}</Box>
-      {props.cardContent}
-    </Card>
-  );
+export type CardProps = {
+  children: ReactNode;
 };
 
-export type CardFrameProps = {
-  boxContent?: any;
-  cardStyle?: SxProps<Theme>;
-  parentBoxStyle?: SxProps<Theme>;
-  cardContent?: any;
+type ICardProps = {
+  children: ReactNode;
+  theme: SxProps<Theme>;
+};
+
+const ICard = ({ children, theme }: ICardProps) => {
+  return <Card sx={theme}>{children}</Card>;
+};
+
+export const SmallCard = ({ children }: CardProps) => {
+  return <ICard children={children} theme={card_small} />;
+};
+
+export const MediumCard = ({ children }: CardProps) => {
+  return <ICard children={children} theme={card_medium} />;
+};
+
+export const LargeCard = ({ children }: CardProps) => {
+  return <ICard children={children} theme={card_large} />;
 };

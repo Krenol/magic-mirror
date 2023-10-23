@@ -7,11 +7,11 @@ import {
   getTimeFromDate,
   isSameDate,
 } from "../../../common/dateParser";
-import { xSmallFontSize } from "../../../assets/styles/theme";
+import { PAPER_CARD_COLOR, xSmallFontSize } from "../../../assets/styles/theme";
 import { EventItem } from "../../../models/calendar";
 import { DEFAULT_LOCALE } from "../../../constants/defaults";
 import { boxStyle, hideTextOverflow } from "../../../assets/styles/coloredBox";
-import { colorBoxDimen } from "../style";
+import { Paper, Stack } from "@mui/material";
 
 interface IEventItem {
   item: EventItem;
@@ -46,17 +46,19 @@ export const Event = ({ item, date }: IEventItem) => {
   );
 
   return (
-    <Box sx={{ ...boxStyle, ...colorBoxDimen }}>
-      <Typography
-        variant="subtitle2"
-        color="text.primary"
-        align="left"
-        sx={{ ...xSmallFontSize, ...hideTextOverflow }}
-      >
-        {item.summary ?? ""}
-      </Typography>
-      {details}
-    </Box>
+    <Paper elevation={2} square={false} sx={{ background: PAPER_CARD_COLOR }}>
+      <Stack p={0.5}>
+        <Typography
+          variant="subtitle2"
+          color="text.primary"
+          align="left"
+          sx={{ ...xSmallFontSize, ...hideTextOverflow }}
+        >
+          {item.summary ?? ""}
+        </Typography>
+        {details}
+      </Stack>
+    </Paper>
   );
 };
 

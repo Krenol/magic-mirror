@@ -1,9 +1,12 @@
-import { Typography, Box } from "@mui/material";
+import { Typography, Paper } from "@mui/material";
 import { Birthday } from "../../../models/birthdays";
-import { boldText, xSmallFontSize } from "../../../assets/styles/theme";
+import {
+  PAPER_CARD_COLOR,
+  boldText,
+  xSmallFontSize,
+} from "../../../assets/styles/theme";
 import { useEffect, useState } from "react";
 import { getDifferenceInDays } from "../../../common/dateParser";
-import { boxStyle, hideTextOverflow } from "../../../assets/styles/coloredBox";
 
 interface IBirthdayItem {
   item: Birthday;
@@ -38,26 +41,20 @@ const BirthdayItem = ({ item }: IBirthdayItem) => {
   }, [days]);
 
   return (
-    <Box sx={boxStyle}>
-      <Box sx={{ display: "flex", gap: 0.5 }}>
-        <Typography
-          variant="subtitle2"
-          color={color}
-          align="left"
-          sx={{ ...xSmallFontSize, ...sx }}
-        >
-          {item.name}
-        </Typography>
-        <Typography
-          variant="subtitle2"
-          color={color}
-          align="left"
-          sx={{ ...xSmallFontSize, ...hideTextOverflow, ...sx }}
-        >
-          {timeText}
-        </Typography>
-      </Box>
-    </Box>
+    <Paper
+      elevation={2}
+      square={false}
+      sx={{ background: PAPER_CARD_COLOR, padding: 0.5 }}
+    >
+      <Typography
+        variant="subtitle2"
+        color={color}
+        align="left"
+        sx={{ ...xSmallFontSize, ...sx }}
+      >
+        {item.name} {timeText}
+      </Typography>
+    </Paper>
   );
 };
 

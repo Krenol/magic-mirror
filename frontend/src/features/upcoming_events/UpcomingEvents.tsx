@@ -1,7 +1,6 @@
 import Typography from "@mui/material/Typography";
-import { Box, Card } from "@mui/material";
-import { cardStyle, columnBoxStyle, parentBoxStyle } from "./style";
-import { CardFrame } from "../CardFrame";
+import { Box, Grid, Stack } from "@mui/material";
+import { MediumCard } from "../CardFrame";
 import { EventList, EventItem } from "../../models/calendar";
 import { Event } from "./event/Event";
 import { boldText, xSmallFontSize } from "../../assets/styles/theme";
@@ -28,64 +27,50 @@ const UpcomingEvents = () => {
   );
 
   const boxContent = (
-    <Box sx={{ ...columnBoxStyle, ...{ gap: 1 } }}>
-      <Typography variant="body1" sx={{ marginBottom: "1px" }}>
-        TODAY
-      </Typography>
-      {todaysEventItems}
+    <Box>
+      <Typography variant="body1">TODAY</Typography>
+      <Stack spacing={1} direction={"column"}>
+        {todaysEventItems}
+      </Stack>
     </Box>
   );
 
   const cardContent = (
-    <Box sx={{ marginLeft: "2px" }}>
-      <Box sx={{ ...columnBoxStyle, ...{ height: "50%" } }}>
+    <Grid direction="column" spacing={1} height={"100%"}>
+      <Grid item xs={6} height={"50%"}>
         <Typography sx={{ ...xSmallFontSize, ...boldText }}>
           TOMORROW
         </Typography>
-        {tmrwsEventItems}
-      </Box>
-      <Box sx={{ ...columnBoxStyle, ...{ height: "50%" } }}>
+        <Stack direction={"column"}>{tmrwsEventItems}</Stack>
+      </Grid>
+      <Grid item xs={6} height={"50%"}>
         <Typography sx={{ ...xSmallFontSize, ...boldText }}>
           OVERMORROW
         </Typography>
-        {overmrwsEventItems}
-      </Box>
-    </Box>
+        <Stack direction={"column"}>{overmrwsEventItems}</Stack>
+      </Grid>
+    </Grid>
   );
 
   if (upcomingEvents.loading) {
-    return (
-      <CardFrame
-        boxContent={"Loading..."}
-        cardStyle={cardStyle}
-        parentBoxStyle={parentBoxStyle}
-      />
-    );
+    return <MediumCard>Loading...</MediumCard>;
   }
 
   if (upcomingEvents.errors.filter(Boolean).length > 0) {
-    return (
-      <CardFrame
-        boxContent={"Error!"}
-        cardStyle={cardStyle}
-        parentBoxStyle={parentBoxStyle}
-      />
-    );
+    return <MediumCard>Error!</MediumCard>;
   }
 
   return (
-    <Card sx={cardStyle}>
-      <Box
-        sx={{
-          display: "flex",
-          gap: 2,
-          justifyContent: "space-between",
-        }}
-      >
-        {boxContent}
-        {cardContent}
-      </Box>
-    </Card>
+    <MediumCard>
+      <Grid container spacing={1} height={"100%"}>
+        <Grid item xs={6}>
+          {boxContent}
+        </Grid>
+        <Grid item xs={6}>
+          {cardContent}
+        </Grid>
+      </Grid>
+    </MediumCard>
   );
 };
 

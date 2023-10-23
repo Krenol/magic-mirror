@@ -22,3 +22,5 @@ export const theme = createTheme({
     },
   },
 });
+
+export const PAPER_CARD_COLOR = "rgba(28, 145, 255, 0.25)";

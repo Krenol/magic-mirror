@@ -1,19 +1,12 @@
-import CardMedia from "@mui/material/CardMedia/CardMedia";
 import Typography from "@mui/material/Typography";
 import unknownWeatherIcon from "../../assets/unknown-weather.svg";
 import { TEMP_UNIT, PRECIPITATION_UNIT } from "../../constants/weather";
-import { Box } from "@mui/material";
+import { CardMedia, Grid, Stack } from "@mui/material";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import {
-  cardStyle,
-  mainBoxStyle,
-  minMaxBoxStyle,
-  parentBoxStyle,
-} from "./style";
 import { smallFontSize } from "../../assets/styles/theme";
 import { useGetCurrentWeather } from "../../apis/current_weather";
-import { CardFrame } from "../CardFrame";
+import { MediumCard } from "../CardFrame";
 import { useGetWeatherIcon } from "../../apis/weather_icon";
 import { useAppSelector } from "../../common/hooks";
 import { getLocation } from "../../common/slices/locationSlice";
@@ -34,13 +27,13 @@ const CurrentWeather = () => {
 
   const weatherIcon = iconError || iconLoading ? unknownWeatherIcon : icon;
 
-  const boxContent = (
-    <Box sx={mainBoxStyle}>
+  const weatherJsx = (
+    <Stack spacing={1}>
       <Typography variant="h3">
         {weather?.temperature.current.toFixed() ?? "-"}
         {TEMP_UNIT}
       </Typography>
-      <Box sx={minMaxBoxStyle}>
+      <Stack direction={"row"}>
         <ArrowDropUpIcon />
         <Typography variant="subtitle2" color="text.primary">
           {weather?.temperature.max.toFixed() ?? "-"}
@@ -51,7 +44,7 @@ const CurrentWeather = () => {
           {weather?.temperature.min.toFixed() ?? "-"}
           {TEMP_UNIT}
         </Typography>
-      </Box>
+      </Stack>
       <Typography variant="subtitle2" color="text.secondary" sx={smallFontSize}>
         Feels like {weather?.temperature.feels_like.toFixed() ?? "-"}
         {TEMP_UNIT}
@@ -64,44 +57,37 @@ const CurrentWeather = () => {
           : "-"}{" "}
         {PRECIPITATION_UNIT}
       </Typography>
-    </Box>
+    </Stack>
   );
 
-  const cardContent = (
+  const weatherIconJsx = (
     <CardMedia
       component="img"
-      sx={{ width: "auto", height: "100%" }}
       src={weatherIcon}
       alt="Current Weather Icon"
       loading="lazy"
     />
   );
 
-  if (isLoading)
-    return (
-      <CardFrame
-        boxContent={"Loading..."}
-        cardStyle={cardStyle}
-        parentBoxStyle={parentBoxStyle}
-      />
-    );
+  if (isLoading) {
+    return <MediumCard>Loading...</MediumCard>;
+  }
 
-  if (error)
-    return (
-      <CardFrame
-        boxContent={"Error!"}
-        cardStyle={cardStyle}
-        parentBoxStyle={parentBoxStyle}
-      />
-    );
+  if (error) {
+    return <MediumCard>Error!</MediumCard>;
+  }
 
   return (
-    <CardFrame
-      boxContent={boxContent}
-      cardContent={cardContent}
-      cardStyle={cardStyle}
-      parentBoxStyle={parentBoxStyle}
-    />
+    <MediumCard>
+      <Grid container spacing={1}>
+        <Grid item xs={6}>
+          {weatherJsx}
+        </Grid>
+        <Grid item xs={6}>
+          {weatherIconJsx}
+        </Grid>
+      </Grid>
+    </MediumCard>
   );
 };
 

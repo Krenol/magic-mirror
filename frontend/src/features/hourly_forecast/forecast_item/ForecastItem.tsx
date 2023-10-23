@@ -1,10 +1,13 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
-import { PRECIPITATION_UNIT, TEMP_UNIT } from "../../../constants/weather";
+import {
+  PRECIPITATION_UNIT,
+  TEMP_UNIT,
+  WINDSPEED_UNIT,
+} from "../../../constants/weather";
 import unknownWeatherIcon from "../../../assets/unknown-weather.svg";
 import { HourlyWeatherResource } from "../../../models/hourly_forecast";
 import { parseTime } from "../../../common/timeParser";
-import { forecastImg, hourStyle } from "../style";
 import { smallFontSize } from "../../../assets/styles/theme";
 import { useGetWeatherIcon } from "../../../apis/weather_icon";
 
@@ -39,13 +42,12 @@ const ForecastItem = ({ item, timezone }: IForecastItem) => {
   const weatherIcon = iconError || iconLoading ? unknownWeatherIcon : icon;
 
   return (
-    <Box sx={hourStyle}>
+    <Stack direction={"column"}>
       <Typography variant="subtitle2" color="text.primary" align="center">
         {hours}:{minutes}
       </Typography>
       <Box
         component="img"
-        sx={forecastImg}
         src={weatherIcon}
         alt="Weather Icon"
         loading="lazy"
@@ -67,7 +69,15 @@ const ForecastItem = ({ item, timezone }: IForecastItem) => {
       >
         {item.precipitation} {PRECIPITATION_UNIT}
       </Typography>
-    </Box>
+      <Typography
+        variant="subtitle2"
+        color="text.primary"
+        align="center"
+        sx={smallFontSize}
+      >
+        {item.windspeed} {WINDSPEED_UNIT}
+      </Typography>
+    </Stack>
   );
 };
 

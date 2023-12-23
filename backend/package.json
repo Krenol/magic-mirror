@@ -22,7 +22,7 @@
     "helmet": "^7.0.0",
     "http2-express-bridge": "^1.0.7",
     "mongoose": "^8.0.3",
-    "passport": "^0.6.0",
+    "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-oauth2-refresh": "^2.2.0",
     "winston": "^3.10.0",

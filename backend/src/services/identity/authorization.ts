@@ -37,6 +37,6 @@ export const removeUnauthorizedUsers = () => {
 };
 
 export const checkIfAuthorizedNewUser = async (email: string) => {
-  const count = await DtoAllowedUserEmail.count({ email }).exec();
+  const count = await DtoAllowedUserEmail.countDocuments({ email }).exec();
   return count === 1;
 };

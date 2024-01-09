@@ -10,7 +10,7 @@ export const setupPassportAuthentication = () => {
   LOGGER.info("Setup passport strategy");
   const strategy = new Strategy(
     GOOGLE_LOGIN_STRATEGY_OPTIONS,
-    authenticateUser,
+    authenticateUser
   );
   passport.use(LOGIN_STRATEGY_NAME, strategy);
   passport.serializeUser(serializeUser);
@@ -23,11 +23,16 @@ const authenticateUser = (
   accessToken: any,
   refreshToken: any,
   profile: any,
-  done: VerifyCallback,
+  done: VerifyCallback
 ) => {
   DtoUser.findOne({ sub: profile._json.sub })
     .then((user) =>
-      handleFindUserInDbResponse(user, accessToken, refreshToken, done),
+      handleFindUserInDbResponse(
+        user as IDtoUser,
+        accessToken,
+        refreshToken,
+        done
+      )
     )
     .catch((err) => {
       LOGGER.error(err.message);
@@ -39,7 +44,7 @@ const handleFindUserInDbResponse = (
   user: IDtoUser | null,
   accessToken: any,
   refreshToken: any,
-  done: VerifyCallback,
+  done: VerifyCallback
 ) => {
   if (!user) {
     LOGGER.error(`Unregistered user tried to log in.`);
@@ -53,7 +58,7 @@ const handleFoundUser = (
   user: IDtoUser,
   accessToken: any,
   refreshToken: any,
-  done: VerifyCallback,
+  done: VerifyCallback
 ) => {
   user.refresh_token = refreshToken;
   user.access_token = accessToken;

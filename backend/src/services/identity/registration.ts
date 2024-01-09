@@ -27,7 +27,13 @@ const registerUser = (
 ) => {
   DtoUser.findOne({ sub: profile._json.sub })
     .then((user) =>
-      handleFindUserInDbResponse(profile, user, accessToken, refreshToken, done)
+      handleFindUserInDbResponse(
+        profile,
+        user as IDtoUser,
+        accessToken,
+        refreshToken,
+        done
+      )
     )
     .catch((err) => {
       LOGGER.error(err.message);
@@ -111,5 +117,5 @@ const createNewUserDto = async (
     displayName: profile._json.displayName,
     refresh_token: refreshToken,
     access_token: accessToken,
-  });
+  }) as IDtoUser;
 };

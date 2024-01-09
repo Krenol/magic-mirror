@@ -6,7 +6,7 @@ import { IDtoUser } from "models/mongo/users";
 import { LOGGER } from "services/loggers";
 
 export const getUserSettingsFromDb = async (
-  sub: string,
+  sub: string
 ): Promise<IDtoUserSettings | null> => {
   return DtoUserSettings.findOne({ sub });
 };
@@ -19,21 +19,21 @@ export const updateExistingUserSettings = async (
   req: Request,
   res: Response,
   next: NextFunction,
-  userSettings: IDtoUserSettings,
+  userSettings: IDtoUserSettings
 ) => {
   const payload = req.body as Partial<ApiDtoUserSettings>;
   return updateUserSettingsinDb(userSettings, payload)
     .then(parseUserSettings)
     .then((u) => res.status(200).json(u))
     .catch((err) =>
-      next(new ApiError("Error while updating user settings", err, 500)),
+      next(new ApiError("Error while updating user settings", err, 500))
     );
 };
 
 export const createNewUserSettings = async (
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
   const payload = req.body as ApiDtoUserSettings;
   const sub = (req.user as IDtoUser).sub;
@@ -41,13 +41,13 @@ export const createNewUserSettings = async (
     .then(parseUserSettings)
     .then((u) => res.status(201).json(u))
     .catch((err) =>
-      next(new ApiError("Error while updating user settings", err, 500)),
+      next(new ApiError("Error while updating user settings", err, 500))
     );
 };
 
 export const updateUserSettingsinDb = async (
   userSettings: IDtoUserSettings,
-  newUserSettings: Partial<ApiDtoUserSettings>,
+  newUserSettings: Partial<ApiDtoUserSettings>
 ): Promise<IDtoUserSettings> => {
   userSettings.zip_code = newUserSettings.zip_code ?? userSettings.zip_code;
   userSettings.country = newUserSettings.country ?? userSettings.country;
@@ -57,7 +57,7 @@ export const updateUserSettingsinDb = async (
 
 export const createNewUserSettingsinDb = async (
   sub: string,
-  newUserSettings: ApiDtoUserSettings,
+  newUserSettings: ApiDtoUserSettings
 ): Promise<IDtoUserSettings> => {
   const userSettings = new DtoUserSettings({
     zip_code: newUserSettings.zip_code,
@@ -65,18 +65,20 @@ export const createNewUserSettingsinDb = async (
     city: newUserSettings.city,
     sub,
   });
-  return userSettings.save().then(logUserSettingsUpdate);
+  return userSettings
+    .save()
+    .then((settings) => logUserSettingsUpdate(settings as IDtoUserSettings));
 };
 
 const logUserSettingsUpdate = async (
-  userSettings: IDtoUserSettings,
+  userSettings: IDtoUserSettings
 ): Promise<IDtoUserSettings> => {
   LOGGER.info(`Created/updated settings for user ${userSettings.sub}`);
   return userSettings;
 };
 
 export const parseUserSettings = async (
-  userSettings: IDtoUserSettings,
+  userSettings: IDtoUserSettings
 ): Promise<ApiDtoUserSettings> => {
   return {
     zip_code: userSettings.zip_code,

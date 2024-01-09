@@ -17,7 +17,7 @@
     "react-scripts": "^5.0.1",
     "typescript": "^5.3.3",
     "web-vitals": "^3.5.0",
-    "yarn": "^1.22.19"
+    "yarn": "^1.22.21"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.1.4",

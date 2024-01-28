@@ -1,4 +1,3 @@
-import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import React from "react";
 import {
@@ -10,7 +9,7 @@ import {
 import { PAPER_CARD_COLOR, xSmallFontSize } from "../../../assets/styles/theme";
 import { EventItem } from "../../../models/calendar";
 import { DEFAULT_LOCALE } from "../../../constants/defaults";
-import { boxStyle, hideTextOverflow } from "../../../assets/styles/coloredBox";
+import { hideTextOverflow } from "../../../assets/styles/coloredBox";
 import { Paper, Stack } from "@mui/material";
 
 interface IEventItem {

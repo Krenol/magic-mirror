@@ -3,7 +3,7 @@ import { Box, Grid, Stack } from "@mui/material";
 import { MediumCard } from "../CardFrame";
 import { EventList, EventItem } from "../../models/calendar";
 import { Event } from "./event/Event";
-import { boldText, xSmallFontSize } from "../../assets/styles/theme";
+import { xSmallFontSize } from "../../assets/styles/theme";
 import React, { ReactElement } from "react";
 import { GetUpcomingEvents } from "./GetUpcomingEvents";
 import { EventTextEnum } from "./types";
@@ -38,13 +38,13 @@ const UpcomingEvents = () => {
   const cardContent = (
     <Grid direction="column" spacing={1} height={"100%"}>
       <Grid item xs={6} height={"50%"}>
-        <Typography sx={{ ...xSmallFontSize, ...boldText }}>
+        <Typography fontWeight={"bold"} fontSize={xSmallFontSize}>
           TOMORROW
         </Typography>
         <Stack direction={"column"}>{tmrwsEventItems}</Stack>
       </Grid>
       <Grid item xs={6} height={"50%"}>
-        <Typography sx={{ ...xSmallFontSize, ...boldText }}>
+        <Typography fontWeight={"bold"} fontSize={xSmallFontSize}>
           OVERMORROW
         </Typography>
         <Stack direction={"column"}>{overmrwsEventItems}</Stack>

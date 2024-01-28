@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material";
 import { TEMP_UNIT } from "../../../constants/weather";
 import unknownWeatherIcon from "../../../assets/unknown-weather.svg";
 import { WeatherForecastResource } from "../../../models/daily_forecast";
-import { boldText, smallFontSize } from "../../../assets/styles/theme";
+import { smallFontSize } from "../../../assets/styles/theme";
 import { useGetWeatherIcon } from "../../../apis/weather_icon";
 import { useGetDayName } from "../../../apis/day_name";
 
@@ -36,7 +36,8 @@ const ForecastItem = ({ item }: IForecastItem) => {
         <Typography
           variant="subtitle2"
           color="text.primary"
-          sx={{ ...smallFontSize, ...boldText }}
+          fontWeight={"bold"}
+          fontSize={smallFontSize}
         >
           {Math.round(item.temperature.max).toString() ?? "-"}
           {TEMP_UNIT}

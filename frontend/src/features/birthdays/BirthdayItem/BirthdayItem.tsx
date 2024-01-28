@@ -1,12 +1,9 @@
-import { Typography, Paper } from "@mui/material";
+import { Typography, Paper, Stack } from "@mui/material";
 import { Birthday } from "../../../models/birthdays";
-import {
-  PAPER_CARD_COLOR,
-  boldText,
-  xSmallFontSize,
-} from "../../../assets/styles/theme";
+import { PAPER_CARD_COLOR, xSmallFontSize } from "../../../assets/styles/theme";
 import { useEffect, useState } from "react";
 import { getDifferenceInDays } from "../../../common/dateParser";
+import { hideTextOverflow } from "../../../assets/styles/coloredBox";
 
 interface IBirthdayItem {
   item: Birthday;
@@ -14,9 +11,9 @@ interface IBirthdayItem {
 
 const BirthdayItem = ({ item }: IBirthdayItem) => {
   const [days, setDays] = useState(0);
-  const [sx, setSx] = useState({});
   const [color, setColor] = useState("text.secondary");
   const [timeText, setTimeText] = useState("");
+  const [fontWeight, setFontWeight] = useState("normal");
 
   useEffect(() => {
     const bday = new Date(item.date);
@@ -26,15 +23,15 @@ const BirthdayItem = ({ item }: IBirthdayItem) => {
 
   useEffect(() => {
     if (days === 0) {
-      setSx(boldText);
+      setFontWeight("bold");
       setColor("text.primary");
       setTimeText("today");
     } else if (days === 1) {
-      setSx({});
+      setFontWeight("normal");
       setColor("text.primary");
       setTimeText(`tomorrow`);
     } else {
-      setSx({});
+      setFontWeight("normal");
       setColor("text.secondary");
       setTimeText(`${days} days`);
     }
@@ -44,16 +41,33 @@ const BirthdayItem = ({ item }: IBirthdayItem) => {
     <Paper
       elevation={2}
       square={false}
-      sx={{ background: PAPER_CARD_COLOR, padding: 0.5 }}
+      sx={{
+        background: PAPER_CARD_COLOR,
+        padding: 0.5,
+      }}
     >
-      <Typography
-        variant="subtitle2"
-        color={color}
-        align="left"
-        sx={{ ...xSmallFontSize, ...sx }}
+      <Stack
+        direction={"row"}
+        spacing={1}
+        whiteSpace={"nowrap"}
+        overflow={"hidden"}
       >
-        {item.name} {timeText}
-      </Typography>
+        <Typography
+          color={color}
+          fontWeight={fontWeight}
+          fontSize={xSmallFontSize}
+          sx={{ ...hideTextOverflow }}
+        >
+          {item.name}
+        </Typography>
+        <Typography
+          color={color}
+          fontWeight={fontWeight}
+          fontSize={xSmallFontSize}
+        >
+          {timeText}
+        </Typography>
+      </Stack>
     </Paper>
   );
 };

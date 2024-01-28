@@ -13,27 +13,27 @@ services:
       - ../frontend/public:/opt/public
     depends_on:
       - backend
-      - nginx
+      - oauth2-proxy
     env_file:
       - frontend.env
       - host.env
     networks:
       - nginx
-  nginx:
-    build:
-      context: ../nginx
-    ports:
-      - 80:80
-      - 443:443
-    restart: unless-stopped
-    volumes:
-      - ../nginx/conf/:/etc/nginx/conf.d/:rw
-      - ../nginx/ssl/:/etc/ssl/:ro
-      - ../nginx/template-vars:/etc/nginx/templates/10-variables.conf.template:ro
-    networks:
-      - nginx
-    env_file:
-      - host.env
+  # nginx:
+  #   build:
+  #     context: ../nginx
+  #   ports:
+  #     - 80:80
+  #     - 443:443
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ../nginx/conf/:/etc/nginx/conf.d/:rw
+  #     - ../nginx/ssl/:/etc/ssl/:ro
+  #     - ../nginx/template-vars:/etc/nginx/templates/10-variables.conf.template:ro
+  #   networks:
+  #     - nginx
+  #   env_file:
+  #     - host.env
   backend:
     build:
       context: ../backend
@@ -45,7 +45,7 @@ services:
     ports:
       - 9229:9229
     depends_on:
-      - nginx
+      - oauth2-proxy
       - mongo
     volumes:
       - ../backend/src:/opt/src
@@ -73,27 +73,39 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PW}
     networks:
       - db
-  loki:
-    hostname: loki
+  # loki:
+  #   hostname: loki
+  #   build:
+  #     context: ../loki
+  #     dockerfile: Dockerfile
+  #   command: -config.file=/etc/loki/local-config.yaml
+  #   networks:
+  #     - loki
+  # grafana:
+  #   hostname: grafana
+  #   build: ../grafana
+  #   environment:
+  #     GF_PATHS_PROVISIONING: /etc/grafana/provisioning
+  #     GF_AUTH_ANONYMOUS_ENABLED: true
+  #     GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+  #   depends_on:
+  #     - loki
+  #   ports:
+  #     - 3000:3000
+  #   networks:
+  #     - loki
+  oauth2-proxy:
     build:
-      context: ../loki
-      dockerfile: Dockerfile
-    command: -config.file=/etc/loki/local-config.yaml
-    networks:
-      - loki
-  grafana:
-    hostname: grafana
-    build: ../grafana
-    environment:
-      GF_PATHS_PROVISIONING: /etc/grafana/provisioning
-      GF_AUTH_ANONYMOUS_ENABLED: true
-      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
-    depends_on:
-      - loki
+      context: ../oauth2-proxy
+    command: --config=/opt/conf/oauth2-proxy.cfg
     ports:
-      - 3000:3000
+      - 4180:4180
+      - 443:443
+    restart: unless-stopped
     networks:
-      - loki
+      - nginx
+    env_file:
+      - host.env
 
 networks:
   nginx:

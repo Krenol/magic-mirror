@@ -50,7 +50,7 @@
     "@types/passport-google-oauth20": "^2.0.14",
     "@types/passport-oauth2-refresh": "^1.1.4",
     "@types/supertest": "^6.0.1",
-    "@typescript-eslint/eslint-plugin": "^6.18.1",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^6.18.1",
     "chai": "^5.0.0",
     "eslint": "^8.56.0",

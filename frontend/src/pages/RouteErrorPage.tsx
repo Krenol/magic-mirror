@@ -13,7 +13,7 @@ const getErrorDetails = (status: number): ErrorType => {
       return {
         title: "Not signed in!",
         details: "You are not signed in... Please sign in first!",
-        backTo: "/login",
+        backTo: "/",
       };
     }
     case 404: {

@@ -39,10 +39,9 @@ export abstract class Server<T extends http2.Http2Server> {
 
   private configureExpress() {
     this.setupLogging();
-    this.setupSession();
+    //this.setupSession();
     this.setupBodyParsers();
     this.setupCors();
-    this.setupOIDC();
     this.setupDefaultMiddlewares();
   }
 
@@ -64,7 +63,7 @@ export abstract class Server<T extends http2.Http2Server> {
           maxAge: 2.592e9, //30d
         },
         store: getSessionStore(this._database),
-      }),
+      })
     );
   }
 
@@ -82,7 +81,7 @@ export abstract class Server<T extends http2.Http2Server> {
   }
 
   private async setupDefaultMiddlewares() {
-    this._app.use(compression());
+    //this._app.use(compression());
     this._app.use(helmet());
     this._app.use(RateLimit(RATE_LIMIT));
   }

@@ -13,10 +13,10 @@ const getUserSettings = async () => {
       } else if (res.status === 404) {
         window.location.href = "/registration";
       } else {
-        window.location.href = "/login";
+        window.location.href = "/";
       }
     })
-    .catch(() => (window.location.href = "/login"));
+    .catch(() => (window.location.href = "/"));
 };
 
 export const locationLoader = async () => {
@@ -48,7 +48,7 @@ export const locationLoader = async () => {
     store.dispatch(setUserSettings(userSettings));
     store.dispatch(setLocation(geoLocation));
   } catch (err) {
-    window.location.href = "/login";
+    window.location.href = "/";
   }
   return null;
 };

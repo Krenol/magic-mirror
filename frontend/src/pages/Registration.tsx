@@ -1,8 +1,6 @@
 import { Box } from "@mui/material";
 import { SettingsForm } from "../features/settings_form/SettingsForm";
 import { useNavigate } from "react-router-dom";
-import SessionCheck from "../features/auth/AuthHelper";
-import { logout } from "../apis/logout";
 import { useGetUserSettings } from "../apis/user_settings";
 import { useEffect } from "react";
 import { postUserSettings } from "../apis/users";
@@ -30,13 +28,12 @@ export const Registration = () => {
   if (isLoading) return <Box>Loading...</Box>;
 
   if (error) {
-    navigate("/login");
+    navigate("/");
     return <Box>Error!</Box>;
   }
 
   return (
     <Box sx={{ display: "flex", justifyContent: "center" }}>
-      <SessionCheck onUnauthenticated={logout} refetchInterval={0} />
       <SettingsForm showBackButton={false} onSend={addUserSettings} />
     </Box>
   );

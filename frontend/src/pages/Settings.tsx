@@ -1,6 +1,4 @@
 import { Box } from "@mui/material";
-import SessionCheck from "../features/auth/AuthHelper";
-import { logout } from "../apis/logout";
 import { SettingsForm } from "../features/settings_form/SettingsForm";
 import { useNavigate } from "react-router-dom";
 import { useGetUserSettings } from "../apis/user_settings";
@@ -42,7 +40,6 @@ export const Settings = () => {
   if (error) return <Box>Error</Box>;
   return (
     <Box sx={{ display: "flex", justifyContent: "center" }}>
-      <SessionCheck onUnauthenticated={logout} refetchInterval={0} />
       <SettingsForm
         defaultCity={userSettings?.city}
         defaultCountry={userSettings?.country}

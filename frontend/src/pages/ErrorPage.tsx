@@ -13,21 +13,21 @@ const getErrorDetails = (type: string): ErrorType => {
         title: "User already registered!",
         details:
           "Seems like you are already registered! Please log in normally...",
-        navigateTo: "/login",
+        navigateTo: "/",
       };
     }
     case "not_registered": {
       return {
         title: "User not registered!",
         details: "User is not regsitered. Please register first...",
-        navigateTo: "/login",
+        navigateTo: "/",
       };
     }
     case "unauthorized": {
       return {
         title: "Unauthorized!",
         details: "You are not authorized to regsiter :(",
-        navigateTo: "/login",
+        navigateTo: "/",
       };
     }
     default: {

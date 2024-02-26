@@ -1,6 +1,5 @@
 import { Outlet, createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Dashboard } from "./pages/Dashboard";
-import Login from "./pages/Login";
 import { QueryClient, QueryClientProvider } from "react-query";
 import MenuAppBar from "./features/appbar/MenuAppBar";
 import { Box } from "@mui/material";
@@ -27,7 +26,7 @@ const BaseFrame = (props: any) => {
   return (
     <React.Fragment>
       <MenuAppBar />
-      <Box sx={{ padding: PADDING }}>{props.children}</Box>
+      <Box p={PADDING}>{props.children}</Box>
     </React.Fragment>
   );
 };
@@ -58,10 +57,6 @@ const router = createBrowserRouter([
       {
         path: "settings",
         element: <Settings />,
-      },
-      {
-        path: "login",
-        element: <Login />,
       },
       {
         path: "registration",

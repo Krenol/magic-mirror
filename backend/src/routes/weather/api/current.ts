@@ -9,7 +9,7 @@ import { ApiError } from "models/api/api_error";
 export const getCurrentWeather = async (
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
   return buildCurrentWeatherUrl(req)
     .then((url) => fetchJson(url))

@@ -3,13 +3,14 @@ import { ApiError } from "models/api/api_error";
 import { deleteUserFromDb } from "routes/users/services/users";
 import { deleteUserSettingsFromDb } from "routes/users/services/settings";
 import { LOGGER } from "services/loggers";
+import { getUserId } from "services/headers";
 
 export const deleteMeUser = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const sub = req.headers["x-forwarded-user"] as string;
+  const sub = await getUserId(req.headers);
   LOGGER.info(`Deleting user ${sub}`);
   return deleteUserSettingsFromDb(sub)
     .then(() => deleteUserFromDb(sub))

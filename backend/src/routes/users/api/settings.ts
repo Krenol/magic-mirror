@@ -8,14 +8,15 @@ import {
   parseUserSettings,
   updateExistingUserSettings,
 } from "routes/users/services/settings";
+import { getUserId } from "services/headers";
 
 export const getMeUserSettings = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const sub = req.headers["x-forwarded-user"] as string;
-  return getUserSettingsFromDb(sub)
+  return getUserId(req.headers)
+    .then(getUserSettingsFromDb)
     .then((userSettings) => handleGetUserSettings(userSettings, res, next))
     .catch((err) =>
       next(new ApiError("Error while getting user settings", err, 500))
@@ -27,8 +28,9 @@ const handleGetUserSettings = async (
   res: Response,
   next: NextFunction
 ) => {
-  if (userSettings)
+  if (userSettings) {
     return res.status(200).json(await parseUserSettings(userSettings));
+  }
   return next(new ApiError("User Settings not found", undefined, 404));
 };
 
@@ -37,12 +39,13 @@ export const patchMeUserSettings = async (
   res: Response,
   next: NextFunction
 ) => {
-  const sub = req.headers["x-forwarded-user"] as string;
-  return getUserSettingsFromDb(sub).then((userSettings) =>
-    userSettings
-      ? updateExistingUserSettings(req, res, next, userSettings)
-      : next(new ApiError("Settings for user don't exist", undefined, 404))
-  );
+  return getUserId(req.headers)
+    .then(getUserSettingsFromDb)
+    .then((userSettings) =>
+      userSettings
+        ? updateExistingUserSettings(req, res, next, userSettings)
+        : next(new ApiError("Settings for user don't exist", undefined, 404))
+    );
 };
 
 export const postUserSettings = async (
@@ -50,12 +53,13 @@ export const postUserSettings = async (
   res: Response,
   next: NextFunction
 ) => {
-  const sub = req.headers["x-forwarded-user"] as string;
-  return getUserSettingsFromDb(sub).then((userSettings) =>
-    userSettings
-      ? next(new ApiError("Settings for user already exist", undefined, 419))
-      : createNewUserSettings(req, res, next)
-  );
+  return getUserId(req.headers)
+    .then(getUserSettingsFromDb)
+    .then((userSettings) =>
+      userSettings
+        ? next(new ApiError("Settings for user already exist", undefined, 419))
+        : createNewUserSettings(req, res, next)
+    );
 };
 
 export const deleteMeUserSettings = async (
@@ -63,8 +67,8 @@ export const deleteMeUserSettings = async (
   res: Response,
   next: NextFunction
 ) => {
-  const sub = req.headers["x-forwarded-user"] as string;
-  return deleteUserSettingsFromDb(sub)
+  return getUserId(req.headers)
+    .then(deleteUserSettingsFromDb)
     .then((result) => handleDeleteUserSettings(result.deletedCount, res, next))
     .catch((err) =>
       next(new ApiError("Error while getting user settings", err, 500))

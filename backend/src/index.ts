@@ -26,14 +26,23 @@ server.app.use("/api/location", LocationRoute);
 // ERROR HANDLING
 server.app.use(EXPRESS_ERROR_LOGGER);
 
-server.app.use(
-  (err: ApiError, _req: Request, res: Response, _next: NextFunction) => {
-    return res.status(err.status).json({ error: err.message }).end();
-  }
-);
+const isApiError = (err: Error): err is ApiError => {
+  return (
+    (err as ApiError).status !== undefined &&
+    (err as ApiError).message !== undefined
+  );
+};
 
 server.app.use(
-  (_err: Error, _req: Request, res: Response, _next: NextFunction) => {
+  (
+    err: ApiError | Error,
+    _req: Request,
+    res: Response,
+    _next: NextFunction
+  ) => {
+    if (isApiError(err)) {
+      return res.status(err.status).json({ error: err.message }).end();
+    }
     return res
       .status(500)
       .json({ error: "Oops... something unexpected happened!" })

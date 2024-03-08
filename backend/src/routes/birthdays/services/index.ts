@@ -6,7 +6,7 @@ import {
 } from "models/api/birthdays";
 import { EventRequestParams, GcalApiEventList } from "models/api/calendar";
 import { fetchJson } from "services/fetch";
-import { getAuthenticationHeader } from "services/identity/user";
+import { getAuthenticationHeader } from "services/headers";
 import { Request } from "express";
 
 export const getBirthdayEvents = async (
@@ -15,7 +15,7 @@ export const getBirthdayEvents = async (
   orderBy = "startTime"
 ): Promise<BirthdayList> => {
   const calendarID = encodeURIComponent(CALENDAR_CONFIG.BIRTHDAY_ID);
-  const authHeader = await getAuthenticationHeader(req);
+  const authHeader = await getAuthenticationHeader(req.headers);
   return buildApiUrl(calendarID, params, orderBy)
     .then((url) => fetchJson(url, authHeader))
     .then((data) => data.body as GcalApiEventList)

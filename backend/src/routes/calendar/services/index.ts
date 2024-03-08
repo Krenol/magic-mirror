@@ -7,20 +7,17 @@ import {
   GcalApiEventResource,
   EventRequestParams,
 } from "models/api/calendar";
-import { IDtoUser } from "models/mongo/users";
 import { getTimeDiff, TimeUnit } from "services/dateParser";
 import { fetchJson } from "services/fetch";
-import { getAuthenticationHeader } from "services/identity/user";
-import { LOGGER } from "services/loggers";
+import { getUserEmail, getAuthenticationHeader } from "services/headers";
 
 export const getCalendarEvents = async (
   req: Request,
   params: EventRequestParams,
   orderBy = "startTime"
 ): Promise<GcalApiEventList> => {
-  const email = req.headers["x-forwarded-email"] as string;
-  LOGGER.info(req.headers);
-  const authHeader = await getAuthenticationHeader(req);
+  const email = await getUserEmail(req.headers);
+  const authHeader = await getAuthenticationHeader(req.headers);
   const events = await getEvents(email, authHeader, params, orderBy);
   return events;
 };

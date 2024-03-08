@@ -2,7 +2,6 @@ import express from "express";
 import { default as session } from "express-session";
 import bodyParser from "body-parser";
 import { ENABLE_HTTPS, SESSION_SECRET, RATE_LIMIT, FRONTEND_URL } from "config";
-import { setupPassport } from "services/identity";
 import { default as cors } from "cors";
 
 import { EXPRESS_LOGGER } from "services/loggers";
@@ -74,10 +73,6 @@ export abstract class Server<T extends http2.Http2Server> {
 
   private setupCors() {
     this._app.use(cors({ origin: FRONTEND_URL, credentials: true }));
-  }
-
-  private async setupOIDC() {
-    setupPassport(this._app);
   }
 
   private async setupDefaultMiddlewares() {

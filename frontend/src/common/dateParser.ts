@@ -62,15 +62,12 @@ export const getTimeDifferenceInHours = (
   return diffTime * 2.7777777777778e-7;
 };
 
-export const getDifferenceInDays =  (
-  startDate: Date,
-  endDate: Date
-): number => {
+export const getDifferenceInDays = (startDate: Date, endDate: Date): number => {
   const diffTime = endDate.getTime() - startDate.getTime();
   return Math.round(diffTime / (1000 * 60 * 60 * 24));
 };
 
-export const isToday =  (date: Date): boolean => {
+export const isToday = (date: Date): boolean => {
   return isSameDate(date, new Date());
 };
 

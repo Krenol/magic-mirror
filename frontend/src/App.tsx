@@ -1,15 +1,13 @@
-import { Outlet, createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Dashboard } from "./pages/Dashboard";
 import { QueryClient, QueryClientProvider } from "react-query";
-import MenuAppBar from "./features/appbar/MenuAppBar";
-import { Box } from "@mui/material";
-import { PADDING } from "./assets/styles/theme";
-import { Settings } from "./pages/Settings";
-import { Registration } from "./pages/Registration";
 import React from "react";
-import RouteErrorPage from "./pages/RouteErrorPage";
-import { locationLoader } from "./features/location_loader/locationLoader";
-import ErrorPage from "./pages/ErrorPage";
+import MenuAppBar from "./components/appbar/MenuAppBar";
+import { PADDING } from "./assets/styles/theme";
+import { Box } from "@mui/material";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
+import RouteErrorPage from "./routes/RouteErrorPage";
+import { Dashboard, Settings } from "@mui/icons-material";
+import { Registration } from "./routes/Registration";
+import ErrorPage from "./routes/ErrorPage";
 
 const queryCache = new QueryClient({
   defaultOptions: {
@@ -22,11 +20,11 @@ const queryCache = new QueryClient({
   },
 });
 
-const BaseFrame = (props: any) => {
+const BaseFrame = ({ children }: { children: JSX.Element }) => {
   return (
     <React.Fragment>
       <MenuAppBar />
-      <Box p={PADDING}>{props.children}</Box>
+      <Box p={PADDING}>{children}</Box>
     </React.Fragment>
   );
 };
@@ -52,7 +50,6 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Dashboard />,
-        loader: async () => await locationLoader(),
       },
       {
         path: "settings",

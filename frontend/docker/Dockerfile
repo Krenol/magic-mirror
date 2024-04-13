@@ -1,4 +1,4 @@
-ARG NODE_IMG_VERSION=18.9-alpine3.15
+ARG NODE_IMG_VERSION=18.20.1-alpine3.19
 
 FROM node:${NODE_IMG_VERSION} as builder
 

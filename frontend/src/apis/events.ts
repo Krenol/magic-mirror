@@ -11,7 +11,7 @@ export const useGetEvents = (query_params: QUERY_PARAMS = []) => {
     queryKey: [ServerStateKeysEnum.events, query_params],
     queryFn: async () =>
       buildQuery(query_params)
-        .then((qry) => fetchJson(`${EVENTS_API}${qry}`))
+        .then((qry) => fetchJson<EventList>(`${EVENTS_API}${qry}`))
         .catch((err) => {
           throw err;
         }),
@@ -23,7 +23,7 @@ export const useGetDateEvents = (date: string) => {
   return useQuery<EventList, Error>({
     queryKey: [ServerStateKeysEnum.events_day, date],
     queryFn: async () =>
-      fetchJson(`${EVENTS_API}/${date}`).catch((err) => {
+      fetchJson<EventList>(`${EVENTS_API}/${date}`).catch((err) => {
         throw err;
       }),
     refetchInterval: REFETCH_INTERVAL,

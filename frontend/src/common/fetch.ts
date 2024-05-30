@@ -1,13 +1,13 @@
 import { DEFAULT_FETCH_CONFIG } from "../constants/api";
 
-export const fetchJson = async (
+export const fetchJson = async <T>(
   url: string,
   options: RequestInit = {},
   allowed_status_codes: Array<number> = [200],
-  retries: number = 1,
-): Promise<any> => {
+  retries: number = 1
+): Promise<T> => {
   return fetchRetry(url, options, allowed_status_codes, retries).then(
-    (response) => response.json(),
+    (response) => response.json()
   );
 };
 
@@ -15,7 +15,7 @@ export const fetchBlob = async (
   url: string,
   options: RequestInit = {},
   allowed_status_codes: Array<number> = [200],
-  retries: number = 1,
+  retries: number = 1
 ): Promise<Blob> => {
   return fetchRetry(url, options, allowed_status_codes, retries)
     .then((response) => {
@@ -31,11 +31,11 @@ export const fetchRetry = async (
   url: string,
   options: RequestInit = {},
   allowed_status_codes: Array<number> = [200],
-  retries: number = 1,
+  retries: number = 1
 ): Promise<Response> => {
   try {
     return await fetch(url, { ...options, ...DEFAULT_FETCH_CONFIG }).then(
-      (response) => checkHttpStatusCode(response, allowed_status_codes, url),
+      (response) => checkHttpStatusCode(response, allowed_status_codes, url)
     );
   } catch (err) {
     if (retries <= 1) throw err;
@@ -46,34 +46,34 @@ export const fetchRetry = async (
 const checkHttpStatusCode = async (
   response: Response,
   allowed_status_codes: Array<number>,
-  url?: string,
+  url?: string
 ): Promise<Response> => {
   if (allowed_status_codes.includes(response.status)) {
     return response;
   } else {
     throw Object.assign(
       new Error(
-        `Request to ${url ?? "URL"} failed with status code ${response.status}`,
+        `Request to ${url ?? "URL"} failed with status code ${response.status}`
       ),
-      { code: response.status },
+      { code: response.status }
     );
   }
 };
 
 const getReadableStream = async (
-  reader?: ReadableStreamDefaultReader<Uint8Array>,
-) => {
+  reader?: ReadableStreamDefaultReader<Uint8Array>
+): Promise<ReadableStream> => {
   return new ReadableStream({
-    start(controller: ReadableStreamController<any>) {
+    start(controller: ReadableStreamController<unknown>) {
       return streamPump(controller, reader);
     },
   });
 };
 
 const streamPump = (
-  controller: ReadableStreamController<any>,
-  reader?: ReadableStreamDefaultReader<Uint8Array>,
-): any => {
+  controller: ReadableStreamController<unknown>,
+  reader?: ReadableStreamDefaultReader<Uint8Array>
+): unknown => {
   return reader?.read().then(({ done, value }) => {
     if (done) {
       controller.close();

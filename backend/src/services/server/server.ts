@@ -2,7 +2,6 @@ import express from "express";
 import { default as session } from "express-session";
 import bodyParser from "body-parser";
 import { ENABLE_HTTPS, SESSION_SECRET, RATE_LIMIT, FRONTEND_URL } from "config";
-import { setupPassport } from "services/identity";
 import { default as cors } from "cors";
 
 import { EXPRESS_LOGGER } from "services/loggers";
@@ -10,7 +9,6 @@ import { Database } from "services/database/database";
 import { getSessionStore } from "services/server/session_store";
 import * as http2 from "http2";
 import http2Express from "http2-express-bridge";
-import compression from "compression";
 import helmet from "helmet";
 import RateLimit from "express-rate-limit";
 
@@ -39,10 +37,9 @@ export abstract class Server<T extends http2.Http2Server> {
 
   private configureExpress() {
     this.setupLogging();
-    this.setupSession();
+    //this.setupSession();
     this.setupBodyParsers();
     this.setupCors();
-    this.setupOIDC();
     this.setupDefaultMiddlewares();
   }
 
@@ -64,7 +61,7 @@ export abstract class Server<T extends http2.Http2Server> {
           maxAge: 2.592e9, //30d
         },
         store: getSessionStore(this._database),
-      }),
+      })
     );
   }
 
@@ -77,12 +74,8 @@ export abstract class Server<T extends http2.Http2Server> {
     this._app.use(cors({ origin: FRONTEND_URL, credentials: true }));
   }
 
-  private async setupOIDC() {
-    setupPassport(this._app);
-  }
-
   private async setupDefaultMiddlewares() {
-    this._app.use(compression());
+    //this._app.use(compression());
     this._app.use(helmet());
     this._app.use(RateLimit(RATE_LIMIT));
   }

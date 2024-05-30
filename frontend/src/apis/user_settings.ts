@@ -8,7 +8,7 @@ export const useGetUserSettings = (allowNotFound = false) =>
   useQuery<UserSettings, Error>({
     queryKey: [ServerStateKeysEnum.user_settings, allowNotFound],
     queryFn: async () =>
-      fetchJson(
+      fetchJson<UserSettings>(
         `${USER_SETTINGS_API}/me`,
         undefined,
         allowNotFound ? [200, 404] : [200]

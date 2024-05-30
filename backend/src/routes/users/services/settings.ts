@@ -2,12 +2,13 @@ import { NextFunction, Request, Response } from "express";
 import { ApiError } from "models/api/api_error";
 import { ApiDtoUserSettings } from "models/api/user_settings";
 import { DtoUserSettings, IDtoUserSettings } from "models/mongo/user_settings";
-import { IDtoUser } from "models/mongo/users";
+import { getUserId } from "services/headers";
 import { LOGGER } from "services/loggers";
 
 export const getUserSettingsFromDb = async (
   sub: string
 ): Promise<IDtoUserSettings | null> => {
+  LOGGER.info(`Get user ${sub} from DB`);
   return DtoUserSettings.findOne({ sub });
 };
 
@@ -36,8 +37,8 @@ export const createNewUserSettings = async (
   next: NextFunction
 ) => {
   const payload = req.body as ApiDtoUserSettings;
-  const sub = (req.user as IDtoUser).sub;
-  return createNewUserSettingsinDb(sub, payload)
+  return getUserId(req.headers)
+    .then((sub) => createNewUserSettingsinDb(sub, payload))
     .then(parseUserSettings)
     .then((u) => res.status(201).json(u))
     .catch((err) =>

@@ -123,4 +123,7 @@ export const ALLOWED_URLS = [
 export const RATE_LIMIT = {
   windowMs: 1 * 60 * 1000, // 1 minute
   max: 500,
+  validate: {
+    xForwardedForHeader: false,
+  },
 };

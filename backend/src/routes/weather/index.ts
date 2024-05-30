@@ -10,7 +10,7 @@ import {
   weatherIconMw,
 } from "routes/weather/middleware";
 
-const router = getRouter(true);
+const router = getRouter();
 
 router.get("/current", currentMw, getCurrentWeather);
 

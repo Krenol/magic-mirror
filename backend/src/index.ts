@@ -5,7 +5,6 @@ import { default as WeatherRoute } from "routes/weather";
 import { default as CalendarRoute } from "routes/calendar";
 import { default as BirthdaysRoute } from "routes/birthdays";
 import { default as UsersRoute } from "routes/users";
-import { default as AuthRoute } from "routes/auth";
 import { default as LocationRoute } from "routes/location";
 import { NextFunction, Request, Response } from "express";
 import { ApiError } from "models/api/api_error";
@@ -17,24 +16,33 @@ const server = ENABLE_HTTPS
   ? new HttpsServer(mongoDb, SERVER_PORT)
   : new HttpServer(mongoDb, SERVER_PORT);
 
-server.app.use("/weather", WeatherRoute);
-server.app.use("/calendar", CalendarRoute);
-server.app.use("/birthdays", BirthdaysRoute);
-server.app.use("/", AuthRoute);
-server.app.use("/users", UsersRoute);
-server.app.use("/location", LocationRoute);
+server.app.use("/api/weather", WeatherRoute);
+server.app.use("/api/calendar", CalendarRoute);
+server.app.use("/api/birthdays", BirthdaysRoute);
+
+server.app.use("/api/users", UsersRoute);
+server.app.use("/api/location", LocationRoute);
 
 // ERROR HANDLING
 server.app.use(EXPRESS_ERROR_LOGGER);
 
-server.app.use(
-  (err: ApiError, _req: Request, res: Response, _next: NextFunction) => {
-    return res.status(err.status).json({ error: err.message }).end();
-  }
-);
+const isApiError = (err: Error): err is ApiError => {
+  return (
+    (err as ApiError).status !== undefined &&
+    (err as ApiError).message !== undefined
+  );
+};
 
 server.app.use(
-  (_err: Error, _req: Request, res: Response, _next: NextFunction) => {
+  (
+    err: ApiError | Error,
+    _req: Request,
+    res: Response,
+    _next: NextFunction
+  ) => {
+    if (isApiError(err)) {
+      return res.status(err.status).json({ error: err.message }).end();
+    }
     return res
       .status(500)
       .json({ error: "Oops... something unexpected happened!" })

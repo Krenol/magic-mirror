@@ -1,4 +1,5 @@
 import { GOOGLE_CALENDAR_ENDPOINT } from "config";
+import { Request } from "express";
 import {
   EventList,
   EventItem,
@@ -6,29 +7,28 @@ import {
   GcalApiEventResource,
   EventRequestParams,
 } from "models/api/calendar";
-import { IDtoUser } from "models/mongo/users";
 import { getTimeDiff, TimeUnit } from "services/dateParser";
 import { fetchJson } from "services/fetch";
-import { getAuthenticationHeader, getEmail } from "services/identity/user";
+import { getUserEmail, getAuthenticationHeader } from "services/headers";
 
 export const getCalendarEvents = async (
-  user: IDtoUser,
+  req: Request,
   params: EventRequestParams,
   orderBy = "startTime"
 ): Promise<GcalApiEventList> => {
-  const email = await getEmail(user);
-  const events = await getEvents(email, user, params, orderBy);
+  const email = await getUserEmail(req.headers);
+  const authHeader = await getAuthenticationHeader(req.headers);
+  const events = await getEvents(email, authHeader, params, orderBy);
   return events;
 };
 
 export const getEvents = async (
   calendarId: string,
-  user: IDtoUser,
+  authHeader: RequestInit,
   params: EventRequestParams,
   orderBy = "startTime"
 ): Promise<GcalApiEventList> => {
   const url = await buildApiUrl(calendarId, params, orderBy);
-  const authHeader = await getAuthenticationHeader(user);
   return fetchJson(url, authHeader)
     .then((data) => data.body as GcalApiEventList)
     .catch((err) => {

@@ -13,7 +13,6 @@ import {
   isToday,
 } from "services/dateParser";
 import { LOGGER } from "services/loggers";
-import { IDtoUser } from "models/mongo/users";
 
 export const allCalendarEvents = async (
   req: Request,
@@ -24,7 +23,7 @@ export const allCalendarEvents = async (
   const minTime = await parseMinTimeParam(req);
   const maxTime = await parseMaxTimeQueryParam(req);
   return getRequestParams(count, minTime, maxTime)
-    .then((params) => getCalendarEvents(req.user as IDtoUser, params))
+    .then((params) => getCalendarEvents(req, params))
     .then(parseRetrievedEvents)
     .then((events) => res.status(200).json(events))
     .catch((err) =>
@@ -43,7 +42,7 @@ export const eventsAtDate = async (
     new Date(req.params.date.toString())
   );
   return getRequestParams(count, date, maxTime)
-    .then((params) => getCalendarEvents(req.user as IDtoUser, params))
+    .then((params) => getCalendarEvents(req, params))
     .then(parseRetrievedEvents)
     .then((ev) => applyDateFilter(ev, date))
     .then((events) => res.status(200).json(events))

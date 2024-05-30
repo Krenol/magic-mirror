@@ -6,6 +6,9 @@ import os from "os";
 const LOKI_TRANSPORTER = new LokiTransport({
   host: "http://loki:3100",
 });
+
+const CONSOLE = new winston.transports.Console();
+
 const LOG_META = {
   service: "express-backend",
   hostname: os.hostname(),
@@ -15,7 +18,7 @@ const LOG_FORMAT = winston.format.json();
 const DEFAULT_LOG_CONFIG = {
   baseMeta: LOG_META,
   format: LOG_FORMAT,
-  transports: [LOKI_TRANSPORTER],
+  transports: [CONSOLE],
 };
 
 export const EXPRESS_ERROR_LOGGER = expressWinston.errorLogger({
@@ -33,12 +36,12 @@ export const LOG_LEVELS = {
 export const LOGGER = winston.createLogger({
   defaultMeta: LOG_META,
   format: LOG_FORMAT,
-  transports: [LOKI_TRANSPORTER],
+  transports: [CONSOLE],
 });
 
 export const EXPRESS_LOGGER = expressWinston.logger({
   ...DEFAULT_LOG_CONFIG,
   headerBlacklist: ["Cookie", "cookie"],
-  meta: true,
-  expressFormat: false,
+  meta: false,
+  expressFormat: true,
 });

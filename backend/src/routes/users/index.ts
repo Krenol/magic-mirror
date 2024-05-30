@@ -7,7 +7,7 @@ import {
 } from "routes/users/api/settings";
 import { deleteMeUser } from "routes/users/api/users";
 
-const router = getRouter(true);
+const router = getRouter();
 
 router.get("/settings/me", getMeUserSettings);
 

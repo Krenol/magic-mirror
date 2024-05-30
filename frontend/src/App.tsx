@@ -5,9 +5,10 @@ import { PADDING } from "./assets/styles/theme";
 import { Box } from "@mui/material";
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import RouteErrorPage from "./routes/RouteErrorPage";
-import { Dashboard, Settings } from "@mui/icons-material";
 import { Registration } from "./routes/Registration";
 import ErrorPage from "./routes/ErrorPage";
+import { Dashboard } from "./routes/Dashboard";
+import { Settings } from "./routes/Settings";
 
 const queryCache = new QueryClient({
   defaultOptions: {

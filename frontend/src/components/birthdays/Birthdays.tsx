@@ -2,7 +2,7 @@ import Typography from "@mui/material/Typography";
 import { useContext, useEffect } from "react";
 import { Stack } from "@mui/material";
 import CakeIcon from "@mui/icons-material/Cake";
-import BirthdayItem from "./BirthdayItem/BirthdayItem";
+import BirthdayItem from "./BirthdayItem";
 import { useGetBirthdays } from "../../apis/birthday";
 import { SmallCard } from "../CardFrame";
 import { TimeContext } from "../../common/TimeContext";

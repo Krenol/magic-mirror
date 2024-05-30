@@ -19,10 +19,14 @@ type Props = {
   onBack?: () => void;
 };
 
+const city = "Stuttgart";
+const country = "DE";
+const zipCode = "70176";
+
 export const SettingsForm = ({
-  defaultCity = "Stuttgart",
-  defaultCountry = "DE",
-  defaultZipCode = "70176",
+  defaultCity = city,
+  defaultCountry = country,
+  defaultZipCode = zipCode,
   showBackButton = true,
   onSend,
   onBack,

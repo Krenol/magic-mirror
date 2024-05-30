@@ -18,7 +18,7 @@ export const useGetDailyWeather = (
       forecast_days,
     ],
     queryFn: async () =>
-      fetchJson(
+      fetchJson<DailyWeatherObject>(
         `${WEATHER_API}/forecast?latitude=${latitude}&longitude=${longitude}&days=${forecast_days}`
       ).catch((err) => {
         throw err;

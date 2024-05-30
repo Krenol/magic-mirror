@@ -22,7 +22,7 @@ export const useGetHourlyWeather = (
       forecast_hours,
     ],
     queryFn: async () =>
-      fetchJson(
+      fetchJson<HourlyWeatherObject>(
         `${WEATHER_API}/hourly?latitude=${latitude}&longitude=${longitude}&hours=${forecast_hours}`
       ).catch((err) => {
         throw err;

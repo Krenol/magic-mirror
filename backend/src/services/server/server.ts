@@ -9,7 +9,6 @@ import { Database } from "services/database/database";
 import { getSessionStore } from "services/server/session_store";
 import * as http2 from "http2";
 import http2Express from "http2-express-bridge";
-import compression from "compression";
 import helmet from "helmet";
 import RateLimit from "express-rate-limit";
 

@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-export const getRouter = (protectedRoute: boolean): Router => {
+export const getRouter = (): Router => {
   const router = Router();
   return router;
 };

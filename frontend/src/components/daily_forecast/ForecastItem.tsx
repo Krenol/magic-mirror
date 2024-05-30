@@ -1,10 +1,10 @@
 import { Box, Stack, Typography } from "@mui/material";
-import { TEMP_UNIT } from "../../../constants/weather";
-import unknownWeatherIcon from "../../../assets/unknown-weather.svg";
-import { WeatherForecastResource } from "../../../models/daily_forecast";
-import { smallFontSize } from "../../../assets/styles/theme";
-import { useGetWeatherIcon } from "../../../apis/weather_icon";
-import { useGetDayName } from "../../../apis/day_name";
+import { TEMP_UNIT } from "../../constants/weather";
+import unknownWeatherIcon from "../../assets/unknown-weather.svg";
+import { WeatherForecastResource } from "../../models/daily_forecast";
+import { smallFontSize } from "../../assets/styles/theme";
+import { useGetWeatherIcon } from "../../apis/weather_icon";
+import { useGetDayName } from "../../apis/day_name";
 
 interface IForecastItem {
   item: WeatherForecastResource;

@@ -11,7 +11,7 @@ export const useGetGeocode = (query_params: QUERY_PARAMS = []) => {
     queryKey: [ServerStateKeysEnum.geocode, query_params],
     queryFn: async () =>
       buildQuery(query_params)
-        .then((qry) => fetchJson(`${LOCATION_API}/geocode${qry}`))
+        .then((qry) => fetchJson<GeoLocation>(`${LOCATION_API}/geocode${qry}`))
         .catch((err) => {
           throw err;
         }),

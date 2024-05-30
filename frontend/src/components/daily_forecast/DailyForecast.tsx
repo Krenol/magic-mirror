@@ -1,4 +1,4 @@
-import ForecastItem from "./forecast_item/ForecastItem";
+import ForecastItem from "./ForecastItem";
 import { useGetDailyWeather } from "../../apis/daily_weather";
 import { MediumCard } from "../CardFrame";
 import { Grid } from "@mui/material";

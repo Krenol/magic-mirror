@@ -2,7 +2,7 @@ import Typography from "@mui/material/Typography";
 import { Box, Grid, Stack } from "@mui/material";
 import { MediumCard } from "../CardFrame";
 import { EventList, EventItem } from "../../models/calendar";
-import { Event } from "./event/Event";
+import { Event } from "./Event";
 import { xSmallFontSize } from "../../assets/styles/theme";
 import React, { ReactElement } from "react";
 import { GetUpcomingEvents } from "./GetUpcomingEvents";
@@ -36,7 +36,7 @@ const UpcomingEvents = () => {
   );
 
   const cardContent = (
-    <Grid direction="column" spacing={1} height={"100%"}>
+    <Grid container direction="column" spacing={1} height={"100%"}>
       <Grid item xs={6} height={"50%"}>
         <Typography fontWeight={"bold"} fontSize={xSmallFontSize}>
           TOMORROW

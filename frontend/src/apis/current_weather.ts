@@ -12,7 +12,7 @@ export const useGetCurrentWeather = (
   useQuery<CurrentWeatherResource, Error>({
     queryKey: [ServerStateKeysEnum.current_weather, longitude, latitude],
     queryFn: async () =>
-      fetchJson(
+      fetchJson<CurrentWeatherResource>(
         `${WEATHER_API}/current?latitude=${latitude}&longitude=${longitude}`
       ).catch((err) => {
         throw err;

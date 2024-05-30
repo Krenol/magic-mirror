@@ -8,7 +8,7 @@ const ISO8601_REGEX =
 export const getTimezoneOffset = (useIsoFormat = false): string => {
   if (useIsoFormat) {
     const m = moment();
-    let date = m.format();
+    const date = m.format();
     return date.replace(ISO8601_REGEX, "$2");
   } else {
     const timezoneOffset = new Date().getTimezoneOffset() / -60.0;
@@ -80,7 +80,7 @@ export const isSameDate = (date1: Date, date2: Date): boolean => {
 };
 
 export const getDateInXDays = (daysInFuture: number = 0): Date => {
-  let date = new Date();
+  const date = new Date();
   date.setDate(date.getDate() + daysInFuture);
   return date;
 };

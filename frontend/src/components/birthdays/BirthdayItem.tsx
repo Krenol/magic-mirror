@@ -1,9 +1,9 @@
 import { Typography, Paper, Stack } from "@mui/material";
-import { Birthday } from "../../../models/birthdays";
-import { PAPER_CARD_COLOR, xSmallFontSize } from "../../../assets/styles/theme";
+import { Birthday } from "../../models/birthdays";
+import { PAPER_CARD_COLOR, xSmallFontSize } from "../../assets/styles/theme";
 import { useEffect, useState } from "react";
-import { getDifferenceInDays } from "../../../common/dateParser";
-import { hideTextOverflow } from "../../../assets/styles/coloredBox";
+import { getDifferenceInDays } from "../../common/dateParser";
+import { hideTextOverflow } from "../../assets/styles/coloredBox";
 
 interface IBirthdayItem {
   item: Birthday;
@@ -51,6 +51,7 @@ const BirthdayItem = ({ item }: IBirthdayItem) => {
         spacing={1}
         whiteSpace={"nowrap"}
         overflow={"hidden"}
+        justifyContent={"space-between"}
       >
         <Typography
           color={color}

@@ -1,4 +1,4 @@
-import ForecastItem from "./forecast_item/ForecastItem";
+import ForecastItem from "./ForecastItem";
 import { useGetHourlyWeather } from "../../apis/hourly_weather";
 import { MediumCard } from "../CardFrame";
 import { Grid } from "@mui/material";
@@ -32,7 +32,7 @@ const HourlyWeather = () => {
     <MediumCard>
       <Grid container spacing={1} columns={10}>
         {weather?.forecast.map((val) => (
-          <Grid item xs={2}>
+          <Grid item xs={2} key={JSON.stringify(val)}>
             <ForecastItem
               item={val}
               timezone={weather?.timezone}

@@ -4,12 +4,12 @@ import {
   PRECIPITATION_UNIT,
   TEMP_UNIT,
   WINDSPEED_UNIT,
-} from "../../../constants/weather";
-import unknownWeatherIcon from "../../../assets/unknown-weather.svg";
-import { HourlyWeatherResource } from "../../../models/hourly_forecast";
-import { parseTime } from "../../../common/timeParser";
-import { smallFontSize } from "../../../assets/styles/theme";
-import { useGetWeatherIcon } from "../../../apis/weather_icon";
+} from "../../constants/weather";
+import unknownWeatherIcon from "../../assets/unknown-weather.svg";
+import { HourlyWeatherResource } from "../../models/hourly_forecast";
+import { parseTime } from "../../common/timeParser";
+import { smallFontSize } from "../../assets/styles/theme";
+import { useGetWeatherIcon } from "../../apis/weather_icon";
 
 interface IForecastItem {
   item: HourlyWeatherResource;

@@ -5,11 +5,11 @@ import {
   getTimeDifferenceInHours,
   getTimeFromDate,
   isSameDate,
-} from "../../../common/dateParser";
-import { PAPER_CARD_COLOR, xSmallFontSize } from "../../../assets/styles/theme";
-import { EventItem } from "../../../models/calendar";
-import { DEFAULT_LOCALE } from "../../../constants/defaults";
-import { hideTextOverflow } from "../../../assets/styles/coloredBox";
+} from "../../common/dateParser";
+import { PAPER_CARD_COLOR, xSmallFontSize } from "../../assets/styles/theme";
+import { EventItem } from "../../models/calendar";
+import { DEFAULT_LOCALE } from "../../constants/defaults";
+import { hideTextOverflow } from "../../assets/styles/coloredBox";
 import { Paper, Stack } from "@mui/material";
 
 interface IEventItem {

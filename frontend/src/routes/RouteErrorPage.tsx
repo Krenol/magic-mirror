@@ -39,7 +39,8 @@ const getErrorDetails = (status: number): ErrorType => {
 
 export default function RouteErrorPage() {
   const error = useRouteError();
-  const status = (error as any).status;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const status = (error as any).status ?? 500;
   const details = getErrorDetails(status);
 
   return (

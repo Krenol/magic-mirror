@@ -1,11 +1,11 @@
 import { DEFAULT_FETCH_CONFIG } from "../constants/api";
 
-export const fetchJson = async (
+export const fetchJson = async <T>(
   url: string,
   options: RequestInit = {},
   allowed_status_codes: Array<number> = [200],
   retries: number = 1
-): Promise<any> => {
+): Promise<T> => {
   return fetchRetry(url, options, allowed_status_codes, retries).then(
     (response) => response.json()
   );
@@ -62,18 +62,18 @@ const checkHttpStatusCode = async (
 
 const getReadableStream = async (
   reader?: ReadableStreamDefaultReader<Uint8Array>
-) => {
+): Promise<ReadableStream> => {
   return new ReadableStream({
-    start(controller: ReadableStreamController<any>) {
+    start(controller: ReadableStreamController<unknown>) {
       return streamPump(controller, reader);
     },
   });
 };
 
 const streamPump = (
-  controller: ReadableStreamController<any>,
+  controller: ReadableStreamController<unknown>,
   reader?: ReadableStreamDefaultReader<Uint8Array>
-): any => {
+): unknown => {
   return reader?.read().then(({ done, value }) => {
     if (done) {
       controller.close();

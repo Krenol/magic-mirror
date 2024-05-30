@@ -1,4 +1,3 @@
-version: "3.9"
 name: magic-mirror
 services:
   frontend:
@@ -8,24 +7,12 @@ services:
       args:
         NODE_IMG_VERSION: ${NODE_IMG_VERSION}
     restart: unless-stopped
+    networks:
+      - app
     depends_on:
       - backend
-      - nginx
     env_file:
       - frontend.env
-      - host.env
-    networks:
-      - nginx
-  nginx:
-    build:
-      context: ../nginx
-    ports:
-      - 80:80
-      - 443:443
-    restart: unless-stopped
-    networks:
-      - nginx
-    env_file:
       - host.env
   backend:
     build:
@@ -36,15 +23,13 @@ services:
         NODE_ENV: production
     restart: unless-stopped
     depends_on:
-      - nginx
       - mongo
     env_file:
       - backend.env
       - host.env
     networks:
-      - nginx
       - db
-      - loki
+      - app
     environment:
       MONGO_USERNAME: ${MONGO_ROOT_USER}
       MONGO_PASSWORD: ${MONGO_ROOT_PW}
@@ -58,29 +43,18 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PW}
     networks:
       - db
-  loki:
+  oauth2-proxy:
     build:
-      context: ../loki
-      dockerfile: Dockerfile
-    command: -config.file=/etc/loki/local-config.yaml
-    restart: unless-stopped
-    networks:
-      - loki
-  grafana:
-    build: ../grafana
-    environment:
-      GF_PATHS_PROVISIONING: /etc/grafana/provisioning
-      GF_AUTH_ANONYMOUS_ENABLED: true
-      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
-    restart: unless-stopped
-    depends_on:
-      - loki
+      context: ../oauth2-proxy
+    command: --config=/opt/conf/oauth2-proxy.cfg
     ports:
-      - "3000:3000"
+      - 443:443
+    restart: unless-stopped
     networks:
-      - loki
+      - app
+    env_file:
+      - host.env
 
 networks:
-  nginx:
   db:
-  loki:
+  app:

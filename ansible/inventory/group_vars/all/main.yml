@@ -1,0 +1,23 @@
+---
+required_backend_packages:
+  - docker
+  - docker-compose-plugin
+  - mkcert
+  - rsync
+
+domain: fritz.box
+addtional_hostnames: "localhost 127.0.0.1 ::1"
+node_docker_image_version: "18.20.3-alpine3.20"
+mongo:
+  user: mongoadmin
+  host: mongo
+  ssl: false
+  port: 27017
+mongu_user: mongoadmin
+mongo_host: mongo
+
+oauth2_proxy:
+  client_id: 428211582851-66891ucq97qkrbmsik41ftkfcke0u26f.apps.googleusercontent.com
+  scopes: email profile https://www.googleapis.com/auth/calendar.readonl
+backend_context: "/api"
+pw_store_dir: "{{ playbook_dir }}/pwstore"

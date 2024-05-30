@@ -1,0 +1,10 @@
+work_dir: /opt/test
+service_name: magic-mirror-server
+relevant_code_dirs:
+  - backend
+  - frontend
+  - oauth2-proxy
+  - certs
+  - docker-compose
+
+server_fqdn: "{{ ansible_hostname | lower }}.{{ domain | lower }}"

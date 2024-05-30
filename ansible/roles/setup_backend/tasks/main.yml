@@ -1,0 +1,95 @@
+---
+- name: Update remote
+  ansible.builtin.apt:
+    update_cache: true
+    autoclean: true
+    autoremove: true
+    upgrade: "dist"
+
+- name: Install required packages
+  ansible.builtin.apt:
+    pkg: "{{ required_backend_packages }}"
+
+- name: Stop service {{ service_name }}
+  ansible.builtin.service:
+    name: "{{ service_name }}"
+    state: stopped
+
+- name: Delete code dirs in working dir
+  ansible.builtin.file:
+    state: absent
+    path: "{{ work_dir }}/{{ item }}"
+  with_items: "{{ relevant_code_dirs }}"
+
+- name: Copy code to remote
+  ansible.builtin.synchronize:
+    src: "{{ playbook_dir | dirname }}/{{ item }}"
+    dest: "{{ work_dir }}"
+    rsync_opts:
+      - "--exclude=node_modules --exclude=dist --exclude='*.pem' --exclude='*.crt' --exclude='*.key'"
+  with_items: "{{ relevant_code_dirs }}"
+
+- name: Create directory for mongo
+  ansible.builtin.file:
+    path: "{{ work_dir }}/mongo"
+    state: directory
+
+- name: Chown dir {{ work_dir }}
+  file:
+    path: "{{ work_dir }}"
+    owner: "{{ ansible_effective_user_id }}"
+    group: "{{ ansible_effective_group_id }}"
+    recurse: true
+
+- name: Install service
+  ansible.builtin.template:
+    src: "{{ service_name }}.service.j2"
+    dest: "/etc/systemd/system/{{ service_name }}.service"
+
+- name: Install env files
+  ansible.builtin.template:
+    src: "{{ item.name }}.j2"
+    dest: "{{ work_dir }}/{{ item.dest }}/{{ item.name }}"
+  become: true
+  with_items:
+    - name: .env
+      dest: docker-compose
+    - name: backend.env
+      dest: docker-compose
+    - name: frontend.env
+      dest: docker-compose
+    - name: proxy.env
+      dest: docker-compose
+    - name: oauth2-proxy.cfg
+      dest: oauth2-proxy
+
+- name: Get path to mkcert root CA
+  ansible.builtin.command: mkcert -CAROOT
+  register: ca_cert_path
+
+- name: Copy CA cert
+  ansible.builtin.copy:
+    src: "{{ ca_cert_path.stdout }}/rootCA.pem"
+    dest: "{{ work_dir }}/{{ item }}"
+    remote_src: true
+  with_items:
+    - certs
+    - backend
+    - oauth2-proxy
+
+- name: Install certificate
+  environment:
+    PARENT_DIRECTORY: "{{ work_dir }}"
+    HOSTNAME: "{{ server_fqdn }}}"
+  ansible.builtin.command: "{{ item }}"
+  with_items:
+    - mkcert -key-file $PARENT_DIRECTORY/backend/ssl/express.key -cert-file $PARENT_DIRECTORY/backend/ssl/express.pem $HOSTNAME backend {{ addtional_hostnames }}
+    - mkcert -key-file $PARENT_DIRECTORY/oauth2-proxy/ssl/$HOSTNAME.key -cert-file $PARENT_DIRECTORY/oauth2-proxy/ssl/$HOSTNAME.pem $HOSTNAME {{ addtional_hostnames }}
+    - cp $PARENT_DIRECTORY/oauth2-proxy/ssl/$HOSTNAME.pem $PARENT_DIRECTORY/oauth2-proxy/ssl/$HOSTNAME.bundle.pem
+    - echo "$(cat $PARENT_DIRECTORY/oauth2-proxy/rootCA.pem)" >> $PARENT_DIRECTORY/oauth2-proxy/ssl/$HOSTNAME.bundle.pem
+
+- name: Start service
+  ansible.builtin.service:
+    #state: started
+    daemon_reload: true
+    #name: "{{ service_name }}"

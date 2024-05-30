@@ -1,0 +1,8 @@
+- hosts: backend_server
+  gather_facts: true
+  become: true
+  vars_prompt:
+    - name: client_secret
+      prompt: Enter the OAuth2 Client Secret
+  roles:
+    - setup_backend

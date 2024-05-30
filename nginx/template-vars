@@ -1,3 +1,0 @@
-map $host $nginx_hostname {
-  default "$PROXY_SERVER_HOSTNAME";
-}

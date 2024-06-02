@@ -1,11 +1,4 @@
-export const API_BACKEND_HOST =
-  import.meta.env.REACT_APP_API_BACKEND_HOST ?? "localhost";
-export const API_BACKEND_CONTEXT =
-  import.meta.env.REACT_APP_API_BACKEND_CONTEXT ?? "api";
-export const API_BACKEND_PORT =
-  import.meta.env.REACT_APP_API_BACKEND_PORT ?? 3001;
-export const API_BACKEND_PROTOCOL =
-  import.meta.env.REACT_APP_API_BACKEND_PROTOCOL ?? "https";
+export const API_BACKEND_CONTEXT = import.meta.env.API_BACKEND_CONTEXT ?? "api";
 export const BACKEND_BASE_URL = `/${API_BACKEND_CONTEXT.replace(
   /^\/(.*)$/,
   "$1"

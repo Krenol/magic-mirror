@@ -7,6 +7,7 @@ import { xSmallFontSize } from "../../assets/styles/theme";
 import React, { ReactElement } from "react";
 import { GetUpcomingEvents } from "./GetUpcomingEvents";
 import { EventTextEnum } from "./types";
+import Loading from "../loading/Loading";
 
 const UpcomingEvents = () => {
   const upcomingEvents = GetUpcomingEvents();
@@ -53,7 +54,7 @@ const UpcomingEvents = () => {
   );
 
   if (upcomingEvents.loading) {
-    return <MediumCard>Loading...</MediumCard>;
+    return <Loading Card={MediumCard} />;
   }
 
   if (upcomingEvents.errors.filter(Boolean).length > 0) {

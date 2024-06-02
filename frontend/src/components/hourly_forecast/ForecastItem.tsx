@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import {
   PRECIPITATION_UNIT,
   TEMP_UNIT,
@@ -39,7 +39,10 @@ const ForecastItem = ({ item, timezone }: IForecastItem) => {
     error: iconError,
   } = useGetWeatherIcon(item.weather_icon);
 
-  const weatherIcon = iconError || iconLoading ? unknownWeatherIcon : icon;
+  const weatherIcon = useMemo(
+    () => (iconError || iconLoading ? unknownWeatherIcon : icon),
+    [icon, iconError, iconLoading]
+  );
 
   return (
     <Stack direction={"column"}>

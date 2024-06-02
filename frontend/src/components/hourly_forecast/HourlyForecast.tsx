@@ -5,6 +5,8 @@ import { Grid } from "@mui/material";
 import { useContext, useEffect } from "react";
 import { TimeContext } from "../../common/TimeContext";
 import { LocationContext } from "../../common/LocationContext";
+import Loading from "../loading/Loading";
+import ErrorCard from "../error_card/ErrorCard";
 
 const HourlyWeather = () => {
   const { longitude, latitude } = useContext(LocationContext);
@@ -20,8 +22,20 @@ const HourlyWeather = () => {
     if (newHour) refetch();
   }, [newHour, refetch]);
 
+  if (!longitude || !latitude) {
+    return (
+      <ErrorCard
+        Card={MediumCard}
+        error={
+          "Longitude and or latitude are not set. Please update your location in the settings"
+        }
+        showSettingsBtn
+      />
+    );
+  }
+
   if (isLoading) {
-    return <MediumCard>Loading...</MediumCard>;
+    return <Loading Card={MediumCard} />;
   }
 
   if (error) {

@@ -8,8 +8,10 @@ import { smallFontSize } from "../../assets/styles/theme";
 import { useGetCurrentWeather } from "../../apis/current_weather";
 import { MediumCard } from "../CardFrame";
 import { useGetWeatherIcon } from "../../apis/weather_icon";
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import { LocationContext } from "../../common/LocationContext";
+import Loading from "../loading/Loading";
+import ErrorCard from "../error_card/ErrorCard";
 
 const CurrentWeather = () => {
   const { longitude, latitude } = useContext(LocationContext);
@@ -27,50 +29,32 @@ const CurrentWeather = () => {
 
   const weatherIcon = iconError || iconLoading ? unknownWeatherIcon : icon;
 
-  const weatherJsx = (
-    <Stack spacing={1}>
-      <Typography variant="h3">
-        {weather?.temperature.current.toFixed() ?? "-"}
-        {TEMP_UNIT}
-      </Typography>
-      <Stack direction={"row"}>
-        <ArrowDropUpIcon />
-        <Typography variant="subtitle2" color="text.primary">
-          {weather?.temperature.max.toFixed() ?? "-"}
-          {TEMP_UNIT}
-        </Typography>
-        <ArrowDropDownIcon />
-        <Typography variant="subtitle2" color="text.primary">
-          {weather?.temperature.min.toFixed() ?? "-"}
-          {TEMP_UNIT}
-        </Typography>
-      </Stack>
-      <Typography variant="subtitle2" color="text.secondary" sx={smallFontSize}>
-        Feels like {weather?.temperature.feels_like.toFixed() ?? "-"}
-        {TEMP_UNIT}
-      </Typography>
-      <Typography variant="subtitle2" color="text.secondary" sx={smallFontSize}>
-        Precipitaiton:{" "}
-        {weather?.precipitation_sum.toFixed(1) ??
-        weather?.precipitation_sum === 0
-          ? weather?.precipitation_sum
-          : "-"}{" "}
-        {PRECIPITATION_UNIT}
-      </Typography>
-    </Stack>
+  const weatherIconJsx = useMemo(
+    () => (
+      <CardMedia
+        component="img"
+        src={weatherIcon}
+        alt="Current Weather Icon"
+        loading="lazy"
+      />
+    ),
+    [weatherIcon]
   );
 
-  const weatherIconJsx = (
-    <CardMedia
-      component="img"
-      src={weatherIcon}
-      alt="Current Weather Icon"
-      loading="lazy"
-    />
-  );
+  if (!longitude || !latitude) {
+    return (
+      <ErrorCard
+        Card={MediumCard}
+        error={
+          "Longitude and or latitude are not set. Please update your location in the settings"
+        }
+        showSettingsBtn
+      />
+    );
+  }
 
   if (isLoading) {
-    return <MediumCard>Loading...</MediumCard>;
+    return <Loading Card={MediumCard} />;
   }
 
   if (error) {
@@ -81,7 +65,44 @@ const CurrentWeather = () => {
     <MediumCard>
       <Grid container spacing={1}>
         <Grid item xs={6}>
-          {weatherJsx}
+          <Stack spacing={1}>
+            <Typography variant="h3">
+              {weather?.temperature.current.toFixed() ?? "-"}
+              {TEMP_UNIT}
+            </Typography>
+            <Stack direction={"row"}>
+              <ArrowDropUpIcon />
+              <Typography variant="subtitle2" color="text.primary">
+                {weather?.temperature.max.toFixed() ?? "-"}
+                {TEMP_UNIT}
+              </Typography>
+              <ArrowDropDownIcon />
+              <Typography variant="subtitle2" color="text.primary">
+                {weather?.temperature.min.toFixed() ?? "-"}
+                {TEMP_UNIT}
+              </Typography>
+            </Stack>
+            <Typography
+              variant="subtitle2"
+              color="text.secondary"
+              sx={smallFontSize}
+            >
+              Feels like {weather?.temperature.feels_like.toFixed() ?? "-"}
+              {TEMP_UNIT}
+            </Typography>
+            <Typography
+              variant="subtitle2"
+              color="text.secondary"
+              sx={smallFontSize}
+            >
+              Precipitaiton:{" "}
+              {weather?.precipitation_sum.toFixed(1) ??
+              weather?.precipitation_sum === 0
+                ? weather?.precipitation_sum
+                : "-"}{" "}
+              {PRECIPITATION_UNIT}
+            </Typography>
+          </Stack>
         </Grid>
         <Grid item xs={6}>
           {weatherIconJsx}

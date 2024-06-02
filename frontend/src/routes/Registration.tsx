@@ -7,7 +7,7 @@ import { postUserSettings } from "../apis/users";
 
 export const Registration = () => {
   const navigate = useNavigate();
-  const { data: userSettings, isLoading, error } = useGetUserSettings(true);
+  const { data: userSettings, isLoading } = useGetUserSettings(true);
 
   useEffect(() => {
     if (userSettings?.city) {
@@ -26,11 +26,6 @@ export const Registration = () => {
   };
 
   if (isLoading) return <Box>Loading...</Box>;
-
-  if (error) {
-    navigate("/");
-    return <Box>Error!</Box>;
-  }
 
   return (
     <Box sx={{ display: "flex", justifyContent: "center" }}>

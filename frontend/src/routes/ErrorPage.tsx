@@ -1,4 +1,4 @@
-import { ErrorCard } from "../components/error_card/ErrorCard";
+import { ErrorComponent } from "../components/error_component/ErrorComponent";
 
 type ErrorType = {
   title?: string;
@@ -45,7 +45,7 @@ export default function ErrorPage() {
   const details = getErrorDetails(type);
 
   return (
-    <ErrorCard
+    <ErrorComponent
       title={details.title}
       details={details.details}
       navigateBackTo={details.navigateTo ?? "/"}

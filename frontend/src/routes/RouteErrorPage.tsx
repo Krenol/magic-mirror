@@ -1,5 +1,5 @@
 import { useRouteError } from "react-router-dom";
-import { ErrorCard } from "../components/error_card/ErrorCard";
+import { ErrorComponent } from "../components/error_component/ErrorComponent";
 
 type ErrorType = {
   title?: string;
@@ -44,7 +44,7 @@ export default function RouteErrorPage() {
   const details = getErrorDetails(status);
 
   return (
-    <ErrorCard
+    <ErrorComponent
       title={details.title}
       details={details.details}
       navigateBackTo={details.backTo ?? -1}

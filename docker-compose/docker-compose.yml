@@ -13,7 +13,6 @@ services:
       - backend
     env_file:
       - frontend.env
-      - host.env
   backend:
     build:
       context: ../backend
@@ -26,7 +25,6 @@ services:
       - mongo
     env_file:
       - backend.env
-      - host.env
     networks:
       - db
       - app
@@ -53,7 +51,7 @@ services:
     networks:
       - app
     env_file:
-      - host.env
+      - proxy.env
 
 networks:
   db:

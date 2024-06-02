@@ -1,80 +1,32 @@
-import {
-  Box,
-  Button,
-  Typography,
-  Card,
-  CardContent,
-  CardActions,
-  CardMedia,
-  AccordionSummary,
-  AccordionDetails,
-  Accordion,
-} from "@mui/material";
-import { To, useNavigate } from "react-router-dom";
-import errorImage from "../../assets/error.png";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { cardStyle } from "./style";
+import { Button, Stack, Typography } from "@mui/material";
+import { LargeCard, MediumCard, SmallCard } from "../CardFrame";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
-  title?: string;
-  details?: string;
-  navigateBackTo?: To | number;
+  Card: typeof MediumCard | typeof SmallCard | typeof LargeCard;
+  showSettingsBtn: boolean;
+  error: Error | string;
 };
 
-export const ErrorCard = ({ title, details, navigateBackTo = -1 }: Props) => {
+function ErrorCard({ Card, showSettingsBtn, error }: Readonly<Props>) {
   const navigate = useNavigate();
-  const back = () => {
-    if (typeof navigateBackTo === "number") {
-      navigate(navigateBackTo);
-    } else {
-      navigate(navigateBackTo);
-    }
-  };
-
   return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-      }}
-    >
-      <Card sx={cardStyle}>
-        <CardMedia
-          component="img"
-          src={errorImage}
-          alt="Error"
-          loading="lazy"
-          height={200}
-          sx={{ objectFit: "contain" }}
-        />
-        <CardContent>
-          <Typography variant="h5" gutterBottom>
-            {title}
-          </Typography>
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1a-content"
-              id="panel1a-header"
-            >
-              <Typography>Details</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Typography color="text.secondary">{details}</Typography>
-            </AccordionDetails>
-          </Accordion>
-        </CardContent>
-        <CardActions
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <Button variant="outlined" onClick={back}>
-            Back
-          </Button>
-        </CardActions>
-      </Card>
-    </Box>
+    <Card>
+      <Stack spacing={1}>
+        <Typography variant="h6">Unexpected error</Typography>
+        <Typography variant="subtitle2" color={"red"}>
+          {error.toString()}
+        </Typography>
+        {showSettingsBtn && (
+          <Stack alignItems={"center"}>
+            <Button onClick={() => navigate("/settings")} variant="outlined">
+              Settings
+            </Button>
+          </Stack>
+        )}
+      </Stack>
+    </Card>
   );
-};
+}
+
+export default ErrorCard;

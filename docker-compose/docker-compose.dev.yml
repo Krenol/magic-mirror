@@ -17,7 +17,6 @@ services:
       - oauth2-proxy
     env_file:
       - frontend.env
-      - host.env
     networks:
       - nginx
   backend:
@@ -36,11 +35,9 @@ services:
       - ../backend/ssl:/etc/express
     env_file:
       - backend.env
-      - host.env
     networks:
       - nginx
       - db
-      - loki
     environment:
       MONGO_USERNAME: ${MONGO_ROOT_USER}
       MONGO_PASSWORD: ${MONGO_ROOT_PW}
@@ -57,27 +54,6 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PW}
     networks:
       - db
-  # loki:
-  #   hostname: loki
-  #   build:
-  #     context: ../loki
-  #     dockerfile: Dockerfile
-  #   command: -config.file=/etc/loki/local-config.yaml
-  #   networks:
-  #     - loki
-  # grafana:
-  #   hostname: grafana
-  #   build: ../grafana
-  #   environment:
-  #     GF_PATHS_PROVISIONING: /etc/grafana/provisioning
-  #     GF_AUTH_ANONYMOUS_ENABLED: true
-  #     GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
-  #   depends_on:
-  #     - loki
-  #   ports:
-  #     - 3000:3000
-  #   networks:
-  #     - loki
   oauth2-proxy:
     build:
       context: ../oauth2-proxy
@@ -88,9 +64,8 @@ services:
     networks:
       - nginx
     env_file:
-      - host.env
+      - proxy.env
 
 networks:
   nginx:
   db:
-  loki:

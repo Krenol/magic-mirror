@@ -9,7 +9,7 @@ ENV NODE_ENV=${NODE_ENV}
 RUN apk --no-cache add ca-certificates \
     && rm -rf /var/cache/apk/*
 
-COPY rootCa.pem /usr/local/share/ca-certificates/rootCa.crt
+COPY rootCA.pem /usr/local/share/ca-certificates/rootCa.crt
 
 RUN update-ca-certificates
 

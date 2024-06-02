@@ -3,6 +3,7 @@ import { SettingsForm } from "../components/settings_form/SettingsForm";
 import { useNavigate } from "react-router-dom";
 import { useGetUserSettings } from "../apis/user_settings";
 import { patchUserSettings } from "../apis/users";
+import { useEffect } from "react";
 
 export const Settings = () => {
   const navigate = useNavigate();
@@ -13,6 +14,12 @@ export const Settings = () => {
     error,
     refetch,
   } = useGetUserSettings(false);
+
+  useEffect(() => {
+    if (userSettings?.city) {
+      navigate("/registration");
+    }
+  }, [userSettings, navigate]);
 
   const updateSettings = (country: string, city?: string, zipCode?: string) => {
     if (inputHasChanged(country, city, zipCode)) {
@@ -37,7 +44,7 @@ export const Settings = () => {
   const back = () => navigate("/");
 
   if (isLoading) return <Box>Loading...</Box>;
-  if (error) return <Box>Error</Box>;
+
   return (
     <Box sx={{ display: "flex", justifyContent: "center" }}>
       <SettingsForm
@@ -45,7 +52,7 @@ export const Settings = () => {
         defaultCountry={userSettings?.country}
         defaultZipCode={userSettings?.zip_code}
         onBack={back}
-        showBackButton={true}
+        showBackButton={error == null}
         onSend={updateSettings}
       />
     </Box>

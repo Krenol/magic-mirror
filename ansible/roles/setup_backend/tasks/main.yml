@@ -15,6 +15,13 @@
     name: "{{ service_name }}"
     state: stopped
 
+- name: Add the user
+  ansible.builtin.user:
+    name: "{{ user_name }}"
+    shell: /bin/bash
+    groups: sudo,docker
+    append: true
+
 - name: Delete code dirs in working dir
   ansible.builtin.file:
     state: absent
@@ -34,13 +41,6 @@
     path: "{{ work_dir }}/mongo"
     state: directory
 
-- name: Chown dir {{ work_dir }}
-  file:
-    path: "{{ work_dir }}"
-    owner: "{{ ansible_effective_user_id }}"
-    group: "{{ ansible_effective_group_id }}"
-    recurse: true
-
 - name: Install service
   ansible.builtin.template:
     src: "{{ service_name }}.service.j2"
@@ -50,6 +50,9 @@
   ansible.builtin.template:
     src: "{{ item.name }}.j2"
     dest: "{{ work_dir }}/{{ item.dest }}/{{ item.name }}"
+    mode: "0755"
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
   become: true
   with_items:
     - name: .env
@@ -71,6 +74,9 @@
   ansible.builtin.copy:
     src: "{{ ca_cert_path.stdout }}/rootCA.pem"
     dest: "{{ work_dir }}/{{ item }}"
+    mode: "0755"
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
     remote_src: true
   with_items:
     - certs
@@ -80,7 +86,7 @@
 - name: Install certificate
   environment:
     PARENT_DIRECTORY: "{{ work_dir }}"
-    HOSTNAME: "{{ server_fqdn }}}"
+    HOSTNAME: "{{ server_fqdn }}"
   ansible.builtin.command: "{{ item }}"
   with_items:
     - mkcert -key-file $PARENT_DIRECTORY/backend/ssl/express.key -cert-file $PARENT_DIRECTORY/backend/ssl/express.pem $HOSTNAME backend {{ addtional_hostnames }}
@@ -88,8 +94,19 @@
     - cp $PARENT_DIRECTORY/oauth2-proxy/ssl/$HOSTNAME.pem $PARENT_DIRECTORY/oauth2-proxy/ssl/$HOSTNAME.bundle.pem
     - echo "$(cat $PARENT_DIRECTORY/oauth2-proxy/rootCA.pem)" >> $PARENT_DIRECTORY/oauth2-proxy/ssl/$HOSTNAME.bundle.pem
 
-- name: Start service
+- name: Chown dir {{ work_dir }}
+  file:
+    path: "{{ work_dir }}"
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+    mode: "0755"
+    recurse: true
+
+- name: Enable & start service {{ service_name }}
   ansible.builtin.service:
-    #state: started
+    state: "{{ item }}"
     daemon_reload: true
-    #name: "{{ service_name }}"
+    name: "{{ service_name }}"
+  with_items:
+    - reloaded
+    - started

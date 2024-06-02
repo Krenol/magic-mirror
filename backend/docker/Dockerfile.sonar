@@ -1,4 +1,4 @@
-FROM sonarsource/sonar-scanner-cli:5
+FROM sonarsource/sonar-scanner-cli:10
 
 RUN apk add --update nodejs npm
 

@@ -1,12 +1,12 @@
 import { useQuery } from "react-query";
-import { QUERY_PARAMS } from "../models/apis";
+import { QueryParameters } from "../models/apis";
 import { ServerStateKeysEnum } from "../common/statekeys";
 import { buildQuery } from "../common/apis";
 import { fetchJson } from "../common/fetch";
 import { GeoLocation } from "../models/location";
 import { LOCATION_API } from "../constants/api";
 
-export const useGetGeocode = (query_params: QUERY_PARAMS = []) => {
+export const useGetGeocode = (query_params: QueryParameters = []) => {
   return useQuery<GeoLocation, Error>({
     queryKey: [ServerStateKeysEnum.geocode, query_params],
     queryFn: async () =>

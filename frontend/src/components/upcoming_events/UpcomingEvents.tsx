@@ -1,139 +1,157 @@
 import Typography from "@mui/material/Typography";
-import { Box, Grid, Stack } from "@mui/material";
+import { Box, Grid, Skeleton, Stack } from "@mui/material";
 import { MediumCard } from "../CardFrame";
-import { EventList, EventItem } from "../../models/calendar";
+import { EventItem } from "../../models/calendar";
 import { Event } from "./Event";
 import { xSmallFontSize } from "../../assets/styles/theme";
-import React, { ReactElement } from "react";
-import { GetUpcomingEvents } from "./GetUpcomingEvents";
-import { EventTextEnum } from "./types";
-import Loading from "../loading/Loading";
+import React, { ReactElement, useContext, useEffect } from "react";
+import { EventTexts, TodayEventTexts, NextDaysEventTexts } from "./types";
+import { useGetEvents } from "../../apis/events";
+import {
+  getDateInXDays,
+  getISODayEndString,
+  getISODayStartString,
+} from "../../common/dateParser";
+import { TimeContext } from "../../common/TimeContext";
 
 const UpcomingEvents = () => {
-  const upcomingEvents = GetUpcomingEvents();
-
-  const todaysEventItems = GetTodaysEventItems(
-    upcomingEvents.todayEvents,
-    upcomingEvents.dates.today
+  const { newDay } = useContext(TimeContext);
+  const [todaysDate, setTodaysDate] = React.useState<Date>(new Date());
+  const [tomorrowsDate, setTomorrowsDate] = React.useState<Date>(
+    getDateInXDays(1)
+  );
+  const [overmorrowsDate, setOvermorrowsDate] = React.useState<Date>(
+    getDateInXDays(2)
   );
 
-  const tmrwsEventItems = GetFutureEventItems(
-    upcomingEvents.tmrwEvents,
-    upcomingEvents.dates.tmrw
-  );
-
-  const overmrwsEventItems = GetFutureEventItems(
-    upcomingEvents.overmrwEvents,
-    upcomingEvents.dates.overmrw
-  );
-
-  const boxContent = (
-    <Box>
-      <Typography variant="body1">TODAY</Typography>
-      <Stack spacing={1} direction={"column"}>
-        {todaysEventItems}
-      </Stack>
-    </Box>
-  );
-
-  const cardContent = (
-    <Grid container direction="column" spacing={1} height={"100%"}>
-      <Grid item xs={6} height={"50%"}>
-        <Typography fontWeight={"bold"} fontSize={xSmallFontSize}>
-          TOMORROW
-        </Typography>
-        <Stack direction={"column"}>{tmrwsEventItems}</Stack>
-      </Grid>
-      <Grid item xs={6} height={"50%"}>
-        <Typography fontWeight={"bold"} fontSize={xSmallFontSize}>
-          OVERMORROW
-        </Typography>
-        <Stack direction={"column"}>{overmrwsEventItems}</Stack>
-      </Grid>
-    </Grid>
-  );
-
-  if (upcomingEvents.loading) {
-    return <Loading Card={MediumCard} />;
-  }
-
-  if (upcomingEvents.errors.filter(Boolean).length > 0) {
-    return <MediumCard>Error!</MediumCard>;
-  }
+  useEffect(() => {
+    if (newDay) {
+      setTodaysDate(new Date());
+      setTomorrowsDate(getDateInXDays(1));
+      setOvermorrowsDate(getDateInXDays(2));
+    }
+  }, [newDay, setTodaysDate, setTomorrowsDate, setOvermorrowsDate]);
 
   return (
     <MediumCard>
       <Grid container spacing={1} height={"100%"}>
         <Grid item xs={6}>
-          {boxContent}
+          <Box>
+            <Typography variant="body1">TODAY</Typography>
+            <Stack spacing={1} direction={"column"}>
+              <EventsOnDay
+                date={todaysDate}
+                maxEvents={2}
+                eventTexts={TodayEventTexts}
+              />
+            </Stack>
+          </Box>
         </Grid>
         <Grid item xs={6}>
-          {cardContent}
+          <Grid container direction="column" spacing={1} height={"100%"}>
+            <Grid item xs={6} height={"50%"}>
+              <Typography fontWeight={"bold"} fontSize={xSmallFontSize}>
+                TOMORROW
+              </Typography>
+              <Stack direction={"column"}>
+                <EventsOnDay
+                  date={tomorrowsDate}
+                  maxEvents={1}
+                  eventTexts={NextDaysEventTexts}
+                />
+              </Stack>
+            </Grid>
+            <Grid item xs={6} height={"50%"}>
+              <Typography fontWeight={"bold"} fontSize={xSmallFontSize}>
+                OVERMORROW
+              </Typography>
+              <Stack direction={"column"}>
+                <EventsOnDay
+                  date={overmorrowsDate}
+                  maxEvents={1}
+                  eventTexts={NextDaysEventTexts}
+                />
+              </Stack>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     </MediumCard>
   );
 };
 
-const GetTodaysEventItems = (
-  events: EventList | undefined,
-  date: Date
-): ReactElement | ReactElement[] => {
-  const eventCount = events?.count ?? 0;
-  if (eventCount === 0) return NoEventsItem(EventTextEnum.noEventsToday);
-  if (eventCount <= 2)
-    return events!.list.map((ev) => (
+const EventsOnDay = ({
+  date,
+  maxEvents,
+  eventTexts,
+}: {
+  date: Date;
+  maxEvents: number;
+  eventTexts: EventTexts;
+}): ReactElement | ReactElement[] => {
+  const {
+    data: events,
+    isLoading,
+    error,
+  } = useGetEvents([
+    {
+      name: "minTime",
+      value: encodeURIComponent(getISODayStartString(date, true)),
+    },
+    {
+      name: "maxTime",
+      value: encodeURIComponent(getISODayEndString(date, true)),
+    },
+  ]);
+  if (isLoading) {
+    return (
+      <React.Fragment>
+        {Array.from({ length: maxEvents }, (_, index) => (
+          <Skeleton key={index} variant="rounded" />
+        ))}
+      </React.Fragment>
+    );
+  } else if (error) {
+    return <NoEventsItem timeFrame={"Error while loading events"} />;
+  } else if (events === undefined || events.count === 0) {
+    return <NoEventsItem timeFrame={eventTexts.noEvents} />;
+  } else if (events.count <= maxEvents) {
+    return events.list.map((ev) => (
       <Event item={ev} date={date} key={ev.start} />
     ));
-  const summary = EventTextEnum.manyToday.replace("{{X}}", `${eventCount - 1}`);
+  }
+  const summary = eventTexts.manyEvents.replace(
+    "{{X}}",
+    `${events.count - (maxEvents - 1)}`
+  );
+  const summaryEventList = events.list.slice(maxEvents - 1);
   const eventItem: EventItem = {
     summary,
     description: "",
-    start: events!.list[1].start,
-    end: events!.list[eventCount - 1].end,
+    start: summaryEventList[0].start,
+    end: getMaxDateEndDate(summaryEventList).toISOString(),
     location: "",
-    allDay: false,
-    multiDays: false,
+    allDay: summaryEventList.some((ev) => ev.allDay),
+    multiDays: summaryEventList.some((ev) => ev.multiDays),
     merged: true,
   };
+  const displayEventList = events.list.slice(0, maxEvents - 1);
   return (
     <React.Fragment>
-      <Event item={events!.list[0]} date={date} key={events!.list[0].start} />
+      {displayEventList.map((ev) => (
+        <Event item={ev} date={date} key={ev.summary} />
+      ))}
       <Event item={eventItem} date={date} key={eventItem.start} />
     </React.Fragment>
   );
 };
 
-const GetFutureEventItems = (
-  events: EventList | undefined,
-  date: Date
-): ReactElement => {
-  const eventCount = events?.count ?? 0;
-  if (eventCount === 0) return NoEventsItem(EventTextEnum.noEvents);
-  if (eventCount === 1)
-    return (
-      <Event item={events!.list[0]} date={date} key={events!.list[0].start} />
-    );
-  const summary = EventTextEnum.many.replace("{{X}}", `${eventCount}`);
-  const eventItem: EventItem = {
-    summary,
-    description: "",
-    start: events!.list[0].start,
-    end: getMaxDateEndDate(events!).toISOString(),
-    location: "",
-    allDay: events!.list.some((ev) => ev.allDay),
-    multiDays: events!.list.some((ev) => ev.multiDays),
-    merged: true,
-  };
-  return <Event item={eventItem} date={date} key={eventItem.start} />;
-};
-
-const getMaxDateEndDate = (events: EventList): Date => {
-  const endDates = events.list.map((item) => new Date(item.end).getTime());
+const getMaxDateEndDate = (events: Array<EventItem>): Date => {
+  const endDates = events.map((item) => new Date(item.end).getTime());
   return new Date(Math.max(...endDates));
 };
 
-const NoEventsItem = (timeFrame: EventTextEnum): ReactElement => {
+const NoEventsItem = ({ timeFrame }: { timeFrame: string }): ReactElement => {
   return (
     <Typography color="text.secondary" sx={xSmallFontSize}>
       {timeFrame}

@@ -1,23 +1,14 @@
-import { EventList } from "../../models/calendar";
-
-export type Dates = {
-  today: Date;
-  tmrw: Date;
-  overmrw: Date;
+export type EventTexts = {
+  noEvents: string;
+  manyEvents: string;
 };
 
-export type UpcomingEventObject = {
-  todayEvents: EventList | undefined;
-  tmrwEvents: EventList | undefined;
-  overmrwEvents: EventList | undefined;
-  loading: boolean;
-  errors: Array<Error | null>;
-  dates: Dates;
+export const TodayEventTexts: EventTexts = {
+  noEvents: "No more events today",
+  manyEvents: "{{X}} more events",
 };
 
-export enum EventTextEnum {
-  noEventsToday = "No more events today",
-  noEvents = "No events",
-  manyToday = "{{X}} more events",
-  many = "{{X}} events",
-}
+export const NextDaysEventTexts: EventTexts = {
+  noEvents: "No events",
+  manyEvents: "{{X}} events",
+};

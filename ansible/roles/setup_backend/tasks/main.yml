@@ -40,11 +40,13 @@
   ansible.builtin.file:
     path: "{{ work_dir }}/mongo"
     state: directory
+    mode: "0755"
 
 - name: Install service
   ansible.builtin.template:
     src: "{{ service_name }}.service.j2"
     dest: "/etc/systemd/system/{{ service_name }}.service"
+    mode: "0644"
 
 - name: Install env files
   ansible.builtin.template:
@@ -68,6 +70,7 @@
 
 - name: Get path to mkcert root CA
   ansible.builtin.command: mkcert -CAROOT
+  changed_when: false
   register: ca_cert_path
 
 - name: Copy CA cert
@@ -88,6 +91,7 @@
     PARENT_DIRECTORY: "{{ work_dir }}"
     HOSTNAME: "{{ server_fqdn }}"
   ansible.builtin.command: "{{ item }}"
+  changed_when: true
   with_items:
     - mkcert -key-file $PARENT_DIRECTORY/backend/ssl/express.key -cert-file $PARENT_DIRECTORY/backend/ssl/express.pem $HOSTNAME backend {{ addtional_hostnames }}
     - mkcert -key-file $PARENT_DIRECTORY/oauth2-proxy/ssl/$HOSTNAME.key -cert-file $PARENT_DIRECTORY/oauth2-proxy/ssl/$HOSTNAME.pem $HOSTNAME {{ addtional_hostnames }}

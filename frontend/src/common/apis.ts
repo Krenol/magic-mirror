@@ -1,7 +1,7 @@
-import { QUERY_PARAM, QUERY_PARAMS } from "../models/apis";
+import { QUERY_PARAM, QueryParameters } from "../models/apis";
 
 export const buildQuery = async (
-  query_params: QUERY_PARAMS = []
+  query_params: QueryParameters = []
 ): Promise<string> => {
   if (query_params.length === 0) return "";
   const queryParams = query_params

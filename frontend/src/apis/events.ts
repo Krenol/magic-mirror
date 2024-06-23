@@ -3,10 +3,10 @@ import { buildQuery } from "../common/apis";
 import { fetchJson } from "../common/fetch";
 import { ServerStateKeysEnum } from "../common/statekeys";
 import { EVENTS_API, REFETCH_INTERVAL } from "../constants/api";
-import { QUERY_PARAMS } from "../models/apis";
+import { QueryParameters } from "../models/apis";
 import { EventList } from "../models/calendar";
 
-export const useGetEvents = (query_params: QUERY_PARAMS = []) => {
+export const useGetEvents = (query_params: QueryParameters = []) => {
   return useQuery<EventList, Error>({
     queryKey: [ServerStateKeysEnum.events, query_params],
     queryFn: async () =>

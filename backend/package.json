@@ -59,7 +59,7 @@
     "mocha": "^10.3.0",
     "nodemon": "^3.1.0",
     "prettier": "^3.2.5",
-    "sonarqube-scanner": "^3.3.0",
+    "sonarqube-scanner": "^4.0.1",
     "supertest": "^6.3.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.2",

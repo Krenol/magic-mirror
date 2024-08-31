@@ -1,11 +1,11 @@
-import { ALLOWED_URLS } from "config";
-import { TResponse } from "models/api/fetch";
-import { LOGGER } from "services/loggers";
+import { ALLOWED_URLS } from 'config';
+import { TResponse } from 'models/api/fetch';
+import { LOGGER } from 'services/loggers';
 
 export const fetchJson = async (
   url: string,
   options: RequestInit = {},
-  logUrl: string | undefined = undefined
+  logUrl: string | undefined = undefined,
 ): Promise<TResponse> => {
   LOGGER.info(`Calling API ${logUrl ?? url} to get JSON`);
   return checkInputURL(url)
@@ -36,7 +36,7 @@ const parseJsonResponse = async (res: Response): Promise<TResponse> => {
 export const fetchBuffer = async (
   url: string,
   options: any = {},
-  logUrl: string | undefined = undefined
+  logUrl: string | undefined = undefined,
 ): Promise<TResponse> => {
   LOGGER.info(`Calling API ${logUrl ?? url} to get BLOB`);
   return checkInputURL(url)
@@ -64,7 +64,5 @@ const isAllowedURL = async (url: string): Promise<boolean> => {
 
 const checkUrlAllowedResponse = async (isAllowed: boolean, url: string) => {
   if (isAllowed) return;
-  throw new Error(
-    `Invalid URL given! URL ${url} is not part of the allowed URL list!`
-  );
+  throw new Error(`Invalid URL given! URL ${url} is not part of the allowed URL list!`);
 };

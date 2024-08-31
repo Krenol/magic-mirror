@@ -1,145 +1,135 @@
 export const event_schema = {
-  $schema: "http://json-schema.org/draft-04/schema#",
-  type: "object",
+  $schema: 'http://json-schema.org/draft-04/schema#',
+  type: 'object',
   properties: {
     kind: {
-      type: "string",
+      type: 'string',
     },
     etag: {
-      type: "string",
+      type: 'string',
     },
     id: {
-      type: "string",
+      type: 'string',
     },
     status: {
-      type: "string",
+      type: 'string',
     },
     htmlLink: {
-      type: "string",
+      type: 'string',
     },
     created: {
-      type: "string",
+      type: 'string',
     },
     updated: {
-      type: "string",
+      type: 'string',
     },
     summary: {
-      type: "string",
+      type: 'string',
     },
     location: {
-      type: "string",
+      type: 'string',
     },
     creator: {
-      type: "object",
+      type: 'object',
       properties: {
         email: {
-          type: "string",
+          type: 'string',
         },
         self: {
-          type: "boolean",
+          type: 'boolean',
         },
       },
-      required: ["email"],
+      required: ['email'],
     },
     organizer: {
-      type: "object",
+      type: 'object',
       properties: {
         email: {
-          type: "string",
+          type: 'string',
         },
         self: {
-          type: "boolean",
+          type: 'boolean',
         },
       },
-      required: ["email"],
+      required: ['email'],
     },
     start: {
-      type: "object",
+      type: 'object',
       properties: {
         dateTime: {
-          type: "string",
+          type: 'string',
         },
         timeZone: {
-          type: "string",
+          type: 'string',
         },
       },
-      required: ["dateTime", "timeZone"],
+      required: ['dateTime', 'timeZone'],
     },
     end: {
-      type: "object",
+      type: 'object',
       properties: {
         dateTime: {
-          type: "string",
+          type: 'string',
         },
         timeZone: {
-          type: "string",
+          type: 'string',
         },
       },
-      required: ["dateTime", "timeZone"],
+      required: ['dateTime', 'timeZone'],
     },
     iCalUID: {
-      type: "string",
+      type: 'string',
     },
     sequence: {
-      type: "integer",
+      type: 'integer',
     },
     attendees: {
-      type: "array",
+      type: 'array',
       items: [
         {
-          type: "object",
+          type: 'object',
           properties: {
             email: {
-              type: "string",
+              type: 'string',
             },
             responseStatus: {
-              type: "string",
+              type: 'string',
             },
           },
-          required: ["email", "responseStatus"],
+          required: ['email', 'responseStatus'],
         },
         {
-          type: "object",
+          type: 'object',
           properties: {
             email: {
-              type: "string",
+              type: 'string',
             },
             organizer: {
-              type: "boolean",
+              type: 'boolean',
             },
             self: {
-              type: "boolean",
+              type: 'boolean',
             },
             responseStatus: {
-              type: "string",
+              type: 'string',
             },
           },
-          required: ["email", "organizer", "responseStatus"],
+          required: ['email', 'organizer', 'responseStatus'],
         },
       ],
     },
     reminders: {
-      type: "object",
+      type: 'object',
       properties: {
         useDefault: {
-          type: "boolean",
+          type: 'boolean',
         },
       },
-      required: ["useDefault"],
+      required: ['useDefault'],
     },
     eventType: {
-      type: "string",
+      type: 'string',
     },
   },
-  required: [
-    "kind",
-    "etag",
-    "id",
-    "location",
-    "creator",
-    "organizer",
-    "start",
-    "end",
-    "iCalUID",
-  ],
+  required: ['kind', 'etag', 'id', 'location', 'creator', 'organizer', 'start', 'end', 'iCalUID'],
 };

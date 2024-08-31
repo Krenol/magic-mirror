@@ -1,40 +1,40 @@
 export const weather_current_schema = {
-  $schema: "http://json-schema.org/draft-04/schema#",
-  type: "object",
+  $schema: 'http://json-schema.org/draft-04/schema#',
+  type: 'object',
   properties: {
     latitude: {
-      type: "number",
+      type: 'number',
     },
     longitude: {
-      type: "number",
+      type: 'number',
     },
     temperature: {
-      type: "number",
+      type: 'number',
     },
     windspeed: {
-      type: "number",
+      type: 'number',
     },
     weathercode: {
-      type: "integer",
+      type: 'integer',
     },
     update_time: {
-      type: "string",
+      type: 'string',
     },
     weather_icon: {
-      type: "string",
+      type: 'string',
     },
     description: {
-      type: "string",
+      type: 'string',
     },
   },
   required: [
-    "latitude",
-    "longitude",
-    "temperature",
-    "windspeed",
-    "weathercode",
-    "update_time",
-    "weather_icon",
-    "description",
+    'latitude',
+    'longitude',
+    'temperature',
+    'windspeed',
+    'weathercode',
+    'update_time',
+    'weather_icon',
+    'description',
   ],
 };

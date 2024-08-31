@@ -1,4 +1,4 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, model, Document } from 'mongoose';
 
 export interface IAllowedUserEmail extends Document {
   email: string;
@@ -12,7 +12,4 @@ const AllowedUserEmail = new Schema({
   },
 });
 
-export const DtoAllowedUserEmail = model(
-  "allowed_user_email",
-  AllowedUserEmail,
-);
+export const DtoAllowedUserEmail = model('allowed_user_email', AllowedUserEmail);

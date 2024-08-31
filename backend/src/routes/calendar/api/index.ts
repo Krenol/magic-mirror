@@ -1,60 +1,68 @@
-import { CALENDAR_CONFIG } from "config";
-import { NextFunction, Request, Response } from "express";
-import {
-  getCalendarEvents,
-  parseRetrievedEvents,
-} from "routes/calendar/services";
-import { ApiError } from "models/api/api_error";
-import { EventList, EventRequestParams } from "models/api/calendar";
-import {
-  getISODayEndString,
-  getISODayStartString,
-  isSameDate,
-  isToday,
-} from "services/dateParser";
-import { LOGGER } from "services/loggers";
+import { CALENDAR_CONFIG } from 'config';
+import { NextFunction, Request, Response } from 'express';
+import { parseRetrievedEvents } from 'routes/calendar/services';
+import { ApiError } from 'models/api/api_error';
+import { getISODayEndString, getISODayStartString, isToday } from 'services/dateParser';
+import { LOGGER } from 'services/loggers';
+import { calendar_v3, google } from 'googleapis';
+import { getOAuth2ClientForUser } from 'services/google';
 
-export const allCalendarEvents = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const count = await parseCountQueryParameter(req);
-  const minTime = await parseMinTimeParam(req);
-  const maxTime = await parseMaxTimeQueryParam(req);
-  return getRequestParams(count, minTime, maxTime)
-    .then((params) => getCalendarEvents(req, params))
-    .then(parseRetrievedEvents)
-    .then((events) => res.status(200).json(events))
-    .catch((err) =>
-      next(new ApiError("Error while retrieving calendar events", err, 500))
-    );
+export const allCalendarEvents = async (req: Request, res: Response, next: NextFunction) => {
+  const auth = await getOAuth2ClientForUser(req.headers);
+  const calendar = google.calendar({
+    version: 'v3',
+    auth,
+  } as calendar_v3.Options);
+  const maxResults = await parseCountQueryParameter(req);
+  const timeMin = await parseMinTimeParam(req);
+  const timeMax = await parseMaxTimeQueryParam(req);
+  calendar.events
+    .list({
+      calendarId: 'primary',
+      timeMin,
+      timeMax,
+      maxResults,
+      singleEvents: true,
+      orderBy: 'startTime',
+    })
+    .then((events) => parseRetrievedEvents(events.data))
+    .then((parsedEvents) => res.status(200).json(parsedEvents))
+    .catch((err) => {
+      LOGGER.error(err);
+      next(new ApiError('Error while retrieving calendar events', err, 500));
+    });
 };
 
-export const eventsAtDate = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const count = await parseCountQueryParameter(req);
-  const date = await parseDateQueryParam(new Date(req.params.date.toString()));
-  const maxTime = await getISODayEndString(
-    new Date(req.params.date.toString())
-  );
-  return getRequestParams(count, date, maxTime)
-    .then((params) => getCalendarEvents(req, params))
-    .then(parseRetrievedEvents)
-    .then((ev) => applyDateFilter(ev, date))
-    .then((events) => res.status(200).json(events))
-    .catch((err) =>
-      next(new ApiError("Error while retrieving calendar events", err, 500))
-    );
+export const eventsAtDate = async (req: Request, res: Response, next: NextFunction) => {
+  const auth = await getOAuth2ClientForUser(req.headers);
+  const calendar = google.calendar({
+    version: 'v3',
+    auth,
+  } as calendar_v3.Options);
+  const maxResults = await parseCountQueryParameter(req);
+  const timeMin = await parseDateQueryParam(new Date(req.params.date.toString()));
+  const timeMax = await getISODayEndString(new Date(req.params.date.toString()));
+  calendar.events
+    .list({
+      calendarId: 'primary',
+      timeMin,
+      timeMax,
+      maxResults,
+      singleEvents: true,
+      orderBy: 'startTime',
+    })
+    .then((events) => {
+      LOGGER.info(events.data);
+      return events;
+    })
+    .then((events) => {
+      res.status(200).json(parseRetrievedEvents(events.data));
+    })
+    .catch((err) => next(new ApiError('Error while retrieving calendar events', err, 500)));
 };
 
-const parseCountQueryParameter = async (req: Request): Promise<string> => {
-  return (
-    (req.query.count as string) ?? CALENDAR_CONFIG.DEFAULT_EVENT_COUNT
-  ).toString();
+const parseCountQueryParameter = async (req: Request): Promise<number> => {
+  return parseInt((req.query.count as string) ?? CALENDAR_CONFIG.DEFAULT_EVENT_COUNT);
 };
 
 const parseMinTimeParam = async (req: Request): Promise<string> => {
@@ -62,36 +70,11 @@ const parseMinTimeParam = async (req: Request): Promise<string> => {
   return new Date().toISOString();
 };
 
-const parseMaxTimeQueryParam = async (
-  req: Request
-): Promise<string | undefined> => {
+const parseMaxTimeQueryParam = async (req: Request): Promise<string | undefined> => {
   if (req.query.maxTime) return (req.query.maxTime as string).toString();
-};
-
-const getRequestParams = async (
-  count: string,
-  minTime: string,
-  maxTime?: string
-): Promise<EventRequestParams> => {
-  return {
-    maxResults: parseInt(count),
-    minTime,
-    maxTime,
-  };
 };
 
 const parseDateQueryParam = async (date: Date): Promise<string> => {
   if (await isToday(date)) return new Date().toISOString();
   return await getISODayStartString(date);
-};
-
-const applyDateFilter = async (events: EventList, date: string) => {
-  LOGGER.info(`Filter for events with startDate ${date}`);
-  const ev = events.list.filter((x) =>
-    isSameDate(new Date(date), new Date(x.start))
-  );
-  return {
-    count: ev.length,
-    list: ev,
-  };
 };

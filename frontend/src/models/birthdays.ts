@@ -1,6 +1,5 @@
 export type BirthdayList = {
   count: number;
-  iconLink: string;
   list: Array<Birthday>;
 };
 

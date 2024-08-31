@@ -1,54 +1,39 @@
-import { ENABLE_HTTPS, SERVER_PORT, mongoDbData } from "config";
-import { HttpServer } from "services/server/http_server";
-import { HttpsServer } from "services/server/https_server";
-import { default as WeatherRoute } from "routes/weather";
-import { default as CalendarRoute } from "routes/calendar";
-import { default as BirthdaysRoute } from "routes/birthdays";
-import { default as UsersRoute } from "routes/users";
-import { default as LocationRoute } from "routes/location";
-import { NextFunction, Request, Response } from "express";
-import { ApiError } from "models/api/api_error";
-import { EXPRESS_ERROR_LOGGER } from "services/loggers";
-import { MongoDb } from "services/database/mongodb";
+import { ENABLE_HTTPS, SERVER_PORT, mongoDbData } from 'config';
+import { HttpServer } from 'services/server/http_server';
+import { HttpsServer } from 'services/server/https_server';
+import { default as WeatherRoute } from 'routes/weather';
+import { default as CalendarRoute } from 'routes/calendar';
+import { default as BirthdaysRoute } from 'routes/birthdays';
+import { default as UsersRoute } from 'routes/users';
+import { default as LocationRoute } from 'routes/location';
+import { NextFunction, Request, Response } from 'express';
+import { ApiError } from 'models/api/api_error';
+import { EXPRESS_ERROR_LOGGER } from 'services/loggers';
+import { MongoDb } from 'services/database/mongodb';
 
 const mongoDb: MongoDb = new MongoDb(mongoDbData);
-const server = ENABLE_HTTPS
-  ? new HttpsServer(mongoDb, SERVER_PORT)
-  : new HttpServer(mongoDb, SERVER_PORT);
+const server = ENABLE_HTTPS ? new HttpsServer(mongoDb, SERVER_PORT) : new HttpServer(mongoDb, SERVER_PORT);
 
-server.app.use("/api/weather", WeatherRoute);
-server.app.use("/api/calendar", CalendarRoute);
-server.app.use("/api/birthdays", BirthdaysRoute);
+server.app.use('/api/weather', WeatherRoute);
+server.app.use('/api/calendar', CalendarRoute);
+server.app.use('/api/birthdays', BirthdaysRoute);
 
-server.app.use("/api/users", UsersRoute);
-server.app.use("/api/location", LocationRoute);
+server.app.use('/api/users', UsersRoute);
+server.app.use('/api/location', LocationRoute);
 
 // ERROR HANDLING
 server.app.use(EXPRESS_ERROR_LOGGER);
 
 const isApiError = (err: Error): err is ApiError => {
-  return (
-    (err as ApiError).status !== undefined &&
-    (err as ApiError).message !== undefined
-  );
+  return (err as ApiError).status !== undefined && (err as ApiError).message !== undefined;
 };
 
-server.app.use(
-  (
-    err: ApiError | Error,
-    _req: Request,
-    res: Response,
-    _next: NextFunction
-  ) => {
-    if (isApiError(err)) {
-      return res.status(err.status).json({ error: err.message }).end();
-    }
-    return res
-      .status(500)
-      .json({ error: "Oops... something unexpected happened!" })
-      .end();
+server.app.use((err: ApiError | Error, _req: Request, res: Response, _next: NextFunction) => {
+  if (isApiError(err)) {
+    return res.status(err.status).json({ error: err.message }).end();
   }
-);
+  return res.status(500).json({ error: 'Oops... something unexpected happened!' }).end();
+});
 
 server.start();
 

@@ -1,16 +1,16 @@
-import assert from "assert";
-import request from "supertest";
-import app from "index";
-import { hasJsonSchemaValidationErrors } from "services/json_schema";
-import { weather_current_schema } from "./json_schemas/current_weather.test";
-import { weather_forecast_schema } from "./json_schemas/weather_forecast.test";
+import assert from 'assert';
+import request from 'supertest';
+import app from 'index';
+import { hasJsonSchemaValidationErrors } from 'services/json_schema';
+import { weather_current_schema } from './json_schemas/current_weather.test';
+import { weather_forecast_schema } from './json_schemas/weather_forecast.test';
 
-const ROUTE = "/weather";
+const ROUTE = '/weather';
 
 describe(`Unit test the ${ROUTE} route`, () => {
   const icon_params = {
-    ok_icon: "01d",
-    fault_icon: "00d",
+    ok_icon: '01d',
+    fault_icon: '00d',
   };
 
   const location_params = {
@@ -42,23 +42,16 @@ describe(`Unit test the ${ROUTE} route`, () => {
   describe(`Unit testing the ${ROUTE}/current route`, () => {
     it(`should return OK status for ok test params`, async () => {
       return request(app)
-        .get(
-          `${ROUTE}/current?latitude=${location_params.ok_latitude}&longitude=${location_params.ok_longitude}`,
-        )
+        .get(`${ROUTE}/current?latitude=${location_params.ok_latitude}&longitude=${location_params.ok_longitude}`)
         .then((response) => {
           assert.equal(response.status, 200);
-          return hasJsonSchemaValidationErrors(
-            weather_current_schema,
-            response.body,
-          );
+          return hasJsonSchemaValidationErrors(weather_current_schema, response.body);
         })
         .then((result) => assert.equal(result, false));
     });
     it(`should return 400 status for bad test params`, async () => {
       return request(app)
-        .get(
-          `${ROUTE}/current?latitude=${location_params.fault_latitude}&longitude=${location_params.fault_longitude}`,
-        )
+        .get(`${ROUTE}/current?latitude=${location_params.fault_latitude}&longitude=${location_params.fault_longitude}`)
         .then((response) => assert.equal(response.status, 400));
     });
   });
@@ -69,10 +62,7 @@ describe(`Unit test the ${ROUTE} route`, () => {
         `${ROUTE}/forecast?latitude=${location_params.ok_latitude}&longitude=${location_params.ok_longitude}&days=${forecast_params.okay_days}`,
       );
       assert.equal(response.status, 200);
-      const result = await hasJsonSchemaValidationErrors(
-        weather_forecast_schema,
-        response.body,
-      );
+      const result = await hasJsonSchemaValidationErrors(weather_forecast_schema, response.body);
       return assert.equal(result, false);
     });
     it(`should return 400 status for bad test params`, async () => {

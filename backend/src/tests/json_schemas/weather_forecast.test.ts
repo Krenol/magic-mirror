@@ -1,147 +1,147 @@
 export const weather_forecast_schema = {
-  $schema: "http://json-schema.org/draft-04/schema#",
-  type: "object",
+  $schema: 'http://json-schema.org/draft-04/schema#',
+  type: 'object',
   properties: {
     latitude: {
-      type: "number",
+      type: 'number',
     },
     longitude: {
-      type: "number",
+      type: 'number',
     },
     days: {
-      type: "integer",
+      type: 'integer',
     },
     forecast: {
-      type: "array",
+      type: 'array',
       items: [
         {
-          type: "object",
+          type: 'object',
           properties: {
             date: {
-              type: "string",
+              type: 'string',
             },
             temperature: {
-              type: "object",
+              type: 'object',
               properties: {
                 min: {
-                  type: "number",
+                  type: 'number',
                 },
                 max: {
-                  type: "number",
+                  type: 'number',
                 },
                 unit: {
-                  type: "string",
+                  type: 'string',
                 },
               },
-              required: ["min", "max", "unit"],
+              required: ['min', 'max', 'unit'],
             },
             precipitation: {
-              type: "object",
+              type: 'object',
               properties: {
                 amount: {
-                  type: ["integer", "number"],
+                  type: ['integer', 'number'],
                 },
                 hours: {
-                  type: "integer",
+                  type: 'integer',
                 },
                 amount_unit: {
-                  type: "string",
+                  type: 'string',
                 },
               },
-              required: ["amount", "hours", "amount_unit"],
+              required: ['amount', 'hours', 'amount_unit'],
             },
             weather_icon: {
-              type: "string",
+              type: 'string',
             },
             sunrise: {
-              type: "string",
+              type: 'string',
             },
             sunset: {
-              type: "string",
+              type: 'string',
             },
             weathercode: {
-              type: "integer",
+              type: 'integer',
             },
             description: {
-              type: "string",
+              type: 'string',
             },
           },
           required: [
-            "date",
-            "temperature",
-            "precipitation",
-            "weather_icon",
-            "sunrise",
-            "sunset",
-            "weathercode",
-            "description",
+            'date',
+            'temperature',
+            'precipitation',
+            'weather_icon',
+            'sunrise',
+            'sunset',
+            'weathercode',
+            'description',
           ],
         },
         {
-          type: "object",
+          type: 'object',
           properties: {
             date: {
-              type: "string",
+              type: 'string',
             },
             temperature: {
-              type: "object",
+              type: 'object',
               properties: {
                 min: {
-                  type: ["integer", "number"],
+                  type: ['integer', 'number'],
                 },
                 max: {
-                  type: ["integer", "number"],
+                  type: ['integer', 'number'],
                 },
                 unit: {
-                  type: "string",
+                  type: 'string',
                 },
               },
-              required: ["min", "max", "unit"],
+              required: ['min', 'max', 'unit'],
             },
             precipitation: {
-              type: "object",
+              type: 'object',
               properties: {
                 amount: {
-                  type: ["integer", "number"],
+                  type: ['integer', 'number'],
                 },
                 hours: {
-                  type: "integer",
+                  type: 'integer',
                 },
                 amount_unit: {
-                  type: "string",
+                  type: 'string',
                 },
               },
-              required: ["amount", "hours", "amount_unit"],
+              required: ['amount', 'hours', 'amount_unit'],
             },
             weather_icon: {
-              type: "string",
+              type: 'string',
             },
             sunrise: {
-              type: "string",
+              type: 'string',
             },
             sunset: {
-              type: "string",
+              type: 'string',
             },
             weathercode: {
-              type: "integer",
+              type: 'integer',
             },
             description: {
-              type: "string",
+              type: 'string',
             },
           },
           required: [
-            "date",
-            "temperature",
-            "precipitation",
-            "weather_icon",
-            "sunrise",
-            "sunset",
-            "weathercode",
-            "description",
+            'date',
+            'temperature',
+            'precipitation',
+            'weather_icon',
+            'sunrise',
+            'sunset',
+            'weathercode',
+            'description',
           ],
         },
       ],
     },
   },
-  required: ["latitude", "longitude", "days", "forecast"],
+  required: ['latitude', 'longitude', 'days', 'forecast'],
 };

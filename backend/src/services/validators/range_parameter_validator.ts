@@ -1,10 +1,7 @@
-import { Request, Response, NextFunction } from "express";
-import {
-  ParameterValidator,
-  EParamType,
-} from "services/validators/parameter_validator";
-import { LOGGER } from "services/loggers";
-import { ApiError } from "models/api/api_error";
+import { Request, Response, NextFunction } from 'express';
+import { ParameterValidator, EParamType } from 'services/validators/parameter_validator';
+import { LOGGER } from 'services/loggers';
+import { ApiError } from 'models/api/api_error';
 
 export type IRange = {
   min: number;
@@ -14,12 +11,7 @@ export type IRange = {
 export class RangeParameterValidator extends ParameterValidator {
   private readonly _range: IRange;
 
-  constructor(
-    paramName: string,
-    range: IRange,
-    type: EParamType,
-    required = false,
-  ) {
+  constructor(paramName: string, range: IRange, type: EParamType, required = false) {
     super(paramName, type, required);
     this._range = range;
   }
@@ -30,9 +22,7 @@ export class RangeParameterValidator extends ParameterValidator {
       const param = parseInt(paramStr);
       const valid = param >= this._range.min && param <= this._range.max;
       if (valid) {
-        LOGGER.info(
-          `${this._type} parameter ${this._paramName} is okay - continuing`,
-        );
+        LOGGER.info(`${this._type} parameter ${this._paramName} is okay - continuing`);
         return next();
       }
       LOGGER.error(
@@ -46,12 +36,6 @@ export class RangeParameterValidator extends ParameterValidator {
         ),
       );
     }
-    return next(
-      new ApiError(
-        `${this._type} parameter ${this._paramName} is not defined!`,
-        undefined,
-        400,
-      ),
-    );
+    return next(new ApiError(`${this._type} parameter ${this._paramName} is not defined!`, undefined, 400));
   }
 }

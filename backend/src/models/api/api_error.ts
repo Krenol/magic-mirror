@@ -4,7 +4,7 @@ export class ApiError extends Error {
 
   constructor(message: string, thrownError?: Error, status = 500) {
     super(message);
-    this.name = "ApiError";
+    this.name = 'ApiError';
     this._thrownError = thrownError ? thrownError : new Error(message);
     this._status = status;
   }

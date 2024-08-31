@@ -1,4 +1,4 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, model, Document } from 'mongoose';
 
 export interface IDtoUserSettings extends Document {
   country: string;
@@ -28,7 +28,7 @@ const UserSettingsSchema = new Schema(
       required: false,
     },
   },
-  { strict: false }
+  { strict: false },
 );
 
-export const DtoUserSettings = model("userSettings", UserSettingsSchema);
+export const DtoUserSettings = model('userSettings', UserSettingsSchema);

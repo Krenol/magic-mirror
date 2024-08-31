@@ -1,21 +1,11 @@
-import { Request, Response } from "express";
-import {
-  FORECAST_FIELDS,
-  MAX_FORECAST_DAYS,
-  STD_API_QUERY,
-  WEATHER_API_URL,
-} from "config";
-import { ApiError } from "models/api/api_error";
-import { TResponse } from "models/api/fetch";
-import { WeatherForecastResource, WeatherForecast } from "models/api/weather";
-import {
-  getWeatherDescription,
-  getWeatherIconFromWeathercode,
-} from "routes/weather/services/common";
+import { Request, Response } from 'express';
+import { FORECAST_FIELDS, MAX_FORECAST_DAYS, STD_API_QUERY, WEATHER_API_URL } from 'config';
+import { ApiError } from 'models/api/api_error';
+import { TResponse } from 'models/api/fetch';
+import { WeatherForecastResource, WeatherForecast } from 'models/api/weather';
+import { getWeatherDescription, getWeatherIconFromWeathercode } from 'routes/weather/services/common';
 
-export const buildWeatheForecastrUrl = async (
-  req: Request,
-): Promise<string> => {
+export const buildWeatheForecastrUrl = async (req: Request): Promise<string> => {
   const start_date = (await getDateInDays(1)).toISOString().slice(0, 10);
   const end_date = (await getForecastEnddate(req)).toISOString().slice(0, 10);
   const api_qry = `start_date=${start_date}&end_date=${end_date}&daily=${FORECAST_FIELDS}`;
@@ -34,37 +24,21 @@ const getDateInDays = async (days: number): Promise<Date> => {
 };
 
 export const getForecastDays = async (req: Request): Promise<number> => {
-  const day_query_param = parseInt(
-    ((req.query.days as string) ?? MAX_FORECAST_DAYS).toString(),
-  );
+  const day_query_param = parseInt(((req.query.days as string) ?? MAX_FORECAST_DAYS).toString());
   return day_query_param;
 };
 
-export const handleWeatherForecastResponse = async (
-  res: Response,
-  response: TResponse,
-): Promise<any> => {
+export const handleWeatherForecastResponse = async (res: Response, response: TResponse): Promise<any> => {
   if (response.status === 200) {
     return createResponse(res, response.body);
   } else if (response.status === 400) {
-    throw new ApiError(
-      response.body.reason ?? "Error while calling weather forecast API",
-      new Error(),
-      400,
-    );
+    throw new ApiError(response.body.reason ?? 'Error while calling weather forecast API', new Error(), 400);
   } else {
-    throw new ApiError(
-      "Error while retrieving the weather forecast",
-      new Error(),
-      500,
-    );
+    throw new ApiError('Error while retrieving the weather forecast', new Error(), 500);
   }
 };
 
-const createResponse = async (
-  res: Response,
-  response: any,
-): Promise<Response> => {
+const createResponse = async (res: Response, response: any): Promise<Response> => {
   return res.status(200).json(await createResponseJson(response));
 };
 
@@ -78,9 +52,7 @@ const createResponseJson = async (response: any): Promise<WeatherForecast> => {
   };
 };
 
-const createForecastArray = async (
-  response: any,
-): Promise<Array<WeatherForecastResource>> => {
+const createForecastArray = async (response: any): Promise<Array<WeatherForecastResource>> => {
   const forecast: Array<Promise<WeatherForecastResource>> = [];
   const count = response.daily.time.length;
   for (let i = 0; i < count; i++) {
@@ -89,10 +61,7 @@ const createForecastArray = async (
   return Promise.all(forecast);
 };
 
-const createForecastDay = async (
-  response: any,
-  index: number,
-): Promise<WeatherForecastResource> => {
+const createForecastDay = async (response: any, index: number): Promise<WeatherForecastResource> => {
   const weathercode = response.daily.weathercode[index];
   return {
     date: response.daily.time[index],

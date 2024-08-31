@@ -26,9 +26,7 @@ export abstract class Database {
 
   public getConnectionString = (): string => this._connectionString;
 
-  protected abstract buildConnectionString(
-    dbConnection: IDatabaseConenction,
-  ): string;
+  protected abstract buildConnectionString(dbConnection: IDatabaseConenction): string;
 
   protected abstract initDatabaseConnection(): void;
 }

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { FORECAST_FIELDS, MAX_FORECAST_DAYS, STD_API_QUERY, WEATHER_API_URL } from 'config';
 import { ApiError } from 'models/api/api_error';
-import { TResponse } from 'models/api/fetch';
+import { ApiResponse, Json } from 'models/api/fetch';
 import { WeatherForecast, WeatherForecastResource } from 'models/api/weather';
 import { getWeatherDescription, getWeatherIconFromWeathercode } from 'routes/weather/services/common';
 
@@ -28,7 +28,7 @@ export const getForecastDays = async (req: Request): Promise<number> => {
   return day_query_param;
 };
 
-export const handleWeatherForecastResponse = async (res: Response, response: TResponse): Promise<any> => {
+export const handleWeatherForecastResponse = async (res: Response, response: ApiResponse<Json>): Promise<Response> => {
   if (response.status === 200) {
     return createResponse(res, response.body);
   } else if (response.status === 400) {
@@ -38,11 +38,11 @@ export const handleWeatherForecastResponse = async (res: Response, response: TRe
   }
 };
 
-const createResponse = async (res: Response, response: any): Promise<Response> => {
+const createResponse = async (res: Response, response: Json): Promise<Response> => {
   return res.status(200).json(await createResponseJson(response));
 };
 
-const createResponseJson = async (response: any): Promise<WeatherForecast> => {
+const createResponseJson = async (response: Json): Promise<WeatherForecast> => {
   return {
     latitude: response.latitude,
     longitude: response.longitude,
@@ -52,7 +52,7 @@ const createResponseJson = async (response: any): Promise<WeatherForecast> => {
   };
 };
 
-const createForecastArray = async (response: any): Promise<Array<WeatherForecastResource>> => {
+const createForecastArray = async (response: Json): Promise<Array<WeatherForecastResource>> => {
   const forecast: Array<Promise<WeatherForecastResource>> = [];
   const count = response.daily.time.length;
   for (let i = 0; i < count; i++) {
@@ -61,7 +61,7 @@ const createForecastArray = async (response: any): Promise<Array<WeatherForecast
   return Promise.all(forecast);
 };
 
-const createForecastDay = async (response: any, index: number): Promise<WeatherForecastResource> => {
+const createForecastDay = async (response: Json, index: number): Promise<WeatherForecastResource> => {
   const weathercode = response.daily.weathercode[index];
   return {
     date: response.daily.time[index],

@@ -6,7 +6,7 @@ import { default as CalendarRoute } from 'routes/calendar';
 import { default as BirthdaysRoute } from 'routes/birthdays';
 import { default as UsersRoute } from 'routes/users';
 import { default as LocationRoute } from 'routes/location';
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { ApiError } from 'models/api/api_error';
 import { EXPRESS_ERROR_LOGGER } from 'services/loggers';
 import { MongoDb } from 'services/database/mongodb';

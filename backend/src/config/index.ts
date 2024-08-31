@@ -26,10 +26,6 @@ export const mongoDbData: IDatabaseConenction = {
   ],
 };
 
-export const GOOGLE_API_HOST = 'https://www.googleapis.com';
-export const GOOGLE_API_VERSION = 'v3';
-export const GOOGLE_CALENDAR_ENDPOINT = `${GOOGLE_API_HOST}/calendar/${GOOGLE_API_VERSION}/calendars`;
-
 export const CALENDAR_CONFIG = {
   BIRTHDAY_ID: 'addressbook#contacts@group.v.calendar.google.com',
   DEFAULT_EVENT_COUNT: 100,
@@ -57,7 +53,7 @@ export const REDIRECT_URI = process.env.REDIRECT_URI ?? `${FRONTEND_URL}/`;
 export const REGISTER_REDIRECT_URI = process.env.REGISTER_REDIRECT_URI ?? `${FRONTEND_URL}/registration`;
 export const FAILURE_REDIRECT_URI = process.env.FAILURE_REDIRECT_URI ?? `${FRONTEND_URL}/error`;
 
-export const ALLOWED_URLS = [GOOGLE_API_HOST, WEATHER_API_URL, OPENWEATHER_URL, GEOCODE_URL];
+export const ALLOWED_URLS = [WEATHER_API_URL, OPENWEATHER_URL, GEOCODE_URL];
 
 export const RATE_LIMIT = {
   windowMs: 1 * 60 * 1000, // 1 minute

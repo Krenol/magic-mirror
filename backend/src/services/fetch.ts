@@ -1,12 +1,12 @@
 import { ALLOWED_URLS } from 'config';
-import { TResponse } from 'models/api/fetch';
+import { ApiResponse, Json } from 'models/api/fetch';
 import { LOGGER } from 'services/loggers';
 
 export const fetchJson = async (
   url: string,
   options: RequestInit = {},
   logUrl: string | undefined = undefined,
-): Promise<TResponse> => {
+): Promise<ApiResponse<Json>> => {
   LOGGER.info(`Calling API ${logUrl ?? url} to get JSON`);
   return checkInputURL(url)
     .then(() => fetch(url, options))
@@ -25,7 +25,7 @@ const logFetchErr = async (err: Error, url: string) => {
   throw err;
 };
 
-const parseJsonResponse = async (res: Response): Promise<TResponse> => {
+const parseJsonResponse = async (res: Response): Promise<ApiResponse<Json>> => {
   return {
     body: await res.json(),
     status: res.status,
@@ -37,7 +37,7 @@ export const fetchBuffer = async (
   url: string,
   options: RequestInit = {},
   logUrl: string | undefined = undefined,
-): Promise<TResponse> => {
+): Promise<ApiResponse<ArrayBuffer>> => {
   LOGGER.info(`Calling API ${logUrl ?? url} to get BLOB`);
   return checkInputURL(url)
     .then(() => fetch(url, options))
@@ -46,7 +46,7 @@ export const fetchBuffer = async (
     .catch((err) => logFetchErr(err, logUrl ?? url));
 };
 
-const parseBufferResponse = async (res: Response): Promise<TResponse> => {
+const parseBufferResponse = async (res: Response): Promise<ApiResponse<ArrayBuffer>> => {
   return {
     body: await res.arrayBuffer(),
     status: res.status,

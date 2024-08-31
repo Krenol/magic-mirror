@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { STD_API_QUERY, WEATHER_API_URL } from 'config';
 import { ApiError } from 'models/api/api_error';
-import { TResponse } from 'models/api/fetch';
+import { ApiResponse, Json } from 'models/api/fetch';
 import { CurrentWeather } from 'models/api/weather';
 import { getWeatherDescription, getWeatherIconFromWeathercode, sunIsCurrentlyUp } from 'routes/weather/services/common';
 
@@ -11,7 +11,7 @@ export const buildCurrentWeatherUrl = async (req: Request): Promise<string> => {
   return `${WEATHER_API_URL}/forecast/?latitude=${req.query.latitude}&longitude=${req.query.longitude}&current_weather=true&${STD_API_QUERY}&${sunstate_qry}`;
 };
 
-export const handleCurrentWeatherResponse = async (res: Response, response: TResponse): Promise<Response> => {
+export const handleCurrentWeatherResponse = async (res: Response, response: ApiResponse<Json>): Promise<Response> => {
   if (response.status === 200) {
     return createResponse(res, response.body);
   } else if (response.status === 400) {
@@ -21,12 +21,12 @@ export const handleCurrentWeatherResponse = async (res: Response, response: TRes
   }
 };
 
-const createResponse = async (res: Response, response: any): Promise<Response> => {
+const createResponse = async (res: Response, response: Json): Promise<Response> => {
   const responseJson = await createResponseJson(response);
   return res.status(200).json(responseJson);
 };
 
-const createResponseJson = async (response: any): Promise<CurrentWeather> => {
+const createResponseJson = async (response: Json): Promise<CurrentWeather> => {
   const isDay = await sunIsCurrentlyUp(response.daily.sunrise[0], response.daily.sunset[0]);
   const hourlyIndex = parseInt(response.current_weather.time.split('T')[1].split(':')[0]);
   return {

@@ -1,6 +1,5 @@
 import winston from 'winston';
 import expressWinston from 'express-winston';
-import LokiTransport from 'winston-loki';
 import os from 'os';
 
 // const LOKI_TRANSPORTER = new LokiTransport({

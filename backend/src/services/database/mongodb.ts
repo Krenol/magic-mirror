@@ -1,8 +1,8 @@
 import { Database, IDatabaseConenction } from 'services/database/database';
-import { connect } from 'mongoose';
+import { connect, Mongoose } from 'mongoose';
 
 export class MongoDb extends Database {
-  private _connection: any;
+  private _connection: Mongoose | null = null;
   constructor(dbConnection: IDatabaseConenction) {
     super(dbConnection, 'mongodb');
   }

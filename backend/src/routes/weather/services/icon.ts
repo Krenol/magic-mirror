@@ -1,4 +1,4 @@
-import { Response, Request } from 'express';
+import { Request, Response } from 'express';
 import { OPENWEATHER_URL } from 'config';
 import { TResponse } from 'models/api/fetch';
 import { ApiError } from 'models/api/api_error';

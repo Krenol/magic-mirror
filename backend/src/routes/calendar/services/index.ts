@@ -1,5 +1,5 @@
 import { calendar_v3 } from 'googleapis';
-import { EventList, EventItem } from 'models/api/calendar';
+import { EventItem, EventList } from 'models/api/calendar';
 import { getTimeDiff, TimeUnit } from 'services/dateParser';
 
 export const parseRetrievedEvents = async (events: calendar_v3.Schema$Events): Promise<EventList> => {

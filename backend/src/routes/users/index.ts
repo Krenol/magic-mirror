@@ -1,9 +1,9 @@
 import { getRouter } from 'services/router_factory';
 import {
+  deleteMeUserSettings,
   getMeUserSettings,
   patchMeUserSettings,
   postUserSettings,
-  deleteMeUserSettings,
 } from 'routes/users/api/settings';
 import { deleteMeUser } from 'routes/users/api/users';
 

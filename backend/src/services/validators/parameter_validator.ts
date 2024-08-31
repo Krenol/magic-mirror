@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { ApiError } from 'models/api/api_error';
 import { LOGGER } from 'services/loggers';
-import { requestQueryContainsParam, requestContainsParam } from 'services/misc';
+import { requestContainsParam, requestQueryContainsParam } from 'services/misc';
 
 export enum EParamType {
   query = 'query',

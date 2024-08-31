@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
-import { ParameterValidator, EParamType } from 'services/validators/parameter_validator';
+import { NextFunction, Request, Response } from 'express';
+import { EParamType, ParameterValidator } from 'services/validators/parameter_validator';
 import { LOGGER } from 'services/loggers';
 import { ApiError } from 'models/api/api_error';
 

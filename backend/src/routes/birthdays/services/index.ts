@@ -1,5 +1,5 @@
 import { calendar_v3 } from 'googleapis';
-import { BirthdayList, Birthday } from 'models/api/birthdays';
+import { Birthday, BirthdayList } from 'models/api/birthdays';
 
 const parseRetrievedBirthdays = async (events: calendar_v3.Schema$Events): Promise<BirthdayList> => {
   const items = events.items ?? [];

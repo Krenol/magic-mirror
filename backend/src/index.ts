@@ -1,4 +1,4 @@
-import { ENABLE_HTTPS, SERVER_PORT, mongoDbData } from 'config';
+import { ENABLE_HTTPS, mongoDbData, SERVER_PORT } from 'config';
 import { HttpServer } from 'services/server/http_server';
 import { HttpsServer } from 'services/server/https_server';
 import { default as WeatherRoute } from 'routes/weather';
@@ -28,7 +28,7 @@ const isApiError = (err: Error): err is ApiError => {
   return (err as ApiError).status !== undefined && (err as ApiError).message !== undefined;
 };
 
-server.app.use((err: ApiError | Error, _req: Request, res: Response, _next: NextFunction) => {
+server.app.use((err: ApiError | Error, _req: Request, res: Response) => {
   if (isApiError(err)) {
     return res.status(err.status).json({ error: err.message }).end();
   }

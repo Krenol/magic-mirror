@@ -1,6 +1,6 @@
-import { Draft04, Draft, JSONError } from 'json-schema-library';
+import { Draft, Draft04, JsonError } from 'json-schema-library';
 
-export const getJsonSchemaValidationResult = async (schema: any, data: any): Promise<JSONError[]> => {
+export const getJsonSchemaValidationResult = async (schema: any, data: any): Promise<JsonError[]> => {
   const jsonSchema: Draft = new Draft04(schema);
   return jsonSchema.validate(data);
 };

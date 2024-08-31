@@ -1,7 +1,7 @@
 import express from 'express';
 import { default as session } from 'express-session';
 import bodyParser from 'body-parser';
-import { ENABLE_HTTPS, SESSION_SECRET, RATE_LIMIT, FRONTEND_URL } from 'config';
+import { ENABLE_HTTPS, FRONTEND_URL, RATE_LIMIT, SESSION_SECRET } from 'config';
 import { default as cors } from 'cors';
 
 import { EXPRESS_LOGGER } from 'services/loggers';

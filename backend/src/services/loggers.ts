@@ -3,9 +3,9 @@ import expressWinston from 'express-winston';
 import LokiTransport from 'winston-loki';
 import os from 'os';
 
-const LOKI_TRANSPORTER = new LokiTransport({
-  host: 'http://loki:3100',
-});
+// const LOKI_TRANSPORTER = new LokiTransport({
+//   host: 'http://loki:3100',
+// });
 
 const CONSOLE = new winston.transports.Console();
 

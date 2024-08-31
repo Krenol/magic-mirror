@@ -35,7 +35,7 @@ const parseJsonResponse = async (res: Response): Promise<TResponse> => {
 
 export const fetchBuffer = async (
   url: string,
-  options: any = {},
+  options: RequestInit = {},
   logUrl: string | undefined = undefined,
 ): Promise<TResponse> => {
   LOGGER.info(`Calling API ${logUrl ?? url} to get BLOB`);

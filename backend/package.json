@@ -7,7 +7,7 @@
     "test": "mocha --require ts-node/register src/**/*.test.ts --exit",
     "prod": "ts-node src/index.ts",
     "lint": "eslint ./src --report-unused-disable-directives --max-warnings 0",
-    "lint-fix": "eslint ./src --report-unused-disable-directives --fix",
+    "lint:fix": "eslint ./src --report-unused-disable-directives --fix",
     "format": "prettier --log-level warn --write \"src/**/*.ts\""
   },
   "license": "MIT",

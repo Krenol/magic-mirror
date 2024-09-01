@@ -1,5 +1,5 @@
-import { Box, Stack, Typography } from "@mui/material";
-import { useCallback, useEffect, useState, useMemo } from "react";
+import { Box, Skeleton, Stack, Typography } from "@mui/material";
+import { useCallback, useEffect, useState } from "react";
 import {
   PRECIPITATION_UNIT,
   TEMP_UNIT,
@@ -12,15 +12,17 @@ import { smallFontSize } from "../../assets/styles/theme";
 import { useGetWeatherIcon } from "../../apis/weather_icon";
 
 interface IForecastItem {
-  item: HourlyWeatherResource;
-  timezone: string;
+  item?: HourlyWeatherResource;
+  timezone?: string;
+  isLoading: boolean;
 }
 
-const ForecastItem = ({ item, timezone }: IForecastItem) => {
+const ForecastItem = ({ item, timezone, isLoading }: IForecastItem) => {
   const [hours, setHours] = useState("");
   const [minutes, setMinutes] = useState("");
 
   const getTimeOffset = useCallback((): string => {
+    if (!timezone) return "";
     const time = timezone.replace(/GMT[+-]/i, "");
     const symbol = timezone.replace(/GMT([+-]).*/i, "$1");
     const offset = `${symbol}${time.padStart(2, "0")}`;
@@ -28,21 +30,33 @@ const ForecastItem = ({ item, timezone }: IForecastItem) => {
   }, [timezone]);
 
   useEffect(() => {
+    if (!item?.time) return;
     const t = new Date(item.time + getTimeOffset());
     setHours(parseTime(t.getHours()));
     setMinutes(parseTime(t.getMinutes()));
-  }, [timezone, item.time, getTimeOffset]);
+  }, [timezone, item?.time, getTimeOffset]);
 
   const {
     data: icon,
     isLoading: iconLoading,
     error: iconError,
-  } = useGetWeatherIcon(item.weather_icon);
-
-  const weatherIcon = useMemo(
-    () => (iconError || iconLoading ? unknownWeatherIcon : icon),
-    [icon, iconError, iconLoading]
+  } = useGetWeatherIcon(
+    item?.weather_icon ?? "",
+    "4x",
+    item?.weather_icon !== undefined && !isLoading
   );
+
+  if (isLoading || iconLoading || !item) {
+    return (
+      <Stack direction={"column"} spacing={1}>
+        <Skeleton key={`skeleton-0`} variant="rounded" />
+        <Skeleton key={`skeleton-1`} variant="rounded" height={40} />
+        <Skeleton key={`skeleton-2`} variant="rounded" />
+        <Skeleton key={`skeleton-3`} variant="rounded" />
+        <Skeleton key={`skeleton-4`} variant="rounded" />
+      </Stack>
+    );
+  }
 
   return (
     <Stack direction={"column"}>
@@ -51,7 +65,7 @@ const ForecastItem = ({ item, timezone }: IForecastItem) => {
       </Typography>
       <Box
         component="img"
-        src={weatherIcon}
+        src={iconError || iconLoading ? unknownWeatherIcon : icon}
         alt="Weather Icon"
         loading="lazy"
       />

@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Skeleton, Stack, Typography } from "@mui/material";
 import { TEMP_UNIT } from "../../constants/weather";
 import unknownWeatherIcon from "../../assets/unknown-weather.svg";
 import { WeatherForecastResource } from "../../models/daily_forecast";
@@ -8,22 +8,34 @@ import { useGetDayName } from "../../apis/day_name";
 import { useMemo } from "react";
 
 interface IForecastItem {
-  item: WeatherForecastResource;
+  item: WeatherForecastResource | undefined;
+  isLoading: boolean;
 }
 
-const ForecastItem = ({ item }: IForecastItem) => {
-  const { data: dayName } = useGetDayName(new Date(item.date));
+const ForecastItem = ({ item, isLoading }: IForecastItem) => {
+  const date = useMemo(() => new Date(item?.date ?? 0), [item?.date]);
+  const { data: dayName } = useGetDayName(date);
 
   const {
     data: icon,
     isLoading: iconLoading,
     error: iconError,
-  } = useGetWeatherIcon(item.weather_icon);
-
-  const weatherIcon = useMemo(
-    () => (iconError || iconLoading ? unknownWeatherIcon : icon),
-    [icon, iconError, iconLoading]
+  } = useGetWeatherIcon(
+    item?.weather_icon ?? "",
+    "4x",
+    !isLoading && item?.weather_icon !== undefined
   );
+
+  if (isLoading || iconLoading || !item) {
+    return (
+      <Stack direction={"column"} spacing={1}>
+        <Skeleton key={`skeleton-0`} variant="rounded" />
+        <Skeleton key={`skeleton-1`} variant="rounded" height={50} />
+        <Skeleton key={`skeleton-2`} variant="rounded" />
+        <Skeleton key={`skeleton-3`} variant="rounded" />
+      </Stack>
+    );
+  }
 
   return (
     <Stack direction={"column"}>
@@ -32,7 +44,7 @@ const ForecastItem = ({ item }: IForecastItem) => {
       </Typography>
       <Box
         component="img"
-        src={weatherIcon}
+        src={iconError || !icon ? unknownWeatherIcon : icon}
         alt="Weather Icon"
         loading="lazy"
       />

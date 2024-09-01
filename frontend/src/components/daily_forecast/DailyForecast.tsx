@@ -2,12 +2,12 @@ import ForecastItem from "./ForecastItem";
 import { useGetDailyWeather } from "../../apis/daily_weather";
 import { MediumCard } from "../CardFrame";
 import { Grid } from "@mui/material";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { TimeContext } from "../../common/TimeContext";
 import { LocationContext } from "../../common/LocationContext";
-import Loading from "../loading/Loading";
 import ErrorCard from "../error_card/ErrorCard";
 import { DAILY_FORECAST_DAYS } from "../../constants/weather";
+import React from "react";
 
 const DailyForecast = () => {
   const { newDay } = useContext(TimeContext);
@@ -20,7 +20,6 @@ const DailyForecast = () => {
   const {
     data: weather,
     isLoading: isWeatherLoading,
-    error,
     refetch,
   } = useGetDailyWeather(
     longitude,
@@ -32,6 +31,27 @@ const DailyForecast = () => {
   useEffect(() => {
     if (newDay) refetch();
   }, [newDay, refetch]);
+
+  const isLoadingData = useMemo(
+    () => isWeatherLoading || isLocationLoading,
+    [isWeatherLoading, isLocationLoading]
+  );
+
+  const forecastItems = useMemo(() => {
+    if (isLoadingData) {
+      return Array.from({ length: DAILY_FORECAST_DAYS }, (_, i) => (
+        <ForecastItem item={undefined} key={i} isLoading={true} />
+      ));
+    } else if (weather?.forecast) {
+      return weather.forecast.map((val) => (
+        <Grid item xs={3} key={val.date}>
+          <ForecastItem item={val} key={val.date} isLoading={false} />
+        </Grid>
+      ));
+    } else {
+      return <React.Fragment>Error!</React.Fragment>;
+    }
+  }, [weather?.forecast, isLoadingData]);
 
   if ((!longitude || !latitude) && !isLocationLoading) {
     return (
@@ -45,22 +65,10 @@ const DailyForecast = () => {
     );
   }
 
-  if (isWeatherLoading || isLocationLoading) {
-    return <Loading Card={MediumCard} />;
-  }
-
-  if (error) {
-    return <MediumCard>Error!</MediumCard>;
-  }
-
   return (
     <MediumCard>
       <Grid container spacing={1}>
-        {weather?.forecast.map((val) => (
-          <Grid item xs={3} key={val.date}>
-            <ForecastItem item={val} key={val.date} />
-          </Grid>
-        ))}
+        {forecastItems}
       </Grid>
     </MediumCard>
   );

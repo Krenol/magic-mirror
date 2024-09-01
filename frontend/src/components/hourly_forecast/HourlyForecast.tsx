@@ -2,12 +2,12 @@ import ForecastItem from "./ForecastItem";
 import { useGetHourlyWeather } from "../../apis/hourly_weather";
 import { MediumCard } from "../CardFrame";
 import { Grid } from "@mui/material";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { TimeContext } from "../../common/TimeContext";
 import { LocationContext } from "../../common/LocationContext";
-import Loading from "../loading/Loading";
 import ErrorCard from "../error_card/ErrorCard";
 import { HOURLY_FORECAST_HOURS } from "../../constants/weather";
+import React from "react";
 
 const HourlyWeather = () => {
   const {
@@ -18,8 +18,7 @@ const HourlyWeather = () => {
   const { newHour } = useContext(TimeContext);
   const {
     data: weather,
-    isLoading,
-    error,
+    isLoading: isWeatherLoading,
     refetch,
   } = useGetHourlyWeather(
     longitude,
@@ -27,6 +26,37 @@ const HourlyWeather = () => {
     HOURLY_FORECAST_HOURS,
     !isLocationLoading
   );
+
+  const isLoadingData = useMemo(
+    () => isWeatherLoading || isLocationLoading,
+    [isWeatherLoading, isLocationLoading]
+  );
+
+  const forecastItems = useMemo(() => {
+    if (isLoadingData) {
+      return Array.from({ length: HOURLY_FORECAST_HOURS }, (_, i) => (
+        <ForecastItem
+          item={undefined}
+          timezone={undefined}
+          key={i}
+          isLoading={true}
+        />
+      ));
+    } else if (weather?.forecast) {
+      return weather.forecast.map((val) => (
+        <Grid item xs={2} key={JSON.stringify(val)}>
+          <ForecastItem
+            item={val}
+            timezone={weather?.timezone}
+            key={val.time}
+            isLoading={false}
+          />
+        </Grid>
+      ));
+    } else {
+      return <React.Fragment>Error!</React.Fragment>;
+    }
+  }, [isLoadingData, weather?.forecast, weather?.timezone]);
 
   useEffect(() => {
     if (newHour) refetch();
@@ -44,26 +74,10 @@ const HourlyWeather = () => {
     );
   }
 
-  if (isLoading || isLocationLoading) {
-    return <Loading Card={MediumCard} />;
-  }
-
-  if (error) {
-    return <MediumCard>Error!</MediumCard>;
-  }
-
   return (
     <MediumCard>
       <Grid container spacing={1} columns={10}>
-        {weather?.forecast.map((val) => (
-          <Grid item xs={2} key={JSON.stringify(val)}>
-            <ForecastItem
-              item={val}
-              timezone={weather?.timezone}
-              key={val.time}
-            />
-          </Grid>
-        ))}
+        {forecastItems}
       </Grid>
     </MediumCard>
   );

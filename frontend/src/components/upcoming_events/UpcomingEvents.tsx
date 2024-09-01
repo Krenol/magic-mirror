@@ -4,7 +4,7 @@ import { MediumCard } from "../CardFrame";
 import { EventItem } from "../../models/calendar";
 import { Event } from "./Event";
 import { xSmallFontSize } from "../../assets/styles/theme";
-import React, { ReactElement, useContext, useEffect } from "react";
+import React, { ReactElement, useEffect } from "react";
 import { EventTexts, TodayEventTexts, NextDaysEventTexts } from "./types";
 import { useGetEvents } from "../../apis/events";
 import {
@@ -12,11 +12,8 @@ import {
   getISODayEndString,
   getISODayStartString,
 } from "../../common/dateParser";
-import { TimeContext } from "../../common/TimeContext";
 
-const UpcomingEvents = () => {
-  const { newDay } = useContext(TimeContext);
-  const [todaysDate, setTodaysDate] = React.useState<Date>(new Date());
+const UpcomingEvents = ({ todaysDate }: { todaysDate: Date }) => {
   const [tomorrowsDate, setTomorrowsDate] = React.useState<Date>(
     getDateInXDays(1)
   );
@@ -25,12 +22,9 @@ const UpcomingEvents = () => {
   );
 
   useEffect(() => {
-    if (newDay) {
-      setTodaysDate(new Date());
-      setTomorrowsDate(getDateInXDays(1));
-      setOvermorrowsDate(getDateInXDays(2));
-    }
-  }, [newDay, setTodaysDate, setTomorrowsDate, setOvermorrowsDate]);
+    setTomorrowsDate(getDateInXDays(1));
+    setOvermorrowsDate(getDateInXDays(2));
+  }, [todaysDate, setTomorrowsDate, setOvermorrowsDate]);
 
   return (
     <MediumCard>
@@ -103,6 +97,7 @@ const EventsOnDay = ({
       value: encodeURIComponent(getISODayEndString(date, true)),
     },
   ]);
+
   if (isLoading) {
     return (
       <React.Fragment>
@@ -120,6 +115,7 @@ const EventsOnDay = ({
       <Event item={ev} date={date} key={ev.start} />
     ));
   }
+
   const summary = eventTexts.manyEvents.replace(
     "{{X}}",
     `${events.count - (maxEvents - 1)}`
@@ -136,6 +132,7 @@ const EventsOnDay = ({
     merged: true,
   };
   const displayEventList = events.list.slice(0, maxEvents - 1);
+
   return (
     <React.Fragment>
       {displayEventList.map((ev) => (

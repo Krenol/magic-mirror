@@ -6,6 +6,7 @@ import { default as CalendarRoute } from 'routes/calendar';
 import { default as BirthdaysRoute } from 'routes/birthdays';
 import { default as UsersRoute } from 'routes/users';
 import { default as LocationRoute } from 'routes/location';
+import { default as TasksRoute } from 'routes/tasks';
 import { Request, Response } from 'express';
 import { ApiError } from 'models/api/api_error';
 import { EXPRESS_ERROR_LOGGER } from 'services/loggers';
@@ -20,6 +21,7 @@ server.app.use('/api/birthdays', BirthdaysRoute);
 
 server.app.use('/api/users', UsersRoute);
 server.app.use('/api/location', LocationRoute);
+server.app.use('/api/tasks', TasksRoute);
 
 // ERROR HANDLING
 server.app.use(EXPRESS_ERROR_LOGGER);

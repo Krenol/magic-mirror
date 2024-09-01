@@ -31,6 +31,10 @@ export const CALENDAR_CONFIG = {
   DEFAULT_EVENT_COUNT: 100,
 };
 
+export const TASKS_CONFIG = {
+  DEFAULT_TASKS_COUNT: 10,
+};
+
 export const OPENWEATHER_URL = 'https://openweathermap.org';
 export const GEOCODE_URL = 'https://geocode.maps.co';
 export const WEATHER_API_URL = 'https://api.open-meteo.com/v1';

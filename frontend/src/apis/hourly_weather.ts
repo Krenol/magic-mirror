@@ -12,7 +12,8 @@ import { HourlyWeatherObject } from "../models/hourly_forecast";
 export const useGetHourlyWeather = (
   longitude: number = LONGITUDE,
   latitude: number = LATITUDE,
-  forecast_hours: number = HOURLY_FORECAST_HOURS
+  forecast_hours: number = HOURLY_FORECAST_HOURS,
+  enabled: boolean = true
 ) =>
   useQuery<HourlyWeatherObject, Error>({
     queryKey: [
@@ -21,6 +22,7 @@ export const useGetHourlyWeather = (
       latitude,
       forecast_hours,
     ],
+    enabled,
     queryFn: async () =>
       fetchJson<HourlyWeatherObject>(
         `${WEATHER_API}/hourly?latitude=${latitude}&longitude=${longitude}&hours=${forecast_hours}`

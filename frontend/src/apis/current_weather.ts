@@ -7,7 +7,8 @@ import { CurrentWeatherResource } from "../models/current_weather";
 
 export const useGetCurrentWeather = (
   longitude: number = LONGITUDE,
-  latitude: number = LATITUDE
+  latitude: number = LATITUDE,
+  enabled: boolean = true
 ) =>
   useQuery<CurrentWeatherResource, Error>({
     queryKey: [ServerStateKeysEnum.current_weather, longitude, latitude],
@@ -18,4 +19,5 @@ export const useGetCurrentWeather = (
         throw err;
       }),
     refetchInterval: REFETCH_INTERVAL,
+    enabled,
   });

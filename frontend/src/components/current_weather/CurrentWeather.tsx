@@ -14,20 +14,31 @@ import Loading from "../loading/Loading";
 import ErrorCard from "../error_card/ErrorCard";
 
 const CurrentWeather = () => {
-  const { longitude, latitude } = useContext(LocationContext);
+  const {
+    longitude,
+    latitude,
+    isLoading: isLocationLoading,
+  } = useContext(LocationContext);
   const {
     data: weather,
-    isLoading,
+    isLoading: isWeatherLoading,
     error,
-  } = useGetCurrentWeather(longitude, latitude);
+  } = useGetCurrentWeather(longitude, latitude, !isLocationLoading);
 
   const {
     data: icon,
-    isLoading: iconLoading,
+    isLoading: isIconLoading,
     error: iconError,
-  } = useGetWeatherIcon(weather?.weather_icon ?? "");
+  } = useGetWeatherIcon(
+    weather?.weather_icon ?? "",
+    "4x",
+    !isWeatherLoading && !!weather?.weather_icon
+  );
 
-  const weatherIcon = iconError || iconLoading ? unknownWeatherIcon : icon;
+  const weatherIcon = useMemo(
+    () => (iconError || isIconLoading ? unknownWeatherIcon : icon),
+    [icon, iconError, isIconLoading]
+  );
 
   const weatherIconJsx = useMemo(
     () => (
@@ -41,7 +52,7 @@ const CurrentWeather = () => {
     [weatherIcon]
   );
 
-  if (!longitude || !latitude) {
+  if ((!longitude || !latitude) && !isLocationLoading) {
     return (
       <ErrorCard
         Card={MediumCard}
@@ -53,7 +64,7 @@ const CurrentWeather = () => {
     );
   }
 
-  if (isLoading) {
+  if (isWeatherLoading || isLocationLoading || isIconLoading) {
     return <Loading Card={MediumCard} />;
   }
 
@@ -96,8 +107,8 @@ const CurrentWeather = () => {
               sx={smallFontSize}
             >
               Precipitaiton:{" "}
-              {weather?.precipitation_sum.toFixed(1) ??
-              weather?.precipitation_sum === 0
+              {(weather?.precipitation_sum.toFixed(1) ??
+              weather?.precipitation_sum === 0)
                 ? weather?.precipitation_sum
                 : "-"}{" "}
               {PRECIPITATION_UNIT}

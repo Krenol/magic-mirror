@@ -7,23 +7,33 @@ import { TimeContext } from "../../common/TimeContext";
 import { LocationContext } from "../../common/LocationContext";
 import Loading from "../loading/Loading";
 import ErrorCard from "../error_card/ErrorCard";
+import { DAILY_FORECAST_DAYS } from "../../constants/weather";
 
 const DailyForecast = () => {
   const { newDay } = useContext(TimeContext);
-  const { longitude, latitude } = useContext(LocationContext);
+  const {
+    longitude,
+    latitude,
+    isLoading: isLocationLoading,
+  } = useContext(LocationContext);
 
   const {
     data: weather,
-    isLoading,
+    isLoading: isWeatherLoading,
     error,
     refetch,
-  } = useGetDailyWeather(longitude, latitude);
+  } = useGetDailyWeather(
+    longitude,
+    latitude,
+    DAILY_FORECAST_DAYS,
+    !isLocationLoading
+  );
 
   useEffect(() => {
     if (newDay) refetch();
   }, [newDay, refetch]);
 
-  if (!longitude || !latitude) {
+  if ((!longitude || !latitude) && !isLocationLoading) {
     return (
       <ErrorCard
         Card={MediumCard}
@@ -35,7 +45,7 @@ const DailyForecast = () => {
     );
   }
 
-  if (isLoading) {
+  if (isWeatherLoading || isLocationLoading) {
     return <Loading Card={MediumCard} />;
   }
 

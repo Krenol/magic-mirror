@@ -5,6 +5,7 @@ import { WeatherForecastResource } from "../../models/daily_forecast";
 import { smallFontSize } from "../../assets/styles/theme";
 import { useGetWeatherIcon } from "../../apis/weather_icon";
 import { useGetDayName } from "../../apis/day_name";
+import { useMemo } from "react";
 
 interface IForecastItem {
   item: WeatherForecastResource;
@@ -19,7 +20,10 @@ const ForecastItem = ({ item }: IForecastItem) => {
     error: iconError,
   } = useGetWeatherIcon(item.weather_icon);
 
-  const weatherIcon = iconError || iconLoading ? unknownWeatherIcon : icon;
+  const weatherIcon = useMemo(
+    () => (iconError || iconLoading ? unknownWeatherIcon : icon),
+    [icon, iconError, iconLoading]
+  );
 
   return (
     <Stack direction={"column"}>

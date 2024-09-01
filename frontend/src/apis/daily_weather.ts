@@ -8,7 +8,8 @@ import { DailyWeatherObject } from "../models/daily_forecast";
 export const useGetDailyWeather = (
   longitude: number = LONGITUDE,
   latitude: number = LATITUDE,
-  forecast_days: number = DAILY_FORECAST_DAYS
+  forecast_days: number = DAILY_FORECAST_DAYS,
+  enabled: boolean = true
 ) =>
   useQuery<DailyWeatherObject, Error>({
     queryKey: [
@@ -17,6 +18,7 @@ export const useGetDailyWeather = (
       latitude,
       forecast_days,
     ],
+    enabled,
     queryFn: async () =>
       fetchJson<DailyWeatherObject>(
         `${WEATHER_API}/forecast?latitude=${latitude}&longitude=${longitude}&days=${forecast_days}`

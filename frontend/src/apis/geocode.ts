@@ -6,7 +6,10 @@ import { fetchJson } from "../common/fetch";
 import { GeoLocation } from "../models/location";
 import { LOCATION_API } from "../constants/api";
 
-export const useGetGeocode = (query_params: QueryParameters = []) => {
+export const useGetGeocode = (
+  query_params: QueryParameters = [],
+  enabled: boolean = true
+) => {
   return useQuery<GeoLocation, Error>({
     queryKey: [ServerStateKeysEnum.geocode, query_params],
     queryFn: async () =>
@@ -16,5 +19,6 @@ export const useGetGeocode = (query_params: QueryParameters = []) => {
           throw err;
         }),
     refetchInterval: false,
+    enabled,
   });
 };

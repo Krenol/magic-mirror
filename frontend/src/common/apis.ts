@@ -1,22 +1,22 @@
-import { QUERY_PARAM, QueryParameters } from "../models/apis";
+import { QUERY_PARAM, QueryParameters } from '../models/apis'
 
 export const buildQuery = async (
-  query_params: QueryParameters = []
+    query_params: QueryParameters = []
 ): Promise<string> => {
-  if (query_params.length === 0) return "";
-  const queryParams = query_params
-    .map((p) => buildQueryParam(p))
-    .filter(isQueryParam)
-    .join("&");
-  return queryParams.length > 0 ? `?${queryParams}` : "";
-};
+    if (query_params.length === 0) return ''
+    const queryParams = query_params
+        .map((p) => buildQueryParam(p))
+        .filter(isQueryParam)
+        .join('&')
+    return queryParams.length > 0 ? `?${queryParams}` : ''
+}
 
 const buildQueryParam = (query_param: QUERY_PARAM) => {
-  if (query_param.value) {
-    return `${query_param.name}=${query_param.value}`;
-  }
-};
+    if (query_param.value) {
+        return `${query_param.name}=${query_param.value}`
+    }
+}
 
 const isQueryParam = (item: string | undefined): item is string => {
-  return !!item;
-};
+    return !!item
+}

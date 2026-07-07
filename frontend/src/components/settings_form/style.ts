@@ -18,6 +18,14 @@ export const inputBoxStyle = {
     justifyContent: 'center',
 }
 
+export const apiKeysHeaderStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 1,
+    mb: 2,
+}
+
 export const buttonBoxStyle = {
     display: 'flex',
     justifyContent: 'center',

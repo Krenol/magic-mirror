@@ -7,13 +7,15 @@ import { useGetBirthdays } from '../../apis/birthday'
 import { SmallCard } from '../CardFrame'
 import { useTimeContext } from '../../hooks/useTimeContext'
 import { useGetUserSettings } from '../../apis/user_settings'
+import { useGoogleAuth } from '../../hooks/useGoogleAuth'
 import { useRegisterUpdateTrigger } from '../../hooks/useRegisterUpdateTrigger'
 
 const MAX_BIRTHDAYS = 5
 
 const BirthdaysComponent = () => {
     const { addDailyUpdateTrigger } = useTimeContext()
-    const { data: userSettings } = useGetUserSettings(false)
+    const { data: userSettings } = useGetUserSettings()
+    const { isSignedIn } = useGoogleAuth()
 
     const {
         data: birthdays,
@@ -25,6 +27,14 @@ const BirthdaysComponent = () => {
     useRegisterUpdateTrigger(addDailyUpdateTrigger, refetch)
 
     const listItems = useMemo(() => {
+        if (!isSignedIn) {
+            return (
+                <Typography color="text.secondary">
+                    Sign in with Google in Settings to see birthdays
+                </Typography>
+            )
+        }
+
         if (isLoading) {
             return Array.from({ length: MAX_BIRTHDAYS }, (_, i) => (
                 <Skeleton key={i} variant="rounded" />
@@ -44,7 +54,7 @@ const BirthdaysComponent = () => {
             .map((data) => (
                 <BirthdayItem item={data} key={`${data.name}-${data.date}`} />
             ))
-    }, [birthdays, isLoading, error])
+    }, [birthdays, isLoading, error, isSignedIn])
 
     return (
         <SmallCard>

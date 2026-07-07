@@ -14,4 +14,5 @@ export enum ServerStateKeysEnum {
     min_time,
     train_stations,
     train_connections,
+    api_keys,
 }

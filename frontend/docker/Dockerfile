@@ -68,8 +68,9 @@ COPY --chown=nginx-app:nginx-app nginx/nginx.conf /etc/nginx/conf.d/frontend.con
 # Switch to non-root user
 USER nginx-app
 
-# Expose application port
-EXPOSE 3000
+# Expose application ports (3000 = plain HTTP for k8s probes, 8443 = TLS,
+# the app's only externally-reachable entrypoint - see nginx/nginx.conf)
+EXPOSE 3000 8443
 
 # Add health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \

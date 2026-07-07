@@ -41,7 +41,7 @@ const DashboardComponent = () => {
 }
 
 const DashBoardItems = memo(() => {
-    const { data: userSettings } = useGetUserSettings(true)
+    const { data: userSettings } = useGetUserSettings()
     const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
     const { width, containerRef, mounted } = useContainerWidth()
     const { isEditMode } = useGridEditContext()
@@ -84,7 +84,7 @@ const DashBoardItems = memo(() => {
         [isEditMode]
     )
 
-    // Save layout to backend when it changes (debounced)
+    // Persist layout when it changes (debounced)
     const handleLayoutChange = useCallback((newLayout: RGLLayout) => {
         // Clear any pending save
         if (saveTimeoutRef.current) {
@@ -101,7 +101,6 @@ const DashBoardItems = memo(() => {
                 h: item.h,
             }))
 
-            // Save to backend
             patchUserSettings({ widget_layout: widgetLayout }).catch(
                 (error) => {
                     console.error('Failed to save widget layout:', error)

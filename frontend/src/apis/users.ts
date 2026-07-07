@@ -1,29 +1,27 @@
-import { USER_SETTINGS_API } from '../constants/api'
-import { fetchJson } from '../common/fetch'
 import { UserSettings } from '../models/user_settings'
 import { SettingsParams } from '../components/settings_form/SettingsForm'
+import { getItem, setItem } from '../services/localStorage'
+import { queryClient } from '../common/queryClient'
+import { ServerStateKeysEnum } from '../common/statekeys'
+
+const STORAGE_KEY = 'magic-mirror.user-settings'
 
 export const putUserSettings = async (
     data: SettingsParams
 ): Promise<UserSettings> => {
-    const settings = await getUserSettingsBody(data)
-    const body = JSON.stringify(settings)
-    return fetchJson<UserSettings>(
-        `${USER_SETTINGS_API}/me`,
-        {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body,
-        },
-        [200]
-    )
+    // widget_layout isn't part of the settings form (Dashboard patches it
+    // separately), so preserve whatever is already stored for it.
+    const existing = getItem<UserSettings>(STORAGE_KEY)
+    const settings = {
+        ...getUserSettingsBody(data),
+        widget_layout: existing?.widget_layout,
+    }
+    setItem(STORAGE_KEY, settings)
+    queryClient.setQueryData([ServerStateKeysEnum.user_settings], settings)
+    return settings
 }
 
-const getUserSettingsBody = async (
-    data: SettingsParams
-): Promise<UserSettings> => {
+const getUserSettingsBody = (data: SettingsParams): UserSettings => {
     return {
         zip_code: data.zipCode,
         country: data.country,

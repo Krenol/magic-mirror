@@ -23,7 +23,7 @@
       register: cert_files
       loop:
         - /tmp/test-certs/certs/rootCA.pem
-        - /tmp/test-certs/oauth2-proxy/rootCA.pem
+        - /tmp/test-certs/frontend/rootCA.pem
 
     - name: Assert all certificate files were created
       ansible.builtin.assert:
@@ -38,13 +38,13 @@
       changed_when: false
       register: certs_ca_fp
 
-    - name: Read oauth2-proxy rootCA fingerprint
+    - name: Read frontend rootCA fingerprint
       ansible.builtin.command: >-
-        openssl x509 -in /tmp/test-certs/oauth2-proxy/rootCA.pem -noout -fingerprint
+        openssl x509 -in /tmp/test-certs/frontend/rootCA.pem -noout -fingerprint
       changed_when: false
       register: proxy_ca_fp
 
     - name: Assert all rootCA copies are identical
       ansible.builtin.assert:
         that: certs_ca_fp.stdout == proxy_ca_fp.stdout
-        fail_msg: "rootCA.pem copies differ between certs/ and oauth2-proxy/"
+        fail_msg: "rootCA.pem copies differ between certs/ and frontend/"

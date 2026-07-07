@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { renderHook, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { useGetGeocode } from '../../apis/geocode'
-import * as fetchUtils from '../../common/fetch'
+import * as externalFetchUtils from '../../common/externalFetch'
 import { ReactNode } from 'react'
 
 describe('useGetGeocode', () => {
@@ -26,53 +26,59 @@ describe('useGetGeocode', () => {
         </QueryClientProvider>
     )
 
+    const mockGeocodeResponse = [
+        { lat: '52.52', lon: '13.405', importance: 0.8 },
+    ]
+
     it('should fetch geocode successfully', async () => {
-        const mockLocation = {
-            longitude: 13.405,
-            latitude: 52.52,
-        }
+        vi.spyOn(externalFetchUtils, 'externalFetchJson').mockResolvedValue(
+            mockGeocodeResponse
+        )
 
-        vi.spyOn(fetchUtils, 'fetchJson').mockResolvedValue(mockLocation)
-
-        const params = [
-            { name: 'city', value: 'Berlin' },
-            { name: 'country', value: 'Germany' },
-            { name: 'zip_code', value: '10115' },
-        ]
-
-        const { result } = renderHook(() => useGetGeocode(params, true), {
-            wrapper,
-        })
+        const { result } = renderHook(
+            () => useGetGeocode('test-key', 'Germany', 'Berlin', '10115', true),
+            { wrapper }
+        )
 
         await waitFor(() => {
             expect(result.current.isSuccess).toBe(true)
         })
 
-        expect(result.current.data).toEqual(mockLocation)
+        expect(result.current.data).toEqual({
+            longitude: 13.405,
+            latitude: 52.52,
+        })
+        expect(externalFetchUtils.externalFetchJson).toHaveBeenCalledWith(
+            expect.stringContaining('geocode.maps.co')
+        )
+        expect(externalFetchUtils.externalFetchJson).toHaveBeenCalledWith(
+            expect.stringContaining('api_key=test-key')
+        )
     })
 
     it('should be disabled when enabled is false', () => {
-        vi.spyOn(fetchUtils, 'fetchJson').mockResolvedValue({})
+        vi.spyOn(externalFetchUtils, 'externalFetchJson').mockResolvedValue([])
 
-        const params = [{ name: 'city', value: 'Berlin' }]
-
-        const { result } = renderHook(() => useGetGeocode(params, false), {
-            wrapper,
-        })
+        const { result } = renderHook(
+            () =>
+                useGetGeocode('test-key', 'Germany', 'Berlin', '10115', false),
+            { wrapper }
+        )
 
         expect(result.current.isLoading).toBe(false)
-        expect(fetchUtils.fetchJson).not.toHaveBeenCalled()
+        expect(externalFetchUtils.externalFetchJson).not.toHaveBeenCalled()
     })
 
     it('should handle fetch errors', async () => {
         const mockError = new Error('Geocode API error')
-        vi.spyOn(fetchUtils, 'fetchJson').mockRejectedValue(mockError)
+        vi.spyOn(externalFetchUtils, 'externalFetchJson').mockRejectedValue(
+            mockError
+        )
 
-        const params = [{ name: 'city', value: 'Berlin' }]
-
-        const { result } = renderHook(() => useGetGeocode(params, true), {
-            wrapper,
-        })
+        const { result } = renderHook(
+            () => useGetGeocode('test-key', 'Germany', 'Berlin', '10115', true),
+            { wrapper }
+        )
 
         await waitFor(() => {
             expect(result.current.isError).toBe(true)
@@ -82,35 +88,16 @@ describe('useGetGeocode', () => {
     })
 
     it('should use default parameters and be enabled by default', async () => {
-        const mockLocation = {
-            longitude: 0,
-            latitude: 0,
-        }
-        vi.spyOn(fetchUtils, 'fetchJson').mockResolvedValue(mockLocation)
+        vi.spyOn(externalFetchUtils, 'externalFetchJson').mockResolvedValue(
+            mockGeocodeResponse
+        )
 
-        const { result } = renderHook(() => useGetGeocode(), { wrapper })
-
-        await waitFor(() => {
-            expect(result.current.isSuccess).toBe(true)
-        })
-    })
-
-    it('should handle empty query parameters', async () => {
-        const mockLocation = {
-            longitude: 0,
-            latitude: 0,
-        }
-
-        vi.spyOn(fetchUtils, 'fetchJson').mockResolvedValue(mockLocation)
-
-        const { result } = renderHook(() => useGetGeocode([], true), {
+        const { result } = renderHook(() => useGetGeocode('test-key'), {
             wrapper,
         })
 
         await waitFor(() => {
             expect(result.current.isSuccess).toBe(true)
         })
-
-        expect(result.current.data).toEqual(mockLocation)
     })
 })

@@ -14,9 +14,8 @@
         state: directory
         mode: "0755"
       loop:
-        - /tmp/test-certs/backend
         - /tmp/test-certs/certs
-        - /tmp/test-certs/oauth2-proxy
+        - /tmp/test-certs/frontend
 
   roles:
     - setup_certs

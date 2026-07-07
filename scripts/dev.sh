@@ -2,6 +2,10 @@
 #
 # Local development environment for Magic Mirror using k3s (or k3d on WSL2).
 #
+# The app is a static frontend with no backend - it calls external APIs
+# (Open-Meteo, geocode.maps.co, db.transport.rest, Google Calendar) directly
+# from the browser, so this script only runs the frontend dev server.
+#
 # Usage:
 #   ./scripts/dev.sh up      Start the dev environment
 #   ./scripts/dev.sh down    Stop the dev environment
@@ -11,14 +15,12 @@
 #
 # Prerequisites (native Linux):
 #   - k3s installed (https://k3s.io)
-#   - mkcert installed (for TLS certificates)
 #   - kubectl available (comes with k3s)
 #
 # Prerequisites (WSL2):
 #   - Docker Desktop or Docker Engine running
 #   - k3d installed (https://k3d.io)
 #   - kubectl installed (https://kubernetes.io/docs/tasks/tools/)
-#   - mkcert installed (for TLS certificates)
 
 set -euo pipefail
 
@@ -27,8 +29,6 @@ DEV_DIR="${REPO_ROOT}/.dev"
 RENDERED_DIR="${DEV_DIR}/rendered"
 MANIFEST_DIR="${REPO_ROOT}/k8s/dev"
 NAMESPACE="magic-mirror-dev"
-
-HOSTNAME="${DEV_HOSTNAME:-$(hostname -f 2>/dev/null || hostname).local}"
 
 # ── Runtime detection ────────────────────────────────────────────────────────
 
@@ -61,7 +61,6 @@ check_prereqs() {
   else
     command -v k3s >/dev/null 2>&1 || missing+=(k3s)
   fi
-  command -v mkcert   >/dev/null 2>&1 || missing+=(mkcert)
   command -v envsubst >/dev/null 2>&1 || missing+=(envsubst)
 
   if [[ ${#missing[@]} -gt 0 ]]; then
@@ -73,7 +72,6 @@ check_prereqs() {
     else
       echo "Install k3s:      curl -sfL https://get.k3s.io | sh -"
     fi
-    echo "Install mkcert:   https://github.com/FiloSottile/mkcert#installation"
     echo "Install envsubst: apt install gettext-base"
     exit 1
   fi
@@ -97,10 +95,6 @@ ensure_k3d_cluster() {
     k3d cluster create "${K3D_CLUSTER}" \
       --volume "${REPO_ROOT}:${REPO_ROOT}" \
       --port "30000:30000@server:0" \
-      --port "30001:30001@server:0" \
-      --port "30017:30017@server:0" \
-      --port "30229:30229@server:0" \
-      --port "30443:30443@server:0" \
       --k3s-arg '--disable=traefik@server:0'
   fi
 
@@ -111,97 +105,18 @@ ensure_k3d_cluster() {
 # ── Render manifests ──────────────────────────────────────────────────────────
 
 render_manifests() {
-  info "Rendering manifests (REPO_ROOT=${REPO_ROOT}, HOSTNAME=${HOSTNAME})"
+  info "Rendering manifests (REPO_ROOT=${REPO_ROOT})"
   mkdir -p "${RENDERED_DIR}"
 
   # envsubst with an explicit variable list only substitutes the named
   # placeholders, leaving any other ${...} content untouched. This is robust
   # against arbitrary characters (including '|' or '/') appearing in the
   # values, unlike sed-based replacement.
-  export REPO_ROOT HOSTNAME
+  export REPO_ROOT
   for f in "${MANIFEST_DIR}"/*.yml; do
-    envsubst '${REPO_ROOT} ${HOSTNAME}' \
+    envsubst '${REPO_ROOT}' \
       < "$f" > "${RENDERED_DIR}/$(basename "$f")"
   done
-}
-
-# ── Generate secrets ──────────────────────────────────────────────────────────
-
-generate_secrets() {
-  local secrets_file="${RENDERED_DIR}/secrets.yml"
-  local pw_file="${DEV_DIR}/mongopw.txt"
-  local cookie_file="${DEV_DIR}/cookie.txt"
-
-  # Generate stable passwords (reused across restarts)
-  if [[ ! -f "$pw_file" ]]; then
-    LC_ALL=C tr -dc 'A-Za-z0-9' </dev/urandom | head -c 32 > "$pw_file"
-  fi
-  if [[ ! -f "$cookie_file" ]]; then
-    LC_ALL=C tr -dc 'A-Za-z0-9' </dev/urandom | head -c 32 > "$cookie_file"
-  fi
-
-  local mongo_pw
-  local cookie_secret
-  mongo_pw="$(cat "$pw_file")"
-  cookie_secret="$(cat "$cookie_file")"
-
-  cat > "$secrets_file" <<EOF
-apiVersion: v1
-kind: Secret
-metadata:
-  name: mongo-credentials
-  namespace: ${NAMESPACE}
-type: Opaque
-stringData:
-  MONGO_INITDB_ROOT_USERNAME: mongoadmin
-  MONGO_INITDB_ROOT_PASSWORD: "${mongo_pw}"
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: backend-secrets
-  namespace: ${NAMESPACE}
-type: Opaque
-stringData:
-  MONGO_USERNAME: mongoadmin
-  MONGO_PASSWORD: "${mongo_pw}"
-  GEOCODE_API_KEY: "${GEOCODE_API_KEY:-}"
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: oauth2-proxy-secrets
-  namespace: ${NAMESPACE}
-type: Opaque
-stringData:
-  OAUTH2_PROXY_CLIENT_ID: "${OAUTH2_CLIENT_ID:-}"
-  OAUTH2_PROXY_CLIENT_SECRET: "${OAUTH2_CLIENT_SECRET:-}"
-  OAUTH2_PROXY_COOKIE_SECRET: "${cookie_secret}"
-  OAUTH2_PROXY_EMAIL_DOMAINS: "*"
-EOF
-}
-
-# ── Generate TLS certs ────────────────────────────────────────────────────────
-
-generate_certs() {
-  local cert_dir="${DEV_DIR}/certs"
-  mkdir -p "$cert_dir"
-
-  if [[ ! -f "${cert_dir}/${HOSTNAME}.pem" ]]; then
-    info "Generating TLS certificates for ${HOSTNAME}"
-    mkcert -install 2>/dev/null || true
-    mkcert \
-      -key-file "${cert_dir}/${HOSTNAME}.key" \
-      -cert-file "${cert_dir}/${HOSTNAME}.pem" \
-      "${HOSTNAME}" localhost 127.0.0.1 ::1
-  fi
-
-  # Create k8s TLS secret from cert files
-  $KUBECTL create secret generic oauth2-proxy-tls \
-    --namespace="${NAMESPACE}" \
-    --from-file="${HOSTNAME}.pem=${cert_dir}/${HOSTNAME}.pem" \
-    --from-file="${HOSTNAME}.key=${cert_dir}/${HOSTNAME}.key" \
-    --dry-run=client -o yaml > "${RENDERED_DIR}/tls-secret.yml"
 }
 
 # ── Commands ──────────────────────────────────────────────────────────────────
@@ -220,28 +135,10 @@ cmd_up() {
   info "Applying namespace"
   $KUBECTL apply -f "${RENDERED_DIR}/namespace.yml"
 
-  generate_secrets
-  generate_certs
-
-  info "Applying secrets and configmaps"
-  $KUBECTL apply -f "${RENDERED_DIR}/secrets.yml"
-  $KUBECTL apply -f "${RENDERED_DIR}/tls-secret.yml"
-  $KUBECTL apply -f "${RENDERED_DIR}/configmaps.yml"
-
-  info "Starting services"
-  $KUBECTL apply -f "${RENDERED_DIR}/mongo.yml"
-  $KUBECTL apply -f "${RENDERED_DIR}/backend.yml"
+  info "Starting frontend"
   $KUBECTL apply -f "${RENDERED_DIR}/frontend.yml"
 
-  if [[ -n "${OAUTH2_CLIENT_ID:-}" && -n "${OAUTH2_CLIENT_SECRET:-}" ]]; then
-    $KUBECTL apply -f "${RENDERED_DIR}/oauth2-proxy.yml"
-  else
-    info "Skipping oauth2-proxy (set OAUTH2_CLIENT_ID and OAUTH2_CLIENT_SECRET to enable)"
-  fi
-
-  info "Waiting for pods to start (this may take a few minutes for yarn install)..."
-  $KUBECTL wait --for=condition=Ready pod -l app=mongo -n "${NAMESPACE}" --timeout=120s
-  $KUBECTL wait --for=condition=Ready pod -l app=backend -n "${NAMESPACE}" --timeout=210s
+  info "Waiting for pod to start (this may take a while for yarn install)..."
   $KUBECTL wait --for=condition=Ready pod -l app=frontend -n "${NAMESPACE}" --timeout=210s
 
   echo ""
@@ -250,13 +147,11 @@ cmd_up() {
     echo "  (using k3d on WSL2)"
   fi
   echo ""
-  echo "  Frontend:       http://localhost:30000"
-  echo "  Backend API:    http://localhost:30001/api"
-  echo "  MongoDB:        localhost:30017"
-  echo "  Debugger:       localhost:30229 (Node.js inspector)"
-  if [[ -n "${OAUTH2_CLIENT_ID:-}" ]]; then
-    echo "  OAuth2-Proxy:   https://localhost:30443"
-  fi
+  echo "  Frontend: http://localhost:30000"
+  echo ""
+  echo "  Google Sign-In requires 'http://localhost:30000' (or your configured"
+  echo "  port) to be added as an Authorized JavaScript origin for the OAuth"
+  echo "  Client ID in Google Cloud Console."
   echo ""
   echo "  Logs:           ./scripts/dev.sh logs"
   echo "  Status:         ./scripts/dev.sh status"
@@ -325,14 +220,8 @@ case "${1:-help}" in
     echo "  up      Start the dev environment"
     echo "  down    Stop the dev environment (preserves data)"
     echo "  status  Show pod and service status"
-    echo "  logs    Tail logs (optionally filter: logs backend)"
+    echo "  logs    Tail logs (optionally filter: logs frontend)"
     echo "  reset   Tear down and delete all dev data"
-    echo ""
-    echo "Environment variables:"
-    echo "  OAUTH2_CLIENT_ID      Google OAuth2 Client ID (enables oauth2-proxy)"
-    echo "  OAUTH2_CLIENT_SECRET  Google OAuth2 Client Secret"
-    echo "  GEOCODE_API_KEY       Geocode Maps API key"
-    echo "  DEV_HOSTNAME          Override hostname (default: auto-detected)"
     exit 1
     ;;
 esac

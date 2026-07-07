@@ -1,19 +1,36 @@
 import { useQuery, UseQueryResult } from 'react-query'
-import { fetchJson } from '../common/fetch'
 import { ServerStateKeysEnum } from '../common/statekeys'
-import { EVENTS_API, REFETCH_INTERVAL } from '../constants/api'
+import { REFETCH_INTERVAL } from '../constants/api'
 import { CalendarEventList } from '../models/calendar'
+import { getAccessToken } from '../services/googleAuth'
+import { getEvents } from '../services/googleCalendar'
+import { useGoogleAuth } from '../hooks/useGoogleAuth'
+
+const DEFAULT_EVENT_COUNT = 100
 
 export const useGetEvents = (
     query_params: URLSearchParams
 ): UseQueryResult<CalendarEventList, Error> => {
+    const { isSignedIn } = useGoogleAuth()
+
     return useQuery<CalendarEventList, Error>({
         queryKey: [ServerStateKeysEnum.events, query_params.toString()],
-        queryFn: async (): Promise<CalendarEventList> =>
-            fetchJson<CalendarEventList>(
-                `${EVENTS_API}?${query_params.toString()}`
-            ),
+        queryFn: async (): Promise<CalendarEventList> => {
+            const accessToken = await getAccessToken()
+            if (!accessToken) {
+                throw new Error('Not signed in with Google')
+            }
+            const minTime =
+                query_params.get('minTime') ?? new Date().toISOString()
+            const maxTime = query_params.get('maxTime') ?? undefined
+            const calId = query_params.get('cal_id') || 'primary'
+            const count = parseInt(
+                query_params.get('count') ?? String(DEFAULT_EVENT_COUNT)
+            )
+            return getEvents(accessToken, calId, minTime, maxTime, count)
+        },
         refetchInterval: REFETCH_INTERVAL,
+        enabled: isSignedIn,
     })
 }
 
@@ -21,12 +38,27 @@ export const useGetDateEvents = (
     calendar_id: string,
     date: string
 ): UseQueryResult<CalendarEventList, Error> => {
+    const { isSignedIn } = useGoogleAuth()
+
     return useQuery<CalendarEventList, Error>({
         queryKey: [ServerStateKeysEnum.events_day, date],
-        queryFn: async (): Promise<CalendarEventList> =>
-            fetchJson<CalendarEventList>(
-                `${EVENTS_API}/${date}?cal_id=${calendar_id}`
-            ),
+        queryFn: async (): Promise<CalendarEventList> => {
+            const accessToken = await getAccessToken()
+            if (!accessToken) {
+                throw new Error('Not signed in with Google')
+            }
+            const timeMin = new Date(date).toISOString()
+            const timeMax = new Date(date)
+            timeMax.setDate(timeMax.getDate() + 1)
+            return getEvents(
+                accessToken,
+                calendar_id,
+                timeMin,
+                timeMax.toISOString(),
+                100
+            )
+        },
         refetchInterval: REFETCH_INTERVAL,
+        enabled: isSignedIn,
     })
 }

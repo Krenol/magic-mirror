@@ -1,6 +1,6 @@
 ---
-- name: Deploy Magic Mirror to backend server via k3s
-  hosts: backend_server
+- name: Deploy Magic Mirror to the app server via k3s
+  hosts: app_server
   gather_facts: true
   become: true
 
@@ -8,4 +8,4 @@
     - vault.yml
 
   roles:
-    - setup_backend
+    - setup_server

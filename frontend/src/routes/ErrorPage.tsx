@@ -8,26 +8,12 @@ type ErrorType = {
 
 const getErrorDetails = (type: string): ErrorType => {
     switch (type) {
-        case 'already_registered': {
+        case 'google_signin_failed': {
             return {
-                title: 'User already registered!',
+                title: 'Google sign-in failed!',
                 details:
-                    'Seems like you are already registered! Please log in normally...',
-                navigateTo: '/',
-            }
-        }
-        case 'not_registered': {
-            return {
-                title: 'User not registered!',
-                details: 'User is not regsitered. Please register first...',
-                navigateTo: '/',
-            }
-        }
-        case 'unauthorized': {
-            return {
-                title: 'Unauthorized!',
-                details: 'You are not authorized to regsiter :(',
-                navigateTo: '/',
+                    'We could not sign you in with Google. Please try again from Settings.',
+                navigateTo: '/settings',
             }
         }
         default: {

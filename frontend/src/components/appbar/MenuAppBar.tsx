@@ -13,30 +13,24 @@ import Tooltip from '@mui/material/Tooltip'
 import { logout } from '../../apis/logout'
 import { useQueryClient } from 'react-query'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { fetchRetry } from '../../common/fetch'
-import { USERS_API } from '../../constants/api'
 import { useGridEditContext } from '../../common/useGridEditContext'
 import { patchUserSettings } from '../../apis/user_settings'
 import { DEFAULT_LAYOUT } from '../../constants/defaults'
+import { clearAllAppData } from '../../services/localStorage'
 
 type MenuItemType = {
     text: string
     onClick?: () => Promise<void> | void
 }
 
-const deleteUserAccount = async (): Promise<void> => {
-    return fetchRetry(
-        `${USERS_API}/me`,
-        {
-            method: 'DELETE',
-        },
-        [204]
-    ).then(() => logout())
+const clearLocalData = async (): Promise<void> => {
+    clearAllAppData()
+    window.location.reload()
 }
 
 const SETTING_MENU_ITEM_MAP = new Map<string, Array<string>>([
-    ['/', ['refresh', 'settings', 'resetlayout', 'logout', 'delaccount']],
-    ['/settings', ['logout', 'delaccount']],
+    ['/', ['refresh', 'settings', 'resetlayout', 'logout', 'clearlocaldata']],
+    ['/settings', ['logout', 'clearlocaldata']],
 ])
 
 const MenuAppBarComponent = () => {
@@ -110,10 +104,10 @@ const MenuAppBarComponent = () => {
                     },
                 ],
                 [
-                    'delaccount',
+                    'clearlocaldata',
                     {
-                        text: 'Delete Account',
-                        onClick: deleteUserAccount,
+                        text: 'Clear Local Data',
+                        onClick: clearLocalData,
                     },
                 ],
             ]),

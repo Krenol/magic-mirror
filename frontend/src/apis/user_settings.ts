@@ -1,37 +1,30 @@
 import { useQuery, UseQueryResult } from 'react-query'
-import { fetchJson } from '../common/fetch'
 import { ServerStateKeysEnum } from '../common/statekeys'
-import { USER_SETTINGS_API } from '../constants/api'
+import { queryClient } from '../common/queryClient'
 import { UserSettings } from '../models/user_settings'
+import { getItem, setItem } from '../services/localStorage'
 
-export const useGetUserSettings = (
-    allowNotFound = false
-): UseQueryResult<UserSettings, Error> =>
+const STORAGE_KEY = 'magic-mirror.user-settings'
+
+const QUERY_KEY = [ServerStateKeysEnum.user_settings]
+
+export const useGetUserSettings = (): UseQueryResult<UserSettings, Error> =>
     useQuery<UserSettings, Error>({
-        queryKey: [ServerStateKeysEnum.user_settings, allowNotFound],
+        queryKey: QUERY_KEY,
+        // react-query warns if a queryFn resolves to `undefined`, so an
+        // unconfigured (never-saved) settings object resolves to `{}`
+        // instead - every consumer already reads fields via `?.`.
         queryFn: async (): Promise<UserSettings> =>
-            fetchJson<UserSettings>(
-                `${USER_SETTINGS_API}/me`,
-                undefined,
-                allowNotFound ? [200, 404] : [200]
-            ),
+            getItem<UserSettings>(STORAGE_KEY) ?? ({} as UserSettings),
         refetchInterval: false,
     })
 
 export const patchUserSettings = async (
     data: Partial<UserSettings>
 ): Promise<UserSettings> => {
-    const body = JSON.stringify(data)
-
-    return fetchJson<UserSettings>(
-        `${USER_SETTINGS_API}/me`,
-        {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body,
-        },
-        [200]
-    )
+    const existing = getItem<UserSettings>(STORAGE_KEY)
+    const updated = { ...existing, ...data } as UserSettings
+    setItem(STORAGE_KEY, updated)
+    queryClient.setQueryData(QUERY_KEY, updated)
+    return updated
 }

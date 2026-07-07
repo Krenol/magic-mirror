@@ -12,7 +12,8 @@ const getErrorDetails = (status: number): ErrorType => {
         case 401: {
             return {
                 title: 'Not signed in!',
-                details: 'You are not signed in... Please sign in first!',
+                details:
+                    'You are not signed in with Google. Please sign in from Settings.',
                 backTo: '/',
             }
         }

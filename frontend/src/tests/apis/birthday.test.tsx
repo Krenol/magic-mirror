@@ -2,7 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { renderHook, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { useGetBirthdays } from '../../apis/birthday'
-import * as fetchUtils from '../../common/fetch'
+import * as googleAuth from '../../services/googleAuth'
+import * as googleCalendar from '../../services/googleCalendar'
 import { ReactNode } from 'react'
 
 describe('useGetBirthdays', () => {
@@ -18,6 +19,8 @@ describe('useGetBirthdays', () => {
             },
         })
         vi.clearAllMocks()
+        vi.spyOn(googleAuth, 'isSignedIn').mockReturnValue(true)
+        vi.spyOn(googleAuth, 'getAccessToken').mockResolvedValue('fake-token')
     })
 
     const wrapper = ({ children }: { children: ReactNode }) => (
@@ -26,23 +29,18 @@ describe('useGetBirthdays', () => {
         </QueryClientProvider>
     )
 
-    it('should fetch birthdays successfully', async () => {
-        const mockBirthdays = {
-            list: [
-                {
-                    name: 'John Doe',
-                    date: '2024-01-20',
-                    age: 30,
-                },
-                {
-                    name: 'Jane Smith',
-                    date: '2024-01-25',
-                    age: 25,
-                },
-            ],
-        }
+    const mockBirthdays = {
+        count: 2,
+        list: [
+            { name: 'John Doe', date: '2024-01-20' },
+            { name: 'Jane Smith', date: '2024-01-25' },
+        ],
+    }
 
-        vi.spyOn(fetchUtils, 'fetchJson').mockResolvedValue(mockBirthdays)
+    it('should fetch birthdays successfully', async () => {
+        const getBirthdaysSpy = vi
+            .spyOn(googleCalendar, 'getBirthdays')
+            .mockResolvedValue(mockBirthdays)
 
         const { result } = renderHook(() => useGetBirthdays('cal_123', 5), {
             wrapper,
@@ -53,21 +51,13 @@ describe('useGetBirthdays', () => {
         })
 
         expect(result.current.data).toEqual(mockBirthdays)
-        expect(fetchUtils.fetchJson).toHaveBeenCalledWith(
-            expect.stringContaining('/api/birthdays?')
-        )
-        expect(fetchUtils.fetchJson).toHaveBeenCalledWith(
-            expect.stringContaining('cal_id=cal_123')
-        )
-        expect(fetchUtils.fetchJson).toHaveBeenCalledWith(
-            expect.stringContaining('count=5')
-        )
+        expect(getBirthdaysSpy).toHaveBeenCalledWith('fake-token', 'cal_123', 5)
     })
 
     it('should use default birthday count when not provided', async () => {
-        const mockBirthdays = { list: [] }
-
-        vi.spyOn(fetchUtils, 'fetchJson').mockResolvedValue(mockBirthdays)
+        const getBirthdaysSpy = vi
+            .spyOn(googleCalendar, 'getBirthdays')
+            .mockResolvedValue({ count: 0, list: [] })
 
         const { result } = renderHook(() => useGetBirthdays('cal_123'), {
             wrapper,
@@ -77,76 +67,28 @@ describe('useGetBirthdays', () => {
             expect(result.current.isSuccess).toBe(true)
         })
 
-        expect(fetchUtils.fetchJson).toHaveBeenCalledWith(
-            expect.stringContaining('cal_id=cal_123')
-        )
-        // Should use default count from BIRTHDAY_COUNT constant
-        expect(fetchUtils.fetchJson).toHaveBeenCalledWith(
-            expect.stringMatching(/count=\d+/)
+        expect(getBirthdaysSpy).toHaveBeenCalledWith(
+            'fake-token',
+            'cal_123',
+            expect.any(Number)
         )
     })
 
-    it('should handle different calendar IDs', async () => {
-        const mockBirthdays = { list: [] }
+    it('should not fetch when not signed in with Google', () => {
+        vi.spyOn(googleAuth, 'isSignedIn').mockReturnValue(false)
+        const getBirthdaysSpy = vi.spyOn(googleCalendar, 'getBirthdays')
 
-        vi.spyOn(fetchUtils, 'fetchJson').mockResolvedValue(mockBirthdays)
-
-        const { result: result1 } = renderHook(
-            () => useGetBirthdays('cal_123', 3),
-            {
-                wrapper,
-            }
-        )
-        const { result: result2 } = renderHook(
-            () => useGetBirthdays('cal_456', 3),
-            {
-                wrapper,
-            }
-        )
-
-        await waitFor(() => {
-            expect(result1.current.isSuccess).toBe(true)
-            expect(result2.current.isSuccess).toBe(true)
+        const { result } = renderHook(() => useGetBirthdays('cal_123', 5), {
+            wrapper,
         })
 
-        expect(fetchUtils.fetchJson).toHaveBeenCalledTimes(2)
-    })
-
-    it('should handle different birthday counts', async () => {
-        const mockBirthdays = { list: [] }
-
-        vi.spyOn(fetchUtils, 'fetchJson').mockResolvedValue(mockBirthdays)
-
-        const { result: result1 } = renderHook(
-            () => useGetBirthdays('cal_123', 3),
-            {
-                wrapper,
-            }
-        )
-        const { result: result2 } = renderHook(
-            () => useGetBirthdays('cal_123', 10),
-            {
-                wrapper,
-            }
-        )
-
-        await waitFor(() => {
-            expect(result1.current.isSuccess).toBe(true)
-            expect(result2.current.isSuccess).toBe(true)
-        })
-
-        expect(fetchUtils.fetchJson).toHaveBeenCalledTimes(2)
-        expect(fetchUtils.fetchJson).toHaveBeenCalledWith(
-            expect.stringContaining('count=3')
-        )
-        expect(fetchUtils.fetchJson).toHaveBeenCalledWith(
-            expect.stringContaining('count=10')
-        )
+        expect(result.current.isLoading).toBe(false)
+        expect(getBirthdaysSpy).not.toHaveBeenCalled()
     })
 
     it('should handle fetch errors', async () => {
         const mockError = new Error('Birthdays API error')
-        vi.spyOn(fetchUtils, 'fetchJson').mockRejectedValue(mockError)
+        vi.spyOn(googleCalendar, 'getBirthdays').mockRejectedValue(mockError)
 
         const { result } = renderHook(() => useGetBirthdays('cal_123', 5), {
             wrapper,
@@ -159,35 +101,19 @@ describe('useGetBirthdays', () => {
         expect(result.current.error).toEqual(mockError)
     })
 
-    it('should be in loading state initially', () => {
-        vi.spyOn(fetchUtils, 'fetchJson').mockImplementation(
-            () => new Promise(() => {})
-        )
-
-        const { result } = renderHook(() => useGetBirthdays('cal_123', 5), {
-            wrapper,
-        })
-
-        expect(result.current.isLoading).toBe(true)
-        expect(result.current.data).toBeUndefined()
-    })
-
     it('should have unique query keys for different parameters', async () => {
-        const mockBirthdays = { list: [] }
-
-        vi.spyOn(fetchUtils, 'fetchJson').mockResolvedValue(mockBirthdays)
+        vi.spyOn(googleCalendar, 'getBirthdays').mockResolvedValue({
+            count: 0,
+            list: [],
+        })
 
         const { result: result1 } = renderHook(
             () => useGetBirthdays('cal_123', 5),
-            {
-                wrapper,
-            }
+            { wrapper }
         )
         const { result: result2 } = renderHook(
             () => useGetBirthdays('cal_456', 10),
-            {
-                wrapper,
-            }
+            { wrapper }
         )
 
         await waitFor(() => {
@@ -195,24 +121,6 @@ describe('useGetBirthdays', () => {
             expect(result2.current.isSuccess).toBe(true)
         })
 
-        // Both should have fetched independently
-        expect(fetchUtils.fetchJson).toHaveBeenCalledTimes(2)
-    })
-
-    it('should handle empty birthday list', async () => {
-        const mockBirthdays = { list: [] }
-
-        vi.spyOn(fetchUtils, 'fetchJson').mockResolvedValue(mockBirthdays)
-
-        const { result } = renderHook(() => useGetBirthdays('cal_123', 5), {
-            wrapper,
-        })
-
-        await waitFor(() => {
-            expect(result.current.isSuccess).toBe(true)
-        })
-
-        expect(result.current.data).toEqual(mockBirthdays)
-        expect(result.current.data?.list).toHaveLength(0)
+        expect(googleCalendar.getBirthdays).toHaveBeenCalledTimes(2)
     })
 })

@@ -6,7 +6,6 @@ import {
 import { useNavigate } from 'react-router-dom'
 import { useGetUserSettings } from '../apis/user_settings'
 import { putUserSettings } from '../apis/users'
-import { useListCalendars } from '../apis/calendar_list'
 import { UserSettings } from '../models/user_settings'
 import { memo, useCallback } from 'react'
 
@@ -56,13 +55,7 @@ const SettingsComponent = () => {
         isLoading,
         error,
         refetch,
-    } = useGetUserSettings(true)
-
-    const {
-        data: calList,
-        isLoading: calIsLoading,
-        error: calError,
-    } = useListCalendars()
+    } = useGetUserSettings()
 
     const updateSettings = useCallback(
         (data: SettingsParams) => {
@@ -79,10 +72,10 @@ const SettingsComponent = () => {
         navigate('/')
     }, [navigate])
 
-    if (isLoading || calIsLoading) return <Box>Loading...</Box>
+    if (isLoading) return <Box>Loading...</Box>
 
-    if (calError || !calList) {
-        return <Box>Error: {error?.message ?? calError?.message}</Box>
+    if (error) {
+        return <Box>Error: {error.message}</Box>
     }
 
     return (
@@ -100,7 +93,6 @@ const SettingsComponent = () => {
                 onBack={handleBack}
                 showBackButton={error == null}
                 onSend={updateSettings}
-                calendars={calList}
             />
         </Box>
     )

@@ -62,6 +62,24 @@ export const getTimeDifferenceInHours = (
     return diffTime * 2.7777777777778e-7
 }
 
+export enum TimeUnit {
+    hours = 3600000,
+    minutes = 60000,
+    seconds = 1000,
+}
+
+// Unlike getTimeDifferenceInHours (which multiplies by an approximate
+// constant and can be off by floating-point noise on exact-hour spans),
+// this divides exactly - needed for allDay/multiDays detection where an
+// exact multiple of 24h must equal precisely 0 modulo 24.
+export const getTimeDiff = (
+    date1: Date,
+    date2: Date,
+    unit: TimeUnit = TimeUnit.hours
+): number => {
+    return Math.abs(date1.getTime() - date2.getTime()) / unit
+}
+
 export const getDifferenceInDays = (startDate: Date, endDate: Date): number => {
     const diffTime = endDate.getTime() - startDate.getTime()
     return Math.round(diffTime / (1000 * 60 * 60 * 24))

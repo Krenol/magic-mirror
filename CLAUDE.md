@@ -4,17 +4,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Magic Mirror is a personalized smart display dashboard application that shows real-time weather, calendar events, birthdays, and time. It integrates with Google Calendar via OAuth2 and displays information on a full-screen dashboard (originally designed for Raspberry Pi displays).
+Magic Mirror is a personalized smart display dashboard application that shows real-time weather, calendar events, birthdays, train departures, and time. It's a **fully static, client-side-rendered app with no backend server or database** — the browser calls external APIs directly and signs in to Google using Google Identity Services (GIS). Originally designed for Raspberry Pi displays.
 
 **Tech Stack:**
 - Frontend: React 18 + TypeScript + Vite + Material-UI + Yarn as package manager
-- Backend: Node.js + Express + TypeScript + MongoDB + Yarn as package manager
-- Auth: OAuth2-Proxy (reverse proxy handling Google OAuth2)
-- Infrastructure: Docker Compose, Ansible, Nginx
+- Auth: Google Identity Services (GIS) — in-browser OAuth2 token client, no server-side auth
+- Hosting: Nginx (static files + TLS termination), Kubernetes (k3s) + Ansible for deployment
 
 ## Development Commands
 
-### Frontend (run from `/frontend`)
+Run from `/frontend`:
 
 ```bash
 yarn dev              # Dev server on port 3000 with hot reload
@@ -22,92 +21,38 @@ yarn build            # Production build (TypeScript + Vite)
 yarn lint             # Run ESLint
 yarn lint:fix         # Auto-fix ESLint issues
 yarn format           # Run Prettier
+yarn test             # Run Vitest unit tests
+yarn test:ui          # Vitest UI
+yarn test:coverage    # Coverage report
 ```
 
-### Backend (run from `/backend`)
+### k3s dev environment (matches production deployment)
 
 ```bash
-yarn dev              # Dev server with nodemon + debugger (port 3001, debug on 9229)
-yarn prod             # Production mode (ts-node)
-yarn test             # Run all Mocha tests
-yarn lint             # Run ESLint
-yarn lint:fix         # Auto-fix ESLint issues
-yarn format           # Run Prettier
+./scripts/dev.sh up      # Start (frontend only, in a magic-mirror-dev namespace)
+./scripts/dev.sh down    # Stop
+./scripts/dev.sh status  # Pod status
+./scripts/dev.sh logs    # Tail logs
+./scripts/dev.sh reset   # Tear down and clean dev data
 ```
 
-**Running specific tests:**
-```bash
-# Single test file
-mocha --require ts-node/register src/tests/calendar.test.ts --exit
-```
-
-### Docker Compose (run from `/docker-compose`)
-
-```bash
-docker compose -f docker-compose.dev.yml up      # Dev with hot reload
-docker compose -f docker-compose.yml up          # Production
-docker compose -f docker-compose.test.yml up     # Tests
-docker compose -f docker-compose.sonar.yml up    # SonarQube
-```
+See [LOCAL_DEV.md](LOCAL_DEV.md) for details.
 
 ## Architecture Overview
 
 ### Request Flow
 
 ```
-User (Browser)
-    ↓ HTTPS:443
-OAuth2-Proxy (authentication gateway)
-    ├─ Routes /api/* → Backend (https://backend:3001/api/)
-    ├─ Routes /*     → Frontend (http://frontend:3000/)
-    └─ Injects auth headers: x-forwarded-user, x-forwarded-email, x-forwarded-access-token
-        ↓
-Backend (Express)
-    ├─ Reads user identity from headers (no direct auth)
-    ├─ Queries MongoDB
-    └─ Calls external APIs (Google Calendar, Open-Meteo weather)
+Browser
+  ├── Nginx (static files + TLS termination) — the only server-side component
+  ├── Google Identity Services  ──►  Google Calendar API (events, birthdays, calendar list)
+  ├── Open-Meteo, OpenWeatherMap icons  (weather — keyless)
+  ├── geocode.maps.co  (location lookup — user-supplied API key)
+  ├── db.transport.rest  (train departures — keyless, Deutsche Bahn public API)
+  └── localStorage / sessionStorage  (settings, API keys, Google token)
 ```
 
-**Critical:** Backend does NOT handle authentication. OAuth2-Proxy handles all OAuth flow, session management, and token refresh. Backend trusts injected headers.
-
-### Backend Structure
-
-**Service-Repository Pattern:**
-
-```
-backend/src/
-├── index.ts              # App entry, route registration, error handling
-├── config/               # Environment config (ports, MongoDB, API URLs)
-├── routes/               # Route handlers (thin controllers)
-│   ├── weather/          # Weather endpoints
-│   ├── events/           # Calendar events
-│   ├── birthdays/        # Birthdays from calendar
-│   ├── calendars/        # List Google calendars
-│   ├── location/         # Geocoding
-│   └── users/            # User settings CRUD
-│       ├── index.ts      # Route definitions
-│       ├── settings.ts   # Settings service + handlers
-│       ├── users.ts      # User service + handlers
-│       └── services.ts   # Repositories (DB access layer)
-├── services/
-│   ├── server/           # HTTP/HTTPS server (http2-express-bridge)
-│   ├── database/         # MongoDB connection
-│   ├── validators/       # Request validators (Range, Regex, Custom)
-│   ├── google.ts         # Google Calendar API client
-│   ├── headers.ts        # Extract auth headers
-│   └── loggers.ts        # Winston logging
-├── models/
-│   ├── api/              # API response DTOs
-│   └── mongo/            # Mongoose schemas (User, UserSettings)
-└── tests/                # Mocha tests
-```
-
-**Pattern:** Route → Service (business logic) → Repository (database operations)
-
-Example flow for user settings:
-1. `routes/users/index.ts` - Defines `GET /api/users/settings/me`
-2. `routes/users/settings.ts` - `UserSettingsService.getSettings()` handles logic
-3. `routes/users/services.ts` - `UserSettingsRepository.get()` queries MongoDB
+**Critical:** There is no backend server, database, or auth proxy. Every external API call is made directly from the browser. Nginx's only job is serving the static build and terminating TLS.
 
 ### Frontend Structure
 
@@ -116,34 +61,54 @@ Example flow for user settings:
 ```
 frontend/src/
 ├── main.tsx              # Entry point
-├── App.tsx               # Router setup (/, /settings, /error)
+├── App.tsx               # Router setup (/, /settings, /error), shared QueryClient
 ├── routes/
 │   ├── Dashboard.tsx     # Main dashboard (wraps components in contexts)
 │   ├── Settings.tsx      # User settings form
-│   └── ErrorPage.tsx     # Error display
+│   ├── ErrorPage.tsx     # Query-param-driven error display
+│   └── RouteErrorPage.tsx # Router errorElement (status-code-driven)
 ├── components/           # UI components (each in own folder)
 │   ├── current_weather/  # Current temperature display
 │   ├── hourly_forecast/  # Hourly weather
 │   ├── daily_forecast/   # Daily weather
-│   ├── birthdays/        # Upcoming birthdays
-│   ├── upcoming_events/  # Calendar events
+│   ├── birthdays/        # Upcoming birthdays (gated on Google sign-in)
+│   ├── upcoming_events/  # Calendar events (gated on Google sign-in)
+│   ├── train_times/      # Train departure board
 │   ├── time/             # Clock display
-│   ├── settings_form/    # Settings editor
+│   ├── settings_form/    # Settings editor (location, API keys, Google sign-in, calendars, trains)
 │   └── appbar/           # Top navigation bar
-├── apis/                 # React Query hooks for API calls
-│   ├── current_weather.ts   # useGetCurrentWeather()
-│   ├── user_settings.ts     # useGetUserSettings(), patchUserSettings()
-│   └── ...
+├── apis/                 # React Query hooks — call services/ (below), never a backend
+│   ├── current_weather.ts, daily_weather.ts, hourly_weather.ts, weather_icon.ts
+│   ├── trains.ts
+│   ├── geocode.ts
+│   ├── events.ts, birthday.ts, calendar_list.ts   # Google Calendar, gated on sign-in
+│   └── user_settings.ts, users.ts                 # localStorage-backed
+├── services/             # Business logic ported from the old Express backend,
+│   │                     # plus new client-only concerns (auth, storage)
+│   ├── weather/          # weatherCodes.ts, daynight.ts, openMeteo.ts
+│   ├── trains/           # deutscheBahn.ts
+│   ├── geocode.ts
+│   ├── googleAuth.ts     # GIS token client wrapper (sign in/out, silent refresh)
+│   ├── googleCalendar.ts # Google Calendar API v3 calls + response reshaping
+│   └── localStorage.ts   # Safe get/set/clear helpers
+├── hooks/
+│   ├── useApiKeys.ts     # localStorage-backed user-supplied API keys
+│   └── useGoogleAuth.ts  # React-facing wrapper around services/googleAuth.ts
 ├── common/
-│   ├── LocationContext.tsx  # Provides user location (from settings + geocoding)
-│   ├── TimeContext.tsx      # Provides timezone + hourly/daily triggers
-│   └── fetch.ts             # Custom fetch with retry logic
+│   ├── LocationContext.tsx  # Resolves lat/long from settings + geocode API
+│   ├── TimeContext.tsx      # Manages timezone, triggers hourly/daily updates
+│   ├── externalFetch.ts     # fetch wrapper WITHOUT credentials — use for all
+│   │                         # third-party API calls (see below)
+│   ├── queryClient.ts       # Shared QueryClient singleton (used outside React
+│   │                         # too, e.g. by non-hook localStorage writes)
+│   └── dateParser.ts        # Date helpers, incl. exact getTimeDiff/TimeUnit
 └── models/               # TypeScript interfaces
 ```
 
 **State Management:**
 - **Server state:** React Query (caching, refetching, loading/error states)
 - **Global app state:** Context API (LocationContext, TimeContext)
+- **Persisted state:** `localStorage` (settings, API keys) and `sessionStorage` (Google token)
 
 Dashboard component wraps everything in providers:
 ```tsx
@@ -156,146 +121,48 @@ Dashboard component wraps everything in providers:
 
 ## Authentication Architecture
 
-**OAuth2-Proxy as Reverse Proxy:**
+**Google Identity Services (GIS), entirely client-side:**
 
-1. User accesses app → OAuth2-Proxy intercepts
-2. If not authenticated → Redirects to Google OAuth2 login
-3. After successful auth → OAuth2-Proxy sets secure cookies
-4. All subsequent requests include cookies
-5. OAuth2-Proxy validates session and injects headers into upstream requests:
-   - `x-forwarded-user`: Google user ID (sub)
-   - `x-forwarded-email`: User email
-   - `x-forwarded-access-token`: Google OAuth access token
+1. The app loads with no login gate — weather, trains, and the clock work immediately.
+2. The user clicks "Sign in with Google" in Settings, which calls `services/googleAuth.ts`'s `signIn()`.
+3. GIS's token client shows a consent popup and returns a short-lived Calendar-scoped (`calendar.readonly`) access token.
+4. The token is cached in `sessionStorage`; `getAccessToken()` silently refreshes it when expired.
+5. `services/googleCalendar.ts` calls `https://www.googleapis.com/calendar/v3/...` directly with `Authorization: Bearer <token>`.
+6. Birthdays/Events widgets and the Settings calendar picker are gated on `useGoogleAuth().isSignedIn`.
 
-**Backend reads identity from headers:**
-```typescript
-import { getUserId } from 'services/headers';
-const userId = getUserId(req); // Reads x-forwarded-user header
-```
+**There is no server-side auth of any kind.** Never add a backend, session cookie, or reverse-auth-proxy for this — it's a deliberate architectural choice (see git history for the SSR→CSR migration).
 
-**Never implement auth logic in backend.** Trust OAuth2-Proxy headers. Use access token from headers to call Google APIs.
+## External APIs Called Directly From the Browser
 
-## API Structure
+| API | Used for | Key required? |
+|-----|----------|----------------|
+| `api.open-meteo.com` | Current/hourly/daily weather | No |
+| `openweathermap.org` (icon CDN) | Weather icons | No |
+| `geocode.maps.co` | City/country/zip → coordinates | Yes — user-supplied, see `api-keys.md` |
+| `v6.db.transport.rest` | Train stations, connections | No |
+| `www.googleapis.com/calendar/v3` | Events, birthdays, calendar list | Google OAuth token (GIS) |
 
-All backend routes prefixed with `/api/`:
+**Always use `common/externalFetch.ts` for these calls, never `fetch()` directly and never with credentials.** Sending `credentials:'include'` (or cookies) to a third-party API causes the browser to require a non-wildcard CORS response, which these APIs don't return — the request will be silently blocked.
 
-| Route | Purpose |
-|-------|---------|
-| `GET /api/weather/current` | Current weather |
-| `GET /api/weather/hourly` | Hourly forecast |
-| `GET /api/weather/forecast` | Daily forecast |
-| `GET /api/weather/icon/:code` | Weather icon image |
-| `GET /api/events/` | Calendar events in time range |
-| `GET /api/calendars` | List user's Google calendars |
-| `GET /api/birthdays/` | Upcoming birthdays |
-| `GET /api/location/geocode` | Convert city/country/zip → coordinates |
-| `GET /api/users/settings/me` | Get current user settings |
-| `PATCH /api/users/settings/me` | Update user settings |
-| `POST /api/users/settings` | Create user settings |
-| `DELETE /api/users/settings/me` | Delete user settings |
-| `DELETE /api/users/me` | Delete user account |
+## Settings & API Keys
 
-**External APIs called by backend:**
-- Open-Meteo API (weather data, no key needed)
-- OpenWeatherMap (weather icons only)
-- Geocode Maps (city → coordinates)
-- Google Calendar API (events, birthdays)
+`UserSettings` (location, calendar IDs, dashboard widget layout, train connections) lives entirely in `localStorage`, written via `apis/user_settings.ts`/`apis/users.ts`. There is no cross-device sync — settings are per-browser.
 
-## Database
+User-supplied API keys (Geocode Maps, optionally OpenWeatherMap) live in `localStorage` via `hooks/useApiKeys.ts`, entered in the Settings screen. `api-keys.md` (linked from Settings) explains how to obtain them — keep it up to date if the required keys change.
 
-**MongoDB Collections:**
+## Adding a New External API Integration
 
-1. **users** - Google OAuth user data
-   - Fields: email, displayName, given_name, family_name, photo, sub, access_token, refresh_token
-   - Indexes: email (unique), sub (unique)
-
-2. **userSettings** - User preferences
-   - Fields: sub, country, city, zip_code, events_cal_id, birthday_cal_id
-   - Index: sub (unique)
-
-**Connection:** Configured via env vars in `backend/src/config/index.ts`:
-- `MONGO_HOSTNAME`, `MONGO_PORT`, `MONGO_USERNAME`, `MONGO_PASSWORD`
-- Auth uses `authSource=admin`
-
-## Configuration
-
-**Environment files** (in `/docker-compose`):
-- `.env` - Node version, OAuth2-Proxy version
-- `backend.env` - MongoDB credentials, port, timezone
-- `frontend.env` - API endpoint URL
-- `proxy.env` - Google OAuth client ID/secret, domain
-
-**Key backend config** (`backend/src/config/index.ts`):
-- `SERVER_PORT` - Default 3001
-- `ENABLE_HTTPS` - Toggle HTTP/HTTPS
-- `FRONTEND_URL` - CORS origin
-- `RATE_LIMIT` - 500 req/min per endpoint
-- Weather API URLs (Open-Meteo, OpenWeatherMap, Geocode)
-
-## Adding New Features
-
-### Adding a new API endpoint:
-
-1. **Create route handler** in `backend/src/routes/{feature}/`
-   - Use validators from `services/validators/` for params
-   - Call service layer for business logic
-
-2. **Create service class** (if complex logic needed)
-   - Implement business logic
-   - Call repository or external APIs
-
-3. **Create repository class** (if database access needed)
-   - Handle Mongoose queries
-   - Keep DB logic isolated from business logic
-
-4. **Define models** in `backend/src/models/`
-   - API DTOs in `models/api/`
-   - Mongoose schemas in `models/mongo/`
-
-5. **Register route** in `backend/src/index.ts`:
-   ```typescript
-   import { default as MyRoute } from 'routes/my_feature';
-   server.app.use('/api/my_feature', MyRoute);
-   ```
-
-6. **Create React Query hook** in `frontend/src/apis/`
-   - Use `customFetch` from `common/fetch.ts` for retry logic
-   - Configure stale time, refetch intervals
-
-7. **Use hook in component** - Follow patterns in `frontend/src/components/`
-
-### Reading user identity in routes:
-
-```typescript
-import { getUserId } from 'services/headers';
-
-const handler = (req: Request, res: Response) => {
-  const userId = getUserId(req); // Gets x-forwarded-user
-  // Use userId to query database or call services
-};
-```
-
-### Using validators:
-
-```typescript
-import { RangeParameterValidator } from 'services/validators/range_parameter_validator';
-import { EParamType } from 'services/validators/parameter_validator';
-
-const countValidator = new RangeParameterValidator(
-  'count',
-  { min: 1, max: 100 },
-  EParamType.query,
-  false // optional parameter
-);
-
-router.get('/', countValidator.validate(), handler);
-```
+1. **Add a service module** under `frontend/src/services/` — pure functions that build the request URL and reshape the response, using `common/externalFetch.ts`'s `externalFetchJson`. Keep backend-style reshaping logic (e.g. weathercode→icon mapping) here, not in components.
+2. **Add a React Query hook** in `frontend/src/apis/` that calls the service function inside `queryFn`. Configure `staleTime`/`refetchInterval` as appropriate.
+3. **Use the hook in a component** under `frontend/src/components/`.
+4. If the API needs a key, extend `hooks/useApiKeys.ts` and the Settings form, and document how to obtain it in `api-keys.md`.
+5. If the API needs Google auth, gate the query's `enabled` on `useGoogleAuth().isSignedIn` and call `getAccessToken()` from `services/googleAuth.ts` inside `queryFn`.
 
 ## React Query Configuration
 
-Global config in `App.tsx`:
+Global config in `App.tsx` (via `common/queryClient.ts`):
 ```typescript
-const queryCache = new QueryClient({
+const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: true,
@@ -304,58 +171,45 @@ const queryCache = new QueryClient({
       staleTime: 60000, // 1 minute
     },
   },
-});
+})
 ```
 
 ## Testing
 
-**Backend tests:** Mocha + Chai + Supertest
-- Location: `backend/src/tests/`
-- JSON schema validation tests in `backend/src/tests/json_schemas/`
+**Frontend tests:** Vitest + Testing Library
+- Location: `frontend/src/tests/`
+- `tests/services/` — unit tests for ported business logic (weather-code mapping, day/night detection, train journey reshaping, Google Calendar event reshaping, GIS auth token handling)
+- `tests/apis/` — React Query hook tests, mocking the underlying `services/*` module
+- `tests/contexts/`, `tests/hooks/`, `tests/utils/` — context/hook/utility tests
 - Run all: `yarn test`
-- Run specific: `mocha --require ts-node/register src/tests/calendar.test.ts --exit`
+- Run one file: `yarn test src/tests/services/googleCalendar.test.ts`
 
-**Frontend:** No tests currently present.
+When porting or adding reshaping logic (e.g. date-diff math), watch for floating-point pitfalls — prefer exact integer-safe division (see `common/dateParser.ts`'s `getTimeDiff`) over approximate multiplication constants when the result needs to hit an exact value (like a 24-hour all-day-event boundary).
 
 ## Deployment
 
-**Docker Compose services:**
-1. `frontend` - Nginx serving Vite build (port 3000 internal)
-2. `backend` - Express app (port 3001 internal)
-3. `mongo` - MongoDB (port 27017 internal)
-4. `oauth2-proxy` - Auth gateway (port 443 external)
+**Kubernetes (k3s) + Ansible**, not Docker Compose (there is no `docker-compose/` directory in this repo). See `k8s/templates/` (production, Jinja2-templated) and `k8s/dev/` (local dev).
 
-**Networks:**
-- `db` - Backend ↔ MongoDB
-- `app` - OAuth2-Proxy ↔ Backend/Frontend
+- `frontend` — the only deployed service: an Nginx container serving the Vite build. Listens on port 3000 (plain HTTP, used internally for k8s health probes) and port 8443 (TLS, the app's only externally-reachable entrypoint — mapped to external port 443 via the k8s Service's NodePort).
+- TLS certs come from `ansible/roles/generate_certs` (mkcert, for `*.fritz.box`-style local domains) or cert-manager/Let's Encrypt (`letsencrypt_enabled: true`).
 
-**Ansible deployment** (for Raspberry Pi):
-- Playbook: `ansible/rpi_setup.yml`
-- Targets "rpi" hosts in inventory
+**Ansible playbooks:**
+- `ansible/server_setup.yml` — deploys the frontend to a server via k3s (role: `setup_server`, which also handles generic host provisioning: package installs, k3s install, cert generation — not backend-specific despite historical naming of its predecessor).
+- `ansible/rpi_setup.yml` — sets up a Raspberry Pi kiosk display (Firefox pointed at the deployed frontend URL).
+- `ansible/setup_certs.yml` — generates local mkcert certificates for dev.
 
 ## Important Patterns & Conventions
 
-1. **Service-Repository Pattern:** Always separate business logic (services) from data access (repositories)
+1. **No backend.** Don't add one. If a feature seems to need server-side secrets, prefer a user-supplied API key (like Geocode Maps) over a shared server-side credential.
 
-2. **Authentication:** Never implement OAuth in backend. Trust OAuth2-Proxy headers.
+2. **External fetches never send credentials.** Use `common/externalFetch.ts`, not bare `fetch()` with cookies, for any call to a third-party API.
 
-3. **Error Handling:** Throw `ApiError` with status codes. Centralized handler in `index.ts` catches all errors.
+3. **Settings persistence:** `localStorage` via `apis/user_settings.ts`, `apis/users.ts`, `hooks/useApiKeys.ts` — not a database. No cross-device sync.
 
-4. **Logging:** Use `LOGGER` from `services/loggers.ts`. Winston configured with express-winston middleware.
+4. **Google auth:** `services/googleAuth.ts` (token lifecycle) + `hooks/useGoogleAuth.ts` (React-facing). Gate any Google Calendar-dependent query/UI on `isSignedIn`.
 
-5. **CORS:** Backend CORS restricted to `FRONTEND_URL` env var. Update for new domains.
+5. **Context Usage:** LocationContext provides coords for weather (via user settings + geocode API + user's Geocode Maps key). TimeContext triggers periodic refetches.
 
-6. **Context Usage:** LocationContext provides coords for weather. TimeContext triggers periodic refetches.
+6. **TypeScript:** Frontend uses Vite + TypeScript with `noUnusedLocals`/`noUnusedParameters` enabled — don't leave stale parameters when refactoring hook signatures.
 
-7. **Fetch Wrapper:** Frontend uses `customFetch` from `common/fetch.ts` for consistent retry logic and error handling.
-
-8. **HTTP/2:** Backend uses `http2-express-bridge` for HTTP/2 support when HTTPS enabled.
-
-9. **TypeScript:** Both frontend and backend use TypeScript. Frontend uses Vite, backend uses ts-node.
-
-10. **Port Mapping:**
-    - Frontend: 3000 (internal)
-    - Backend: 3001 (internal)
-    - MongoDB: 27017 (internal)
-    - Debug: 9229 (backend dev)
-    - HTTPS: 443 (OAuth2-Proxy external)
+7. **Docs page:** `api-keys.md` at repo root (served the same way as `privacy.md`/`impressum.md`) explains how to obtain the Geocode Maps API key — keep it in sync with `hooks/useApiKeys.ts`.

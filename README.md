@@ -2,7 +2,13 @@
 
 A personalized smart display dashboard showing real-time weather, calendar events, birthdays, and time — built for always-on displays (originally Raspberry Pi).
 
-**Stack:** React · TypeScript · Node.js · Express · MongoDB · OAuth2-Proxy · Docker Compose
+**Stack:** React · TypeScript · Vite · Nginx
+
+Magic Mirror is a fully static, client-side app. There is no backend server or
+database — the browser calls external APIs (Open-Meteo, geocode.maps.co,
+db.transport.rest, Google Calendar) directly, and signs in to Google using
+[Google Identity Services](https://developers.google.com/identity/gsi/web).
+Settings and API keys are stored only in your browser (`localStorage`).
 
 ---
 
@@ -10,27 +16,30 @@ A personalized smart display dashboard showing real-time weather, calendar event
 
 | Tool | Purpose |
 |------|---------|
-| [Docker](https://docs.docker.com/get-docker/) + [Docker Compose](https://docs.docker.com/compose/install/) | Run the application |
-| [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/) | Local setup automation |
-| Google Cloud project with OAuth2 credentials | Authentication |
-| [Geocode Maps API key](https://geocode.maps.co/) | Location lookup (free tier available) |
+| [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/) | Deployment automation |
+| Google Cloud project with an OAuth Client ID | Google Calendar sign-in |
+
+A [Geocode Maps API key](https://geocode.maps.co/) is needed too, but it's
+entered by each user in the app's Settings screen — see
+[api-keys.md](api-keys.md) for details. It's not a deploy-time secret.
 
 ---
 
 ## First-Time Setup
 
-### 1. Google OAuth2 Credentials
+### 1. Google OAuth Client ID
 
 1. Open [Google Cloud Console](https://console.cloud.google.com/) and create (or select) a project.
 2. Enable the **Google Calendar API** under *APIs & Services → Library*.
 3. Go to *APIs & Services → Credentials* → **Create Credentials → OAuth 2.0 Client ID**.
 4. Application type: **Web application**.
-5. Add an authorized redirect URI:
+5. Add **Authorized JavaScript origins** for wherever the app is served, e.g.:
    ```
-   https://<your-hostname>.<domain>/oauth2/callback
+   https://<your-hostname>.<domain>
+   http://localhost:3000
    ```
-   Example: `https://mymachine.fritz.box/oauth2/callback`
-6. Save the **Client ID** and **Client Secret** — you will need them in step 3.
+   Google Identity Services uses this (not a redirect URI) to authorize the in-browser sign-in flow.
+6. Save the **Client ID**. It's not a secret — it's already set in `ansible/inventory/group_vars/all/main.yml` as `google_client_id`, and gets baked into the frontend build.
 
 ### 2. Generate SSL Certificates
 
@@ -42,38 +51,20 @@ ansible-playbook ansible/setup_certs.yml
 
 Supported platforms: **Ubuntu**, **Debian**, **macOS**.
 
-This creates:
-- `backend/ssl/express.pem` + `express.key` — for the Express backend
-- `oauth2-proxy/ssl/<hostname>.pem` + `.key` + `.bundle.pem` — for the OAuth2-Proxy TLS listener
-- `backend/rootCA.pem`, `certs/rootCA.pem`, `oauth2-proxy/rootCA.pem` — root CA copies
+This creates `frontend/ssl/<hostname>.pem` + `.key` — the TLS certificate nginx uses to serve the app over HTTPS (the app's only exposed entrypoint).
 
 > **macOS:** Requires [Homebrew](https://brew.sh/). Run `brew install mkcert` manually if Homebrew is not in the system `PATH` when running as `localhost`.
 
-### 3. Configure Environment Files
+### 3. Configure the Vault
 
-Run the env playbook. It creates all `.env` files and the OAuth2-Proxy config, generating and persisting random secrets.
+Copy the vault example and fill in your GitHub Container Registry credentials (used to pull the frontend image):
 
 ```bash
-ansible-playbook ansible/setup_env.yml
+cp ansible/vault.yml.example ansible/vault.yml
+ansible-vault encrypt ansible/vault.yml
 ```
 
-You will be prompted for:
-
-| Prompt | Description |
-|--------|-------------|
-| Google OAuth2 Client ID | From step 1 |
-| Google OAuth2 Client Secret | From step 1 |
-| Geocode Maps API Key | From [geocode.maps.co](https://geocode.maps.co/) |
-| Local domain suffix | Default: `fritz.box` |
-
-Generated files (all git-ignored):
-- `docker-compose/.env`
-- `docker-compose/backend.env`
-- `docker-compose/frontend.env`
-- `docker-compose/proxy.env`
-- `oauth2-proxy/oauth2-proxy.cfg`
-
-Generated secrets (MongoDB password, cookie secret) are stored in `ansible/pwstore/` and reused on subsequent runs.
+There's no `.env` file generation step anymore — the only deploy-time secret is the GHCR pull credential.
 
 ### 4. DNS / Hosts Resolution
 
@@ -88,57 +79,58 @@ The application uses your machine's hostname with the configured domain suffix (
 
 ### 5. Start the Application
 
-**Development** (hot reload for frontend & backend):
+**Development** (hot reload, no deployment):
 ```bash
-cd docker-compose
-docker compose -f docker-compose.dev.yml up
+cd frontend
+yarn dev
 ```
 
-**Production:**
+Or run the same static site the way it's deployed, via k3s (see [LOCAL_DEV.md](LOCAL_DEV.md)):
 ```bash
-cd docker-compose
-docker compose -f docker-compose.yml up
+./scripts/dev.sh up
 ```
 
-Open `https://<hostname>.<domain>` in your browser. On first visit, you will be redirected to Google for authentication.
+**Production:** see [Deployment](#deployment) below.
+
+Open the app in your browser. There's no login gate — the dashboard loads immediately, showing weather/trains/clock. Click **Sign in with Google** in Settings to enable birthdays and calendar events.
 
 ---
 
-## Post-Login Configuration
+## Post-Setup Configuration
 
-After logging in, visit `/settings` to configure:
+Visit `/settings` to configure:
 
 - **Location** — city, country, or zip code for weather
-- **Events calendar** — Google Calendar ID for upcoming events
-- **Birthdays calendar** — Google Calendar ID for birthday reminders
+- **Geocode Maps API key** — required for location lookup, see [api-keys.md](api-keys.md)
+- **Google Account** — sign in to enable birthdays and calendar events
+- **Events / Birthday calendar** — Google Calendar ID for each
+- **Train connections** — optional departure board widget
 
 ---
 
 ## Architecture
 
 ```
-Browser (HTTPS :443)
-    └── OAuth2-Proxy  ── injects: x-forwarded-user, x-forwarded-email, x-forwarded-access-token
-            ├── /api/*  ──►  Backend  (Express :3001)  ──►  MongoDB
-            └── /*      ──►  Frontend (React :3000)
+Browser
+  ├── Nginx (static files + TLS termination)
+  ├── Google Identity Services  ──► Google Calendar API (events, birthdays, calendar list)
+  ├── Open-Meteo, OpenWeatherMap icons  (weather)
+  ├── geocode.maps.co  (location lookup, user-supplied API key)
+  ├── db.transport.rest  (train departures)
+  └── localStorage  (settings, API keys, Google token)
 ```
 
-Authentication is handled entirely by OAuth2-Proxy. The backend trusts the injected headers and never deals with OAuth flows directly.
+There is no backend server, database, or auth proxy. Nginx serves the static
+build and terminates TLS; everything else is a direct browser-to-API call.
 
 ---
 
 ## Development Commands
 
 ```bash
-# Frontend
 cd frontend
 yarn dev          # Dev server on :3000 with hot reload
-yarn lint         # ESLint
-yarn test         # Vitest unit tests
-
-# Backend
-cd backend
-yarn dev          # Dev server on :3001 (debugger on :9229)
+yarn build        # Production build (TypeScript + Vite)
 yarn lint         # ESLint
 yarn test         # Vitest unit tests
 ```
@@ -150,10 +142,10 @@ yarn test         # Vitest unit tests
 For deployment to a server or Raspberry Pi, use the Ansible playbooks:
 
 ```bash
-# Deploy backend + docker-compose stack to a server
+# Deploy the static frontend to a server via k3s
 ansible-playbook ansible/server_setup.yml -i ansible/inventory/
 
-# Set up a Raspberry Pi display
+# Set up a Raspberry Pi kiosk display
 ansible-playbook ansible/rpi_setup.yml -i ansible/inventory/
 ```
 
@@ -161,4 +153,4 @@ Configure your inventory hosts and variables in `ansible/inventory/`.
 
 ---
 
-[Impressum](impressum.md) | [Privacy Policy](privacy.md)
+[Impressum](impressum.md) | [Privacy Policy](privacy.md) | [API Keys](api-keys.md)

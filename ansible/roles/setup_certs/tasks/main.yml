@@ -69,5 +69,5 @@
   ansible.builtin.debug:
     msg:
       - "Certificates generated for: {{ server_fqdn }}"
-      - "OAuth2-Proxy cert:  oauth2-proxy/ssl/{{ server_fqdn }}.pem"
-      - "Root CA copied to:  certs/, oauth2-proxy/"
+      - "Frontend cert:      frontend/ssl/{{ server_fqdn }}.pem"
+      - "Root CA copied to:  certs/, frontend/"

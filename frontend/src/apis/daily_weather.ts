@@ -1,9 +1,9 @@
 import { useQuery } from 'react-query'
-import { fetchJson } from '../common/fetch'
 import { ServerStateKeysEnum } from '../common/statekeys'
-import { REFETCH_INTERVAL, WEATHER_API } from '../constants/api'
+import { REFETCH_INTERVAL } from '../constants/api'
 import { LATITUDE, LONGITUDE, DAILY_FORECAST_DAYS } from '../constants/weather'
 import { DailyWeatherObject } from '../models/daily_forecast'
+import { getDailyWeather } from '../services/weather/openMeteo'
 
 export const useGetDailyWeather = (
     longitude: number = LONGITUDE,
@@ -21,18 +21,7 @@ export const useGetDailyWeather = (
             timeZone,
         ],
         enabled,
-        queryFn: async () => {
-            const params = new URLSearchParams({
-                latitude: latitude.toString(),
-                longitude: longitude.toString(),
-                days: forecast_days.toString(),
-                timezone: timeZone,
-            })
-            return fetchJson<DailyWeatherObject>(
-                `${WEATHER_API}/forecast?${params.toString()}`
-            ).catch((err) => {
-                throw err
-            })
-        },
+        queryFn: async () =>
+            getDailyWeather(latitude, longitude, forecast_days, timeZone),
         refetchInterval: REFETCH_INTERVAL,
     })

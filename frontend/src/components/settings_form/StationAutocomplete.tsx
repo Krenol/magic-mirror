@@ -1,7 +1,7 @@
 import { Autocomplete, TextField } from '@mui/material'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { TrainStation } from '../../models/trains'
-import { TRAINS_API } from '../../constants/api'
+import { searchStations } from '../../services/trains/deutscheBahn'
 
 interface StationAutocompleteProps {
     label: string
@@ -25,7 +25,7 @@ export const StationAutocomplete = ({
         setInputValue(value?.name ?? '')
     }, [value?.id, value?.name])
 
-    const searchStations = useCallback(async (query: string) => {
+    const runStationSearch = useCallback(async (query: string) => {
         if (query.length < 2) {
             setOptions([])
             setError(false)
@@ -35,16 +35,8 @@ export const StationAutocomplete = ({
         setLoading(true)
         setError(false)
         try {
-            const response = await fetch(
-                `${TRAINS_API}/stations?query=${encodeURIComponent(query)}&results=10`
-            )
-            if (response.ok) {
-                const stations: TrainStation[] = await response.json()
-                setOptions(stations)
-            } else {
-                setOptions([])
-                setError(true)
-            }
+            const stations = await searchStations(query, 10)
+            setOptions(stations)
         } catch {
             setOptions([])
             setError(true)
@@ -65,13 +57,13 @@ export const StationAutocomplete = ({
             if (reason === 'input') {
                 setInputValue(newInputValue)
                 timeoutRef.current = setTimeout(() => {
-                    searchStations(newInputValue)
+                    runStationSearch(newInputValue)
                 }, 300)
             }
             // When a selection is made or cleared, the value prop will update
             // and the useEffect will sync the inputValue
         },
-        [searchStations]
+        [runStationSearch]
     )
 
     // Cleanup timeout on unmount

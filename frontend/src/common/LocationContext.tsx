@@ -1,7 +1,7 @@
 import { createContext, useMemo, type ReactNode, memo } from 'react'
 import { useGetUserSettings } from '../apis/user_settings'
 import { useGetGeocode } from '../apis/geocode'
-import { QUERY_PARAM } from '../models/apis'
+import { useApiKeys } from '../hooks/useApiKeys'
 
 type LocationContextType = {
     longitude: number
@@ -25,41 +25,26 @@ const LocationContextProviderComponent = ({
     children,
 }: LocationContextProviderProps) => {
     const { data: userSettings, isLoading: isUserSettingLoading } =
-        useGetUserSettings(false)
+        useGetUserSettings()
+    const { apiKeys } = useApiKeys()
 
-    const queryParameters = useMemo<QUERY_PARAM[]>(() => {
-        if (
-            isUserSettingLoading ||
-            !userSettings?.city ||
-            !userSettings?.country ||
-            !userSettings?.zip_code
-        ) {
-            return []
-        }
-        return [
-            {
-                name: 'city',
-                value: userSettings.city,
-            },
-            {
-                name: 'country',
-                value: userSettings.country,
-            },
-            {
-                name: 'zip_code',
-                value: userSettings.zip_code,
-            },
-        ]
-    }, [userSettings, isUserSettingLoading])
-
-    console.log('Location query parameters:', queryParameters)
-
-    const { data: apiGeoLocation, isLoading: isGeoCodeLoading } = useGetGeocode(
-        queryParameters,
-        queryParameters.length > 0
+    const canGeocode = useMemo<boolean>(
+        () =>
+            !isUserSettingLoading &&
+            !!userSettings?.city &&
+            !!userSettings?.country &&
+            !!userSettings?.zip_code &&
+            !!apiKeys.geocodeApiKey,
+        [userSettings, isUserSettingLoading, apiKeys.geocodeApiKey]
     )
 
-    console.log('Geocode API location data:', apiGeoLocation)
+    const { data: apiGeoLocation, isLoading: isGeoCodeLoading } = useGetGeocode(
+        apiKeys.geocodeApiKey,
+        userSettings?.country,
+        userSettings?.city,
+        userSettings?.zip_code,
+        canGeocode
+    )
 
     const contextValue = useMemo<LocationContextType>(
         () => ({

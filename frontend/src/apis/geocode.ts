@@ -1,25 +1,18 @@
 import { useQuery } from 'react-query'
-import { QueryParameters } from '../models/apis'
 import { ServerStateKeysEnum } from '../common/statekeys'
-import { buildQuery } from '../common/apis'
-import { fetchJson } from '../common/fetch'
 import { GeoLocation } from '../models/location'
-import { LOCATION_API } from '../constants/api'
+import { getGeocode } from '../services/geocode'
 
 export const useGetGeocode = (
-    query_params: QueryParameters = [],
+    apiKey: string,
+    country?: string,
+    city?: string,
+    zipCode?: string,
     enabled: boolean = true
 ) => {
     return useQuery<GeoLocation, Error>({
-        queryKey: [ServerStateKeysEnum.geocode, query_params],
-        queryFn: async () =>
-            buildQuery(query_params)
-                .then((qry) =>
-                    fetchJson<GeoLocation>(`${LOCATION_API}/geocode${qry}`)
-                )
-                .catch((err) => {
-                    throw err
-                }),
+        queryKey: [ServerStateKeysEnum.geocode, apiKey, country, city, zipCode],
+        queryFn: async () => getGeocode(country ?? '', apiKey, city, zipCode),
         refetchInterval: false,
         enabled,
     })

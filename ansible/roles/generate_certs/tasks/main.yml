@@ -6,7 +6,7 @@
     mode: "0755"
   loop:
     - "{{ certs_base_dir }}/certs"
-    - "{{ certs_base_dir }}/oauth2-proxy/ssl"
+    - "{{ certs_base_dir }}/frontend/ssl"
 
 - name: Get mkcert CA root path
   ansible.builtin.command: mkcert -CAROOT
@@ -21,21 +21,21 @@
     remote_src: "{{ (ansible_connection != 'local') | bool }}"
   loop:
     - certs
-    - oauth2-proxy
+    - frontend
 
-- name: Generate oauth2-proxy SSL certificate
+- name: Generate frontend SSL certificate
   ansible.builtin.command: >-
     mkcert
-    -key-file {{ certs_base_dir }}/oauth2-proxy/ssl/{{ server_fqdn }}.key
-    -cert-file {{ certs_base_dir }}/oauth2-proxy/ssl/{{ server_fqdn }}.pem
+    -key-file {{ certs_base_dir }}/frontend/ssl/{{ server_fqdn }}.key
+    -cert-file {{ certs_base_dir }}/frontend/ssl/{{ server_fqdn }}.pem
     {{ server_fqdn }} {{ additional_hostnames }}
   args:
-    creates: "{{ certs_base_dir }}/oauth2-proxy/ssl/{{ server_fqdn }}.pem"
+    creates: "{{ certs_base_dir }}/frontend/ssl/{{ server_fqdn }}.pem"
 
-- name: Create oauth2-proxy certificate bundle (cert + CA)
+- name: Create frontend certificate bundle (cert + CA)
   ansible.builtin.shell: >-
-    cat {{ certs_base_dir }}/oauth2-proxy/ssl/{{ server_fqdn }}.pem
-    {{ certs_base_dir }}/oauth2-proxy/rootCA.pem
-    > {{ certs_base_dir }}/oauth2-proxy/ssl/{{ server_fqdn }}.bundle.pem
+    cat {{ certs_base_dir }}/frontend/ssl/{{ server_fqdn }}.pem
+    {{ certs_base_dir }}/frontend/rootCA.pem
+    > {{ certs_base_dir }}/frontend/ssl/{{ server_fqdn }}.bundle.pem
   args:
-    creates: "{{ certs_base_dir }}/oauth2-proxy/ssl/{{ server_fqdn }}.bundle.pem"
+    creates: "{{ certs_base_dir }}/frontend/ssl/{{ server_fqdn }}.bundle.pem"

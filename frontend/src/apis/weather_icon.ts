@@ -1,9 +1,11 @@
 import { useQuery } from 'react-query'
-import { fetchBlob } from '../common/fetch'
 import { ServerStateKeysEnum } from '../common/statekeys'
-import { WEATHER_API } from '../constants/api'
 import { WEATHER_ICON_ZOOM } from '../constants/weather'
 
+const OPENWEATHER_URL = 'https://openweathermap.org'
+
+// Open-Meteo/OpenWeatherMap icon URLs are keyless and public, so this is just
+// a direct image URL rather than a fetched-and-cached Blob.
 export const useGetWeatherIcon = (
     weather_icon: string,
     icon_zoom: string = WEATHER_ICON_ZOOM,
@@ -13,9 +15,5 @@ export const useGetWeatherIcon = (
         queryKey: [ServerStateKeysEnum.weather_icon, weather_icon, icon_zoom],
         enabled,
         queryFn: async () =>
-            fetchBlob(`${WEATHER_API}/icon/${weather_icon}@${icon_zoom}`)
-                .then((blob) => URL.createObjectURL(blob))
-                .catch((err) => {
-                    throw err
-                }),
+            `${OPENWEATHER_URL}/img/wn/${weather_icon}@${icon_zoom}.png`,
     })

@@ -1,13 +1,13 @@
 import { useQuery, UseQueryResult } from 'react-query'
-import { fetchJson } from '../common/fetch'
 import { ServerStateKeysEnum } from '../common/statekeys'
-import { REFETCH_INTERVAL, WEATHER_API } from '../constants/api'
+import { REFETCH_INTERVAL } from '../constants/api'
 import {
     LATITUDE,
     LONGITUDE,
     HOURLY_FORECAST_HOURS,
 } from '../constants/weather'
 import { HourlyWeatherObject } from '../models/hourly_forecast'
+import { getHourlyWeather } from '../services/weather/openMeteo'
 
 export const useGetHourlyWeather = (
     longitude: number = LONGITUDE,
@@ -25,16 +25,7 @@ export const useGetHourlyWeather = (
             timeZone,
         ],
         enabled,
-        queryFn: async (): Promise<HourlyWeatherObject> => {
-            const params = new URLSearchParams({
-                latitude: latitude.toString(),
-                longitude: longitude.toString(),
-                hours: forecast_hours.toString(),
-                timezone: timeZone,
-            })
-            return fetchJson<HourlyWeatherObject>(
-                `${WEATHER_API}/hourly?${params.toString()}`
-            )
-        },
+        queryFn: async (): Promise<HourlyWeatherObject> =>
+            getHourlyWeather(latitude, longitude, forecast_hours, timeZone),
         refetchInterval: REFETCH_INTERVAL,
     })

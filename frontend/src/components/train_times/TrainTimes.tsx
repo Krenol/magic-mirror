@@ -11,7 +11,7 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 
 const TrainTimesComponent = () => {
-    const { data: userSettings } = useGetUserSettings(false)
+    const { data: userSettings } = useGetUserSettings()
 
     const trainConnections = userSettings?.train_connections || []
     const trainDisplaySettings = userSettings?.train_display_settings || {
